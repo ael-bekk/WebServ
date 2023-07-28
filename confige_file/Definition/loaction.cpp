@@ -2,11 +2,11 @@
 
 __location::__location() : autoindex(false) , root("/"), allow_methods({"GET"}) {}
 
+__location::__location(__location const & location) {
+    *this = location;
+}
+
 __location::~__location() {}
-
-__location::__location(__location const & location) {}
-
-__location & __location::operator= (__location const & location) {}
 
 
 std::string __location::get_root()                                                  { return this->root; }
@@ -24,6 +24,7 @@ void __location::set_return(std::pair<int, std::string> _return)                
 void __location::set_autoindex(bool autoindex)                                                      { this->autoindex = autoindex; }
 void __location::set_cgi_extension(std::vector<std::pair<std::string, std::string>> cgi_extension)  { this->cgi_extension = cgi_extension; }
 
-void __location::_insert() {
 
+void __location::_insert() {
+    
 }
