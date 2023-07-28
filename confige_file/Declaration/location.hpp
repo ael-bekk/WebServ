@@ -5,17 +5,16 @@
 
 class __location {
     private:
-        std::string                         root;
-        std::vector<std::string>            index;        
-        std::vector<std::string>            allow_methods;
-        std::pair<int, std::string>         _return;
-        bool                                autoindex;
-        std::vector<std::pair<std::string, std::string>> cgi_extension;
+        std::string                                         root;
+        std::vector<std::string>                            index;        
+        std::vector<std::string>                            allow_methods;
+        std::pair<int, std::string>                         _return;
+        bool                                                autoindex;
+        std::vector<std::pair<std::string, std::string>>    cgi_extension;
     public:
         __location();
-        ~__location();
         __location(__location const & location);
-        __location & operator= (__location const & location);
+        ~__location();
 
         std::string                         get_root();
         std::vector<std::string>            get_index();

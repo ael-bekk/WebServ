@@ -15,9 +15,8 @@ class __server {
     public:
         __server();
         __server(std::string server_name, std::map<int, std::string> default_err_page);
-        ~__server();
         __server(__server const & server);
-        __server &operator=(__server const & server);
+        ~__server();
 
         std::string                 get_server_name();
         std::string                 get_ip_addr();
