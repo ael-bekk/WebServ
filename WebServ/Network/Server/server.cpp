@@ -1,4 +1,4 @@
-#include "../Declaration/server.hpp"
+#include "server.hpp"
 
 __server::__server() {}
 

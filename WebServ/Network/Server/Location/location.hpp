@@ -1,7 +1,7 @@
 #ifndef __LOCATION_HPP__
 #define __LOCATION_HPP__
 
-#include "../../bits/stdc++.h"
+#include "../../../../bits/API.hpp"
 
 class __location {
     private:
@@ -11,6 +11,7 @@ class __location {
         std::pair<int, std::string>                         _return;
         bool                                                autoindex;
         std::vector<std::pair<std::string, std::string>>    cgi_extension;
+    
     public:
         __location();
         __location(__location const & location);

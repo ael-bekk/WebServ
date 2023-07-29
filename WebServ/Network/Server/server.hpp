@@ -1,8 +1,8 @@
-#ifndef __SERVER_CPP__
-#define __SERVER_CPP__
+#ifndef __SERVER_HPP__
+#define __SERVER_HPP__
 
-#include "../../bits/stdc++.h"
-#include "location.hpp"
+
+#include "../../../bits/API.hpp"
 
 class __server {
     private:

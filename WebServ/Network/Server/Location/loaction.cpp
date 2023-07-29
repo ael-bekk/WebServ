@@ -1,4 +1,4 @@
-#include "../Declaration/location.hpp"
+#include "location.hpp"
 
 __location::__location() : autoindex(false) , root("/"), allow_methods({"GET"}) {}
 
