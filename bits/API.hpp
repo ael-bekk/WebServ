@@ -4,6 +4,49 @@
 #include "stdc++.hpp"
 
 
+
+/*                    ►   files tree   ◄            
+
+├► bits     ⤵
+|           ├⟚ API.hpp
+|           ├⟚ stdc++.hpp
+|
+|
+├► WebServ  ⤵
+|           ├⟚ webserv.hpp
+|           ├⟚ webserv.cpp
+|           ├► Network   ⤵
+|                        ├⟚ network.hpp
+|                        ├⟚ network.cpp
+|                        ├► Client   ⤵
+|                        |           ├⟚ client.hpp
+|                        |           ├⟚ client.cpp
+|                        |           ├► Header   ⤵
+|                        |           |           ├⟚ header.hpp
+|                        |           |           ├⟚ header.cpp
+|                        |           |
+|                        |           |
+|                        |           ├► Request  ⤵
+|                        |           |           ├⟚ request.hpp
+|                        |           |           ├⟚ request.cpp
+|                        |           |
+|                        |           |
+|                        |           ├► Response ⤵
+|                        |                       ├⟚ response.hpp
+|                        |                       ├⟚ response.cpp
+|                        |
+|                        |
+|                        ├► Server  ⤵
+|                                    ├⟚ server.hpp
+|                                    ├⟚ server.cpp 
+|                                    ├► Location ⤵
+|                                                ├⟚ location.hpp
+|                                                ├⟚ location.cpp
+
+*/
+
+/*                          hpp headers                     */
+
 #ifdef __WEBSERVE_HPP__
     #include "../WebServ/Network/network.hpp"
 #endif
@@ -39,6 +82,5 @@
 
 #ifdef __RESPONSE_HPP__
 #endif
-
 
 #endif

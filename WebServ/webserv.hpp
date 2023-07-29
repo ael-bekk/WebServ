@@ -8,8 +8,10 @@ class __webserv {
         std::vector<__network>    network;
 
     public:
-        
+        __webserv();
+        ~__webserv();
 
+        void    config_file();  
 };
 
 #endif

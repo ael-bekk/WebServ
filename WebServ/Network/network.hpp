@@ -5,7 +5,7 @@
 
 class __network {
     private:
-        int                     Socket;
+        int                     socket;
         fd_set                  fds;
         struct timeval          timeout;
         struct sockaddr_in      serv_addr;
