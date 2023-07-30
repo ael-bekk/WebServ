@@ -10,8 +10,8 @@ class __webserv {
     public:
         __webserv();
         ~__webserv();
-
-        void    config_file();  
+        void    ConfigError(int line, std::string detail);
+        void    ConfigFile(std::string filename);
 };
 
 #endif

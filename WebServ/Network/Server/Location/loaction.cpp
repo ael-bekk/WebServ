@@ -1,13 +1,35 @@
 #include "location.hpp"
 
-__location::__location() : autoindex(false) , root("/"), allow_methods({"GET"}) {}
+__location::__location(int &line_count, std::istream &configfile) {
+    std::string line, key, val;
 
-__location::__location(__location const & location) {
-    *this = location;
+    set_default();
+    while (std::getline(configfile, line) && ++line_count) {
+        std::stringstream inp(line);
+
+        inp >> key;
+        if (IS_EXIT(key)) break;
+        if (!(inp >> val) || !_insert(key, val, configfile) || inp >> val)
+            ConfigError(line_count, key);
+    }
 }
 
 __location::~__location() {}
 
+
+void    __location::set_default() {
+    autoindex = ON;
+    this->root = this->url;
+    if (!allow_methods.size()) allow_methods.push_back("GET");
+}
+
+void __location::_insert() {
+}
+
+void    ConfigError(int line, std::string detail) {
+    cout << "Error : line=" << line << " in the location block ==> \"" << detail << "\"" << std::endl;
+    exit();
+}
 
 std::string __location::get_root()                                                  { return this->root; }
 std::vector<std::string> __location::get_index()                                    { return this->index; }
@@ -23,8 +45,3 @@ void __location::set_allow_methods(std::vector<std::string> allow_methods)      
 void __location::set_return(std::pair<int, std::string> _return)                                    { this->_return = _return; }
 void __location::set_autoindex(bool autoindex)                                                      { this->autoindex = autoindex; }
 void __location::set_cgi_extension(std::vector<std::pair<std::string, std::string>> cgi_extension)  { this->cgi_extension = cgi_extension; }
-
-
-void __location::_insert() {
-    
-}

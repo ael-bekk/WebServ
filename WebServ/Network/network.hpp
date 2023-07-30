@@ -13,7 +13,7 @@ class __network {
         std::vector<__client>   client;
 
     public:
-        __network();
+        __network(std::istream &configfile);
         ~__network();
 
         int                     get_Socket();
