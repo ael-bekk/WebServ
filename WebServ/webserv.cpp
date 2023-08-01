@@ -5,22 +5,22 @@ __webserv::__webserv() {}
 __webserv::~__webserv() {}
 
 void    ConfigError(int line, std::string detail) {
-    cout << "Error : line=" << line << " you print \"" << detail << "\" did you mean \'server {\'" << std::endl;
-    exit();
+    std::cout << "Error : line=" << line << " you print \"" << detail << "\" did you mean \'server {\'" << std::endl;
+    exit(1);
 }
 
 void    __webserv::ConfigFile(std::string filename) {
     int line_count = 0;
     std::string line, token, prev_token;
-    std::istream configfile(filename);
+    std::ifstream configfile(filename);
 
     if (configfile.fail()) {
         std::cerr << "Error opening file: " << filename << std::endl;
-        exit();
+        exit(1);
     }
     while (std::getline(configfile, line) && ++line_count) {
 
-        stringstream inp(line);
+        std::stringstream inp(line);
 
         inp >> token;
         prev_token = token + " ";

@@ -4,8 +4,8 @@
 #include "stdc++.hpp"
 
 #define SUCCESS     true
-#define FOUND       true
 #define FAILURE     false
+#define FOUND       true
 #define NOT_FOUND   false
 #define ON          true
 #define OFF         false
@@ -63,7 +63,7 @@
 
 #ifdef __WEBSERVE_HPP__
     #include "../WebServ/Network/network.hpp"
-    
+
     #define ENTER_SERVER(X) (X == "server {")
 #endif
 
@@ -72,12 +72,21 @@
     #include <netinet/in.h> // header file for internet protocol-related functions and structures (e.g., sockaddr_in)
     #include <sys/socket.h> // header file for socket programming functions and structures (e.g., socket, bind, listen, accept)
     #include <arpa/inet.h>  // header file for internet protocol-related functions (e.g., inet_addr, inet_ntoa)
-    
+
     #include "../WebServ/Network/Server/server.hpp"
     #include "../WebServ/Network/Client/client.hpp"
 #endif
 
 #ifdef __LOCATION_HPP__
+    #define IS_URL(X)                   (X == "url")
+    #define IS_ROOT(X)                  (X == "root")
+    #define IS_INDEX(X)                 (X == "index")
+    #define IS_ALLOW_METHODS(X)         (X == "allow_methods")
+    #define IS_RETURN(X)                (X == "return")
+    #define IS_AUTOINDEX(X)             (X == "autoindex")
+    #define IS_CGI(X)                   (X == "cgi")
+    #define IS_EXIT(X)                  (X == "}")
+
 #endif
 
 #ifdef __SERVER_HPP__
@@ -89,7 +98,7 @@
     #define IS_CLIENT_MAX_BODY_SIZE(X)  (X == "client_max_body_size")
     #define IS_LOCATION(X)              (X == "location")
     #define IS_EXIT(X)                  (X == "}")
-    #define DEFAULT_MAX_BODY_SZ     3000
+    #define DEFAULT_MAX_BODY_SIZE   3000
     #define DEFAULT_PORT            8080
     #define LOCALE_HOST             "127.0.0.1"
 
@@ -100,7 +109,6 @@
 
 #ifdef __CLIENT_HPP__
     #include "../WebServ/Network/Server/server.hpp"
-    #include "../WebServ/Network/Client/Header/header.hpp"
     #include "../WebServ/Network/Client/Request/request.hpp"
     #include "../WebServ/Network/Client/Response/response.hpp"
 #endif

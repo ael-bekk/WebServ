@@ -13,7 +13,7 @@ class __server {
         std::vector <__location>    location;
 
     public:
-        __server(int &line_count, std::istream &configfile);
+        __server(int &line_count, std::ifstream &configfile);
         ~__server();
 
         std::string                 get_host();
@@ -26,10 +26,10 @@ class __server {
         int    set_ports(std::string port);
         int    set_error_pages(std::string error, std::string page);
         int    set_client_max_body_size(std::string client_max_body_size);
-        int    set_locations(int line, std::istream &configfile);
+        int    set_locations(int &line, std::ifstream &configfile, std::stringstream &inp);
 
         void    ConfigError(int line, std::string detail);
-        bool    _insert(std::string key, std::string val, std::istream &configfile, std::stringstream &inp);
+        bool    _insert(std::string key, int &line_count, std::ifstream &configfile, std::stringstream &inp);
         void    set_default();
 };
 

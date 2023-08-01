@@ -1,7 +1,7 @@
 #include "server.hpp"
 
-__server::__server(int &line_count, std::istream &configfile) {
-    std::string line, key, val;
+__server::__server(int &line_count, std::ifstream &configfile) {
+    std::string line, key;
 
     set_default();
     while (std::getline(configfile, line) && ++line_count) {
@@ -9,42 +9,42 @@ __server::__server(int &line_count, std::istream &configfile) {
 
         inp >> key;
         if (IS_EXIT(key)) break;
-        if (!(inp >> val) || !_insert(key, val, configfile) || inp >> val)
+        if (!_insert(key, line_count, configfile, inp) || inp >> line)
             ConfigError(line_count, key);
     }
 }
 
 __server::~__server() {}
 
-bool __server::_insert(std::string key, std::string val, std::istream &configfile, std::stringstream &inp) {
+bool __server::_insert(std::string key, int &line_count, std::ifstream &configfile, std::stringstream &inp) {
 
     int ret = FAILURE;
-    std::string val2;
+    std::string val, val2;
 
-    if (IS_HOST(key))
+    if (IS_HOST(key) && inp >> val)
         ret = set_host(val);
-    else if (IS_PORT(key))
+    else if (IS_PORT(key) && inp >> val)
         ret = set_ports(val);
-    else if (IS_ERROR_PAGE(key) && inp >> val2)
+    else if (IS_ERROR_PAGE(key) && inp >> val && inp >> val2)
         ret = set_error_pages(val, val2);
-    else if (IS_CLIENT_MAX_BODY_SIZE(key))
+    else if (IS_CLIENT_MAX_BODY_SIZE(key) && inp >> val)
         ret = set_client_max_body_size(val);
-    else if (IS_LOCATION(key))
-        ret = set_locations(configfile);
+    else if (IS_LOCATION(key) && inp >> val)
+        ret = set_locations(line_count, configfile, inp);
 
     return ret;
 }
 
 void __server::set_default() {
-    this->error_page = default_err_page;
+    // this->error_page = default_err_page;
     this->client_max_body_size = DEFAULT_MAX_BODY_SIZE;
     this->host = LOCALE_HOST;
-    this->port = DEFAULT_PORT;
+    this->port.push_back(DEFAULT_PORT);
 }
 
 void    ConfigError(int line, std::string detail) {
-    cout << "Error : line=" << line << " in the server block ==> \"" << detail << "\"" << std::endl;
-    exit();
+    std::cout << "Error : line=" << line << " in the server block ==> \"" << detail << "\"" << std::endl;
+    exit(1);
 }
 
 std::string __server::get_host()                        { return this->host; }
@@ -61,8 +61,16 @@ int __server::set_host(std::string host) {
     if (host == "localhost")
         this->host = LOCALE_HOST;
     else {
-        while (std::getline(inp, slice, ".") && ++count)
-            if (stoi(slice) < 0 || stoi(slice) > 255) return FAILURE;
+        while (std::getline(inp, slice, '.') && ++count){
+            try {
+                int value = std::stoi(slice);
+                if (value < 0 || value > 255)
+                    return FAILURE;
+            } catch (const std::invalid_argument& e) {
+                // Handle the case when the slice is not a valid integer.
+                return FAILURE;
+            }
+        }
         if (count != 4) return FAILURE;
         this->host = host;
     }
@@ -70,23 +78,21 @@ int __server::set_host(std::string host) {
 }
 
 int __server::set_ports(std::string port) {
-    if (port.length() > 4)
-        return FAILURE;
-    this->port.push_back(port);
+    this->port.push_back(std::stoi(port));
     return SUCCESS;
 }
 
 int __server::set_error_pages(std::string error, std::string page) {
-    this->error_page[stoi(error)] = page;
+    this->error_page[std::stoi(error)] = page;
     return SUCCESS;
 }
 
 int __server::set_client_max_body_size(std::string client_max_body_size) {
-    this->client_max_body_size = stoi(client_max_body_size);
+    this->client_max_body_size = std::stoi(client_max_body_size);
     return SUCCESS;
 }
 
-int __server::set_locations(int &line, std::istream &configfile) {
-    this->location.push_back(__location(line, configfile));
+int __server::set_locations(int &line, std::ifstream &configfile, std::stringstream &inp) {
+    this->location.push_back(__location(line, configfile, inp));
     return SUCCESS;
 }
