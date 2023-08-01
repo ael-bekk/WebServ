@@ -1,5 +1,5 @@
-#ifndef __STDC++_H__
-#define __STDC++_H__
+#ifndef __STDC++_HPP__
+#define __STDC++_HPP__
 
 #include <algorithm>
 #include <bitset>
@@ -12,7 +12,7 @@
 #include <ios>
 #include <iosfwd>
 #include <iostream>
-#include <istream>
+#include <ifstream>
 #include <iterator>
 #include <limits>
 #include <list>
