@@ -3,3 +3,5 @@
 __network::__network(int &line_count, std::ifstream &configfile) : server(line_count, configfile) {}
 
 __network::~__network() {}
+
+__server __network::get_server() { return this->server; }

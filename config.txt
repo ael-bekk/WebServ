@@ -1,0 +1,23 @@
+server {
+    port 8080
+    port 555
+    host 0.0.0.1
+    error_page 404 file.php
+    error_page 504 gbjgj/vgjv.php
+    client_max_body_size 3000
+    location my_website {
+        root /var/www/html
+        index index.php index.debian-html.html
+        cgi .py python3
+        cgi .php fast-cgi
+        autoindex ON
+        allow_methods  POST DELETE
+        return 200 file.htmldfdd
+    }
+    location my_website {
+        root /var/www/html
+        index index.php index.debian-html.html
+        cgi .py python3
+        cgi .php fast-cgi
+    }
+}

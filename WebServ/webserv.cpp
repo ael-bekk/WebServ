@@ -4,7 +4,7 @@ __webserv::__webserv() {}
 
 __webserv::~__webserv() {}
 
-void    ConfigError(int line, std::string detail) {
+void    __webserv::ConfigError(int line, std::string detail) {
     std::cout << "Error : line=" << line << " you print \"" << detail << "\" did you mean \'server {\'" << std::endl;
     exit(1);
 }
@@ -32,3 +32,5 @@ void    __webserv::ConfigFile(std::string filename) {
             ConfigError(line_count, prev_token + token);
     }
 }
+
+std::vector<__network>    __webserv::get_networks() { return this->network; }

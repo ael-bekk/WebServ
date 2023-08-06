@@ -3,7 +3,6 @@
 __server::__server(int &line_count, std::ifstream &configfile) {
     std::string line, key;
 
-    set_default();
     while (std::getline(configfile, line) && ++line_count) {
         std::stringstream inp(line);
 
@@ -29,20 +28,12 @@ bool __server::_insert(std::string key, int &line_count, std::ifstream &configfi
         ret = set_error_pages(val, val2);
     else if (IS_CLIENT_MAX_BODY_SIZE(key) && inp >> val)
         ret = set_client_max_body_size(val);
-    else if (IS_LOCATION(key) && inp >> val)
+    else if (IS_LOCATION(key))
         ret = set_locations(line_count, configfile, inp);
-
     return ret;
 }
 
-void __server::set_default() {
-    // this->error_page = default_err_page;
-    this->client_max_body_size = DEFAULT_MAX_BODY_SIZE;
-    this->host = LOCALE_HOST;
-    this->port.push_back(DEFAULT_PORT);
-}
-
-void    ConfigError(int line, std::string detail) {
+void    __server::ConfigError(int line, std::string detail) {
     std::cout << "Error : line=" << line << " in the server block ==> \"" << detail << "\"" << std::endl;
     exit(1);
 }

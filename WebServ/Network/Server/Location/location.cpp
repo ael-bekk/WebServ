@@ -3,9 +3,9 @@
 __location::__location(int &line_count, std::ifstream &configfile, std::stringstream &inp) {
     std::string line, key;
 
-    if (!_insert("url", inp))
+    if (!_insert("path", inp))
         ConfigError(line_count, key);
-    while (std::getline(inp, line) && ++line_count) {
+    while (std::getline(configfile, line) && ++line_count) {
         std::stringstream inp(line);
 
         inp >> key;
@@ -13,22 +13,15 @@ __location::__location(int &line_count, std::ifstream &configfile, std::stringst
         if (!_insert(key, inp))
             ConfigError(line_count, key);
     }
-    set_default();
 }
 
 __location::~__location() {}
 
-void    __location::set_default() {
-    autoindex = ON;
-    this->root = this->url;
-    if (!allow_methods.size()) allow_methods.push_back("GET");
-}
-
 bool __location::_insert(std::string key, std::stringstream &inp) {
     int ret = FAILURE;
 
-    if (IS_URL(key))
-        ret = set_root(inp);
+    if (IS_PATH(key))
+        ret = set_url(inp);
     else if (IS_ROOT(key))
         ret = set_root(inp);
     else if (IS_INDEX(key))
@@ -44,11 +37,12 @@ bool __location::_insert(std::string key, std::stringstream &inp) {
     return ret;
 }
 
-void    ConfigError(int line, std::string detail) {
+void    __location::ConfigError(int line, std::string detail) {
     std::cout << "Error : line=" << line << " in the location block ==> \"" << detail << "\"" << std::endl;
     exit(1);
 }
 
+std::string __location::get_url()                                       { return this->path; }
 std::string __location::get_root()                                      { return this->root; }
 std::vector<std::string> __location::get_index()                        { return this->index; }
 std::vector<std::string> __location::get_allow_methods()                { return this->allow_methods; }
@@ -58,9 +52,7 @@ std::map<std::string, std::string> __location::get_cgi_extension()      { return
 
 bool    __location::set_url(std::stringstream &inp) {
     std::string end;
-    if (!(inp >> this->url) || !(inp >> end))
-        return FAILURE;
-    if (!IS_EXIT(end) || inp >> end)
+    if (!(inp >> this->path) || !(inp >> end) || !IS_ENTER(end) || inp >> end)
         return FAILURE;
     return SUCCESS;
 }
@@ -82,7 +74,10 @@ bool    __location::set_index(std::stringstream &inp) {
 bool    __location::set_allow_methods(std::stringstream &inp) {
     std::string allow_method;
     while (inp >> allow_method)
-        this->allow_methods.push_back(allow_method);
+       if (IS_METHOD(allow_method))
+            this->allow_methods.push_back(allow_method);
+        else
+            return FAILURE;
     return SUCCESS;
 }
 
