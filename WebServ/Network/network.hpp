@@ -1,7 +1,14 @@
 #ifndef __NETWORK_HPP__
 #define __NETWORK_HPP__
 
-#include "../../bits/API.hpp"
+#include "../../bits/stdc++.hpp"
+#include <netdb.h>      // header file for network-related functions and structures (e.g., getaddrinfo)
+#include <netinet/in.h> // header file for internet protocol-related functions and structures (e.g., sockaddr_in)
+#include <sys/socket.h> // header file for socket programming functions and structures (e.g., socket, bind, listen, accept)
+#include <arpa/inet.h>  // header file for internet protocol-related functions (e.g., inet_addr, inet_ntoa)
+
+#include "Server/server.hpp"
+#include "Client/client.hpp"
 
 class __network {
     private:

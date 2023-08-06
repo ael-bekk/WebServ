@@ -1,5 +1,5 @@
-#ifndef __STDC++_HPP__
-#define __STDC++_HPP__
+#ifndef __STDC_HPP__
+#define __STDC_HPP__
 
 #include <algorithm>
 #include <bitset>
@@ -12,7 +12,6 @@
 #include <ios>
 #include <iosfwd>
 #include <iostream>
-#include <ifstream>
 #include <iterator>
 #include <limits>
 #include <list>
@@ -33,5 +32,12 @@
 #include <utility>
 #include <valarray>
 #include <vector>
+
+#define SUCCESS     true
+#define FAILURE     false
+#define FOUND       true
+#define NOT_FOUND   false
+#define ON          true
+#define OFF         false
 
 #endif
