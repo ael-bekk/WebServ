@@ -8,14 +8,14 @@ __server::__server(int &line_count, std::ifstream &configfile) {
 
         inp >> key;
         if (IS_EXIT(key)) break;
-        if (!_insert(key, line_count, configfile, inp) || inp >> line)
+        if (!Insert(key, line_count, configfile, inp) || inp >> line)
             ConfigError(line_count, key);
     }
 }
 
 __server::~__server() {}
 
-bool __server::_insert(std::string key, int &line_count, std::ifstream &configfile, std::stringstream &inp) {
+bool __server::Insert(std::string key, int &line_count, std::ifstream &configfile, std::stringstream &inp) {
 
     int ret = FAILURE;
     std::string val, val2;

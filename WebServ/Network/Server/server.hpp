@@ -38,7 +38,7 @@ class __server {
         int    set_locations(int &line, std::ifstream &configfile, std::stringstream &inp);
 
         void    ConfigError(int line, std::string detail);
-        bool    _insert(std::string key, int &line_count, std::ifstream &configfile, std::stringstream &inp);
+        bool    Insert(std::string key, int &line_count, std::ifstream &configfile, std::stringstream &inp);
 };
 
 #endif

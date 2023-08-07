@@ -26,7 +26,7 @@ class __client {
         void                set_outfile(size_t outfile);
         void                set_server(__server &server);
 
-        void                _insert();
+        void                Insert();
 };
 
 #endif

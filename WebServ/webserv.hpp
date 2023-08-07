@@ -17,6 +17,10 @@ class __webserv {
         void    ConfigFile(std::string filename);
         
         std::vector<__network>    get_networks();
+
+        void    kqueue();
+        void    Select();
+        
 };
 
 #endif
