@@ -3,21 +3,21 @@
 __location::__location(int &line_count, std::ifstream &configfile, std::stringstream &inp) {
     std::string line, key;
 
-    if (!_insert("path", inp))
+    if (!Insert("path", inp))
         ConfigError(line_count, key);
     while (std::getline(configfile, line) && ++line_count) {
         std::stringstream inp(line);
 
         inp >> key;
         if (IS_EXIT(key)) break;
-        if (!_insert(key, inp))
+        if (!Insert(key, inp))
             ConfigError(line_count, key);
     }
 }
 
 __location::~__location() {}
 
-bool __location::_insert(std::string key, std::stringstream &inp) {
+bool __location::Insert(std::string key, std::stringstream &inp) {
     int ret = FAILURE;
 
     if (IS_PATH(key))

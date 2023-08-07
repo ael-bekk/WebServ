@@ -13,7 +13,10 @@
 class __network {
     private:
         int                     socket;
-        fd_set                  fds;
+        fd_set                  r;
+        fd_set                  w;
+        fd_set                  readable;
+        fd_set                  writable;
         struct timeval          timeout;
         struct sockaddr_in      serv_addr;
         __server                server;
@@ -37,7 +40,8 @@ class __network {
         void                    set_server(__server server);
         void                    set_client(std::vector<__client> client);
 
-        void    _insert(); // set all network infos
+        void    Insert(); // set all network infos
+
 };
 
 #endif

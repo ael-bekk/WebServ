@@ -46,7 +46,7 @@ class __location {
         bool    set_cgi_extension(std::stringstream &inp);
 
         void    ConfigError(int line, std::string detail);
-        bool    _insert(std::string key, std::stringstream &inp); // set all location infos
+        bool    Insert(std::string key, std::stringstream &inp); // set all location infos
 };
 
 #endif
