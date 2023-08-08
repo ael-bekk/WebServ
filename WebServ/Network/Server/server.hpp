@@ -16,7 +16,7 @@
 class __server {
     private:
         std::string                 host;
-        std::vector<unsigned short> port;
+        std::vector<std::string>    port;
         std::map<int, std::string>  error_page;
         size_t                      client_max_body_size;
         std::vector <__location>    location;
@@ -26,7 +26,7 @@ class __server {
         ~__server();
 
         std::string                 get_host();
-        std::vector<unsigned short> get_ports();
+        std::vector<std::string>    get_ports();
         std::map<int, std::string>  get_error_pages();
         size_t                      get_client_max_body_size();
         std::vector<__location>     get_locations();

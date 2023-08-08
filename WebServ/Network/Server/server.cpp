@@ -39,7 +39,7 @@ void    __server::ConfigError(int line, std::string detail) {
 }
 
 std::string __server::get_host()                        { return this->host; }
-std::vector<unsigned short> __server::get_ports()       { return this->port; }
+std::vector<std::string> __server::get_ports()       { return this->port; }
 std::map<int, std::string> __server::get_error_pages()  { return this->error_page; }
 size_t __server::get_client_max_body_size()             { return this->client_max_body_size; }
 std::vector<__location> __server::get_locations()       { return this->location; }
@@ -69,7 +69,7 @@ int __server::set_host(std::string host) {
 }
 
 int __server::set_ports(std::string port) {
-    this->port.push_back(std::stoi(port));
+    this->port.push_back(port);
     return SUCCESS;
 }
 

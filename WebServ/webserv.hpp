@@ -3,13 +3,14 @@
 
 #include "../bits/stdc++.hpp"
 #include "Network/network.hpp"
+#include "kqueue.hpp"
 
 #define ENTER_SERVER(X) (X == "server {")
 
 class __webserv {
     private:
         std::vector<__network>    network;
-
+        _kqueue                   Kqueue;
     public:
         __webserv();
         ~__webserv();
@@ -18,7 +19,6 @@ class __webserv {
         
         std::vector<__network>    get_networks();
 
-        void    kqueue();
         void    Select();
         
 };
