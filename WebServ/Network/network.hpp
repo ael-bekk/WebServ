@@ -6,19 +6,23 @@
 #include <netinet/in.h> // header file for internet protocol-related functions and structures (e.g., sockaddr_in)
 #include <sys/socket.h> // header file for socket programming functions and structures (e.g., socket, bind, listen, accept)
 #include <arpa/inet.h>  // header file for internet protocol-related functions (e.g., inet_addr, inet_ntoa)
-
+#include <string.h> // for using memset
+#include <unistd.h> // for using close();
+#include <arpa/inet.h> // to test inet_ntoa() function 
 #include "Server/server.hpp"
 #include "Client/client.hpp"
+#define MAX_QUEUE 2048
 
 class __network {
     private:
-        int                     socket;
+        std::vector<int>        sock;
         fd_set                  r;
         fd_set                  w;
         fd_set                  readable;
         fd_set                  writable;
         struct timeval          timeout;
-        struct sockaddr_in      serv_addr;
+        struct addrinfo         hints;
+        struct addrinfo         *res;
         __server                server;
         std::vector<__client>   client;
 
@@ -26,7 +30,7 @@ class __network {
         __network(int &line_count, std::ifstream &configfile);
         ~__network();
 
-        int                     get_Socket();
+        std::vector<int>        get_Socket();
         fd_set                  get_fds();
         struct timeval          get_timeout();
         struct sockaddr_in      get_serv_addr();
@@ -41,6 +45,9 @@ class __network {
         void                    set_client(std::vector<__client> client);
 
         void    Insert(); // set all network infos
+        
+        // this is me iharile
+        void    CreateSocket(void); // create socket for each port
 
 };
 
