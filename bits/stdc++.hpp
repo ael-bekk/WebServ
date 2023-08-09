@@ -80,13 +80,21 @@
 #include <valarray>
 #include <vector>
 
+#include <sys/event.h>
+#include <sys/time.h>
+#include <netinet/in.h>
+#include <fcntl.h>
+
+#include <netdb.h>      // header file for network-related functions and structures (e.g., getaddrinfo)
+#include <netinet/in.h> // header file for internet protocol-related functions and structures (e.g., sockaddr_in)
+#include <sys/socket.h> // header file for socket programming functions and structures (e.g., socket, bind, listen, accept)
+#include <arpa/inet.h>  // header file for internet protocol-related functions (e.g., inet_addr, inet_ntoa)
+#include <string.h> // for using memset
+#include <unistd.h> // for using close();
+#include <arpa/inet.h> // to test inet_ntoa() function 
+
 #include "define.hpp"
 
-#define SUCCESS     true
-#define FAILURE     false
-#define FOUND       true
-#define NOT_FOUND   false
-#define ON          true
-#define OFF         false
+
 
 #endif

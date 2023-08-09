@@ -33,4 +33,13 @@
 #define IS_ENTER(X)                 (X == "{")
 #define IS_ENTER(X)                 (X == "{")
 
+#define SUCCESS     true
+#define FAILURE     false
+#define FOUND       true
+#define NOT_FOUND   false
+#define ON          true
+#define OFF         false
+
+#define MAX_SIMULTANEOUS 2048
+
 #endif
