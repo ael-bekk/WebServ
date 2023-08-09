@@ -3,15 +3,7 @@
 
 #include "../../../bits/stdc++.hpp"
 #include "Location/location.hpp"
-#define IS_HOST(X)                      (X == "host")
-#define IS_PORT(X)                      (X == "port")
-#define IS_ERROR_PAGE(X)                (X == "error_page")
-#define IS_CLIENT_MAX_BODY_SIZE(X)      (X == "client_max_body_size")
-#define IS_LOCATION(X)                  (X == "location")
-#define IS_EXIT(X)                      (X == "}")
-#define DEFAULT_MAX_BODY_SIZE       3000
-#define DEFAULT_PORT                8080
-#define LOCALE_HOST                 "127.0.0.1"
+
 
 class __server {
     private:

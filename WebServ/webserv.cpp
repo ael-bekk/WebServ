@@ -8,6 +8,7 @@ void    __webserv::ConfigError(int line, std::string detail) {
     std::cout << "Error : line=" << line << " you print \"" << detail << "\" did you mean \'server {\'" << std::endl;
     exit(1);
 }
+std::vector<__network>    __webserv::get_networks() { return this->network; }
 
 void    __webserv::ConfigFile(std::string filename) {
     int line_count = 0;
@@ -33,4 +34,7 @@ void    __webserv::ConfigFile(std::string filename) {
     }
 }
 
-std::vector<__network>    __webserv::get_networks() { return this->network; }
+void    __webserv::kQueue(void)
+{
+    
+}

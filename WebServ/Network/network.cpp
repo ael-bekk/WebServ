@@ -6,13 +6,6 @@ __network::~__network() {}
 
 __server __network::get_server() { return this->server; }
 
-// this is For error msg (we have to chose if it neccessary to be a member class or not)
-void   ExitMessage(std::string msg)
-{
-    std::cout << msg << " " << strerror(errno) << std::endl;
-
-    exit(errno);
-}
 
 
 void    __network::CreateSocket(void)
@@ -31,7 +24,7 @@ void    __network::CreateSocket(void)
     {
         int getaddrinfo_status = getaddrinfo(this->server.get_host().c_str(), (this->server.get_ports())[i].c_str(), &this->hints, &this->res);
         if (getaddrinfo_status != 0)
-            ExitMessage(gai_strerror(getaddrinfo_status));
+            EXTMSG(gai_strerror(getaddrinfo_status));
         for (struct addrinfo* rp = this->res; rp != NULL; rp = rp->ai_next)
         {
             fd_sock = socket(rp->ai_family, rp->ai_socktype, rp->ai_protocol);
@@ -46,13 +39,13 @@ void    __network::CreateSocket(void)
         }
         freeaddrinfo(this->res);
         if (BIND_STATUS == 0)
-            ExitMessage("bind failed"); 
+            EXTMSG("bind failed"); 
         if (listen(fd_sock, MAX_QUEUE) < 0)
-            ExitMessage("listen failed");
+            EXTMSG("listen failed");
         this->sock.push_back(fd_sock);
     }
  
-    // sof -i -P -n | grep LISTEN :: this command to check is all port we listening on you to do infinte loop to check this
+    // lsof -i -P -n | grep LISTEN :: this command to check is all port we listening on you to do infinte loop to check this
     /************************** THIS FOR TESTING IS THE ADDRESS USDED IS THE SAME THAT WE USE *****************************************/
     // char addr[INET6_ADDRSTRLEN];
     
