@@ -80,6 +80,7 @@
 #include <valarray>
 #include <vector>
 
+<<<<<<< HEAD
 #include <sys/event.h>
 #include <sys/time.h>
 #include <netinet/in.h>
@@ -92,6 +93,12 @@
 #include <string.h> // for using memset
 #include <unistd.h> // for using close();
 #include <arpa/inet.h> // to test inet_ntoa() function 
+=======
+//kqueue things
+#include <sys/types.h>
+#include <sys/event.h>
+#include <sys/time.h>
+>>>>>>> 6d98c2da143e14fd6e3c48124b8f382f7f2bf0d7
 
 #include "define.hpp"
 

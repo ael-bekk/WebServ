@@ -7,8 +7,8 @@ typedef struct _kqueue {
     // variables
     int fd;
     struct kevent change;
-    struct kevent event[MAX_SIMULTANEOUS];
-
+    struct kevent event[MAX_QUEUE];
+    
     // methods
 
 
