@@ -6,8 +6,10 @@ int main() {
     __webserv serv;
 
     serv.ConfigFile("config.txt");
+    serv.InitNetworks();
     std::vector<__network>  n_tmp = serv.get_networks();
-    for (auto n : n_tmp) {
+    for (auto &n : n_tmp) 
+    {
         __server s = n.get_server();
         cout << s.get_host() << endl;
         for (auto m : s.get_ports())
@@ -32,7 +34,6 @@ int main() {
             cout << "{" << m.first << " " << m.second << "}  ";
             cout << endl;
         }
-        n.CreateSocket();
     }
-
+    serv.kQueue();
 }

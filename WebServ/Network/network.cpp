@@ -6,7 +6,10 @@ __network::~__network() {}
 
 __server __network::get_server() { return this->server; }
 
-
+// getters
+std::vector<int> __network::get_Socket() {return this->sock;}
+// setters
+void    __network::set_Socket(int Socket){ this->sock.push_back(Socket); }
 
 void    __network::CreateSocket(void)
 {
@@ -37,12 +40,14 @@ void    __network::CreateSocket(void)
             }
             close(fd_sock);
         }
+        
         freeaddrinfo(this->res);
         if (BIND_STATUS == 0)
             EXTMSG("bind failed"); 
         if (listen(fd_sock, MAX_QUEUE) < 0)
             EXTMSG("listen failed");
-        this->sock.push_back(fd_sock);
+        std::cout << fd_sock << " socket is pushed\n";
+        this->set_Socket(fd_sock);
     }
  
     // lsof -i -P -n | grep LISTEN :: this command to check is all port we listening on you to do infinte loop to check this
