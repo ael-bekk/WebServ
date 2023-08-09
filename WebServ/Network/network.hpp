@@ -11,7 +11,7 @@
 #include <arpa/inet.h> // to test inet_ntoa() function 
 #include "Server/server.hpp"
 #include "Client/client.hpp"
-#define MAX_QUEUE 2048
+
 
 class __network {
     private:

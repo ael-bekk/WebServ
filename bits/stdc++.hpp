@@ -80,6 +80,8 @@
 #include <valarray>
 #include <vector>
 
+#include "define.hpp"
+
 #define SUCCESS     true
 #define FAILURE     false
 #define FOUND       true

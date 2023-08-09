@@ -5,7 +5,7 @@
 #include "Network/network.hpp"
 #include "kqueue.hpp"
 
-#define ENTER_SERVER(X) (X == "server {")
+
 
 class __webserv {
     private:
@@ -20,7 +20,7 @@ class __webserv {
         std::vector<__network>    get_networks();
 
         void    Select();
-        
+        void    kQueue();
 };
 
 #endif

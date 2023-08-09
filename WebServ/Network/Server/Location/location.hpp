@@ -2,18 +2,7 @@
 #define __LOCATION_HPP__
 
 #include "../../../../bits/stdc++.hpp"
-#define IS_PATH(X)                   (X == "path")
-#define IS_ROOT(X)                  (X == "root")
-#define IS_INDEX(X)                 (X == "index")
-#define IS_ALLOW_METHODS(X)         (X == "allow_methods")
-#define IS_RETURN(X)                (X == "return")
-#define IS_AUTOINDEX(X)             (X == "autoindex")
-#define IS_CGI(X)                   (X == "cgi")
-#define IS_EXIT(X)                  (X == "}")
-#define IS_ENTER(X)                 (X == "{")
-#define IS_METHOD(X)                (X == "GET" || X == "POST" || X == "DELETE")
-#define IS_ENTER(X)                 (X == "{")
-#define IS_ENTER(X)                 (X == "{")
+
 
 class __location {
     private:
