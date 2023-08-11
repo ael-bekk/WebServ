@@ -80,10 +80,10 @@
 #include <valarray>
 #include <vector>
 
+//kqueue things
+#include <sys/types.h>
 #include <sys/event.h>
 #include <sys/time.h>
-#include <netinet/in.h>
-#include <fcntl.h>
 
 #include <netdb.h>      // header file for network-related functions and structures (e.g., getaddrinfo)
 #include <netinet/in.h> // header file for internet protocol-related functions and structures (e.g., sockaddr_in)
@@ -93,12 +93,14 @@
 #include <unistd.h> // for using close();
 #include <arpa/inet.h> // to test inet_ntoa() function 
 
-#include <sys/types.h>
-#include <sys/event.h>
-#include <sys/time.h>
-
 #include "define.hpp"
 
 
+#define SUCCESS     true
+#define FAILURE     false
+#define FOUND       true
+#define NOT_FOUND   false
+#define ON          true
+#define OFF         false
 
 #endif

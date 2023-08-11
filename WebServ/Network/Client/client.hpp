@@ -8,20 +8,23 @@
 
 class __client {
     private:
+        int                 socket;
         size_t              infile;
         size_t              outfile;
-        __server            &server;
+        __server            server;
         __request           request;
         __response          response;
 
     public:
-        __client(__server &server) : server(server) {}
+        __client(int sock, __server server) : socket(sock), server(server) {}
         ~__client() {}
 
+        size_t              get_socket();
         size_t              get_infile();
         size_t              get_outfile();
         __server            get_server();
 
+        void                set_socket(int socket);
         void                set_infile(size_t infile);
         void                set_outfile(size_t outfile);
         void                set_server(__server &server);

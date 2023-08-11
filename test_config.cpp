@@ -6,7 +6,6 @@ int main() {
     __webserv serv;
 
     serv.ConfigFile("config.txt");
-    serv.InitNetworks();
     std::vector<__network>  n_tmp = serv.get_networks();
     for (auto &n : n_tmp) 
     {
@@ -35,5 +34,6 @@ int main() {
             cout << endl;
         }
     }
-    serv.kQueue();
+    serv.InitNetworks();
+    serv.Slct();
 }

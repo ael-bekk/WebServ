@@ -8,6 +8,7 @@ void    __webserv::ConfigError(int line, std::string detail) {
     std::cout << "Error : line=" << line << " you print \"" << detail << "\" did you mean \'server {\'" << std::endl;
     exit(1);
 }
+
 std::vector<__network>    __webserv::get_networks() { return this->network; }
 
 void    __webserv::ConfigFile(std::string filename) {
@@ -18,6 +19,7 @@ void    __webserv::ConfigFile(std::string filename) {
     if (configfile.fail()) {
         std::cerr << "Error opening file: " << filename << std::endl;
         exit(1);
+    }
     while (std::getline(configfile, line) && ++line_count) {
 
         std::stringstream inp(line);
@@ -33,9 +35,8 @@ void    __webserv::ConfigFile(std::string filename) {
     }
 }
 
-
 void    __webserv::InitNetworks()
-{
+{    
     int net_size = this->network.size();
     for (int i = 0; i < net_size; i++)
         this->network[i].CreateSocket();
@@ -60,3 +61,5 @@ void    __webserv::InitNetworks()
 //     }
 
 // }
+
+void    __webserv::Slct() { this->Select.multiplexing(); }

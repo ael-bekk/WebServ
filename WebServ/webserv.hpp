@@ -4,13 +4,17 @@
 #include "../bits/stdc++.hpp"
 #include "Network/network.hpp"
 #include "kqueue.hpp"
+#include "select.hpp"
+#include "../Info/info.hpp"
 
 
 
 class __webserv {
     private:
         std::vector<__network>    network;
-        _kqueue                   Kqueue;
+        _kqueue                   Kqueue; // ? max_fd ==> network <==> servers 
+        _select                   Select; // ? max_fd ==> network <==> servers 
+
     public:
         __webserv();
         ~__webserv();
@@ -19,7 +23,7 @@ class __webserv {
         
         std::vector<__network>    get_networks();
         void    InitNetworks();
-        void    Select();
+        void    Slct();
         void    kQueue();
 };
 

@@ -13,7 +13,7 @@ void    __network::set_Socket(int Socket){ this->sock.push_back(Socket); }
 
 void    __network::CreateSocket(void)
 {
-  
+    int k = 1;
     memset(&this->hints, 0, sizeof(this->hints));
     this->hints.ai_family = AF_INET;
     this->hints.ai_socktype = SOCK_STREAM;
@@ -36,11 +36,12 @@ void    __network::CreateSocket(void)
             if (bind(fd_sock, rp->ai_addr, rp->ai_addrlen) == 0)
             {
                 BIND_STATUS = 1;
-                break ;
+                break;
             }
             close(fd_sock);
         }
-        
+        if (setsockopt(fd_sock, SOL_SOCKET, SO_REUSEADDR, &k, sizeof(int)) < 0)
+            EXTMSG("setsockopt() error!");
         freeaddrinfo(this->res);
         if (BIND_STATUS == 0)
             EXTMSG("bind failed"); 
@@ -61,4 +62,19 @@ void    __network::CreateSocket(void)
     //     ExitMessage("inet_ntop failed");
     // std::cout << addr << std::endl;
 
+}
+
+int __network::accept_new_client(int serv_sock, __server server) {
+    
+    sockaddr_in client_addr;
+    socklen_t clnt_addr_size = sizeof(client_addr);
+    int clnt_sock;
+
+    if ((clnt_sock = accept(serv_sock, (sockaddr*)&client_addr, &clnt_addr_size)) == -1)
+        EXTMSG("accept() error!");
+
+    this->client.push_back(__client(clnt_sock, server));
+    Global().update_sock(clnt_sock);
+    std::cout << "hi boro" << std::endl;
+    return clnt_sock;
 }
