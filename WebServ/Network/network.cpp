@@ -49,12 +49,14 @@ void    __network::CreateSocket(void)
             EXTMSG("listen failed");
         std::cout << fd_sock << " socket is pushed\n";
         this->set_Socket(fd_sock);
+        Global().update_sock(fd_sock);
+        Global().add_network(fd_sock, *this);
     }
- 
+
     // lsof -i -P -n | grep LISTEN :: this command to check is all port we listening on you to do infinte loop to check this
     /************************** THIS FOR TESTING IS THE ADDRESS USDED IS THE SAME THAT WE USE *****************************************/
     // char addr[INET6_ADDRSTRLEN];
-    
+
     // std::cout << rp->ai_flags << std::endl;
     // struct sockaddr_in* saddr = (struct sockaddr_in*)rp->ai_addr;
     // const char* inet_msg = inet_ntop(rp->ai_family, &(saddr->sin_addr), addr, rp->ai_addrlen);
@@ -65,7 +67,7 @@ void    __network::CreateSocket(void)
 }
 
 int __network::accept_new_client(int serv_sock, __server server) {
-    
+
     sockaddr_in client_addr;
     socklen_t clnt_addr_size = sizeof(client_addr);
     int clnt_sock;

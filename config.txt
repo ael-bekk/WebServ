@@ -29,4 +29,5 @@ server {
         autoindex ON
         allow_methods  POST DELETE
         return 200 file.html
+    }
 }

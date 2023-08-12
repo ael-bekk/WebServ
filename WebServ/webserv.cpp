@@ -62,4 +62,17 @@ void    __webserv::InitNetworks()
 
 // }
 
-void    __webserv::Slct() { this->Select.multiplexing(); }
+void    __webserv::Slct() {
+
+    FD_ZERO(&Select.readable);
+    FD_ZERO(&Select.writable);
+
+    for (int i = 0; i < this->network.size(); i++) {
+        std::vector<int> sock = this->network[i].get_Socket();
+        for (int j = 0; j < sock.size(); j++) {
+            FD_SET(sock[j], &Select.readable);
+            FD_SET(sock[j], &Select.writable);
+        }
+    }
+    this->Select.multiplexing();
+}
