@@ -31,7 +31,7 @@ class __info
         bool        is_server_sock(int fd);
         __network&  network(int fd);
         bool        is_client_sock(int fd);
-        __client&  client(int fd);
+        __client&   client(int fd);
 
 };
 

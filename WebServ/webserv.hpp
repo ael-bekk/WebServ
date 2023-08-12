@@ -12,7 +12,7 @@
 class __webserv {
     private:
         std::vector<__network>    network;
-        _kqueue                   Kqueue; // ? max_fd ==> network <==> servers 
+        _kqueue                   kq; // ? max_fd ==> network <==> servers 
         _select                   Select; // ? max_fd ==> network <==> servers 
 
     public:
@@ -24,7 +24,7 @@ class __webserv {
         std::vector<__network>    get_networks();
         void    InitNetworks();
         void    Slct();
-        void    kQueue();
+        void    kQue();
 };
 
 #endif
