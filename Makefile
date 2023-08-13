@@ -5,7 +5,7 @@ SRCS	= WebServ/webserv.cpp WebServ/Network/network.cpp WebServ/Network/Server/se
 
 CFLAGS	= 
 
-CC		= c++ -std=c++11
+CC		= c++ -std=c++98
 
 RM		= rm -fr
 
