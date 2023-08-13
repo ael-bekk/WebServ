@@ -42,19 +42,19 @@ void    __webserv::InitNetworks()
         this->network[i].CreateSocket();
 }
 
-void    __webserv::kQue(void)
-{
-    this->kq.CreateKqueue();
-    std::vector<__network> nets = this->network;
+// void    __webserv::kQue(void)
+// {
+//     this->kq.CreateKqueue();
+//     std::vector<__network> nets = this->network;
 
-    for (int i = 0; i < nets.size(); i++)
-    {
-        std::vector<int> socks = nets[i].get_Socket();
-        for (int j = 0; j < socks.size(); j++)
-            this->kq.add_event(socks[j], EVFILT_READ);
-    }
-    this->kq.kQueue();
-}
+//     for (int i = 0; i < nets.size(); i++)
+//     {
+//         std::vector<int> socks = nets[i].get_Socket();
+//         for (int j = 0; j < socks.size(); j++)
+//             this->kq.add_event(socks[j], EVFILT_READ);
+//     }
+//     this->kq.kQueue();
+// }
 
 void    __webserv::Slct() {
 

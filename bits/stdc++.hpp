@@ -82,7 +82,7 @@
 
 //kqueue things
 #include <sys/types.h>
-#include <sys/event.h>
+//#include <sys/event.h> work onl in mac
 #include <sys/time.h>
 
 #include <netdb.h>      // header file for network-related functions and structures (e.g., getaddrinfo)
