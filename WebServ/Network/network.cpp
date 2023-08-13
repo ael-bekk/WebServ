@@ -47,7 +47,6 @@ void    __network::CreateSocket(void)
             EXTMSG("bind failed"); 
         if (listen(fd_sock, MAX_QUEUE) < 0)
             EXTMSG("listen failed");
-        std::cout << fd_sock << " socket is pushed\n";
         this->set_Socket(fd_sock);
         Global().update_sock(fd_sock);
         Global().add_network(fd_sock, *this);
@@ -76,6 +75,7 @@ int __network::accept_new_client(int serv_sock, __server server) {
         EXTMSG("accept() error!");
 
     this->client.push_back(__client(clnt_sock, server));
+    Global().add_client_sock(clnt_sock); // i add this for each client add make the value true
     Global().update_sock(clnt_sock);
     std::cout << "hi boro" << std::endl;
     return clnt_sock;

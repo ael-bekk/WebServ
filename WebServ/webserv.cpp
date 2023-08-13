@@ -44,21 +44,16 @@ void    __webserv::InitNetworks()
 
 void    __webserv::kQue(void)
 {
-
     this->kq.CreateKqueue();
     std::vector<__network> nets = this->network;
-    std::cout << "Numbers of networks : " <<  nets.size() << " number of ports inside first networks : " << nets[0].get_Socket().size() << std::endl; 
+
     for (int i = 0; i < nets.size(); i++)
     {
         std::vector<int> socks = nets[i].get_Socket();
         for (int j = 0; j < socks.size(); j++)
-        {
-            std::cout << "fd of servers " << socks[j] << std::endl;
             this->kq.add_event(socks[j], EVFILT_READ);
-        }
     }
     this->kq.kQueue();
-
 }
 
 void    __webserv::Slct() {

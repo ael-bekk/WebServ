@@ -11,10 +11,10 @@ typedef struct _kqueue {
     struct kevent event[MAX_QUEUE];
     
     // methods
+        void    CreateKqueue();
         void    add_event(int newfd, int16_t filter);
         void    delete_event(int newfd, int16_t filter);
         void    kQueue();
-        void    CreateKqueue();
 
 } _kqueue;
 
