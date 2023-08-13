@@ -33,7 +33,7 @@ class __network {
         
         // this is me iharile
         void    CreateSocket(void); // create socket for each port
-        int     accept_new_client(int fd, __server server);
+        int     accept_new_client(int fd);
 };
 
 #endif

@@ -42,25 +42,19 @@ void    __webserv::InitNetworks()
         this->network[i].CreateSocket();
 }
 
-// void    __webserv::kQueue(void)
-// {
-//     this->Kqueue.fd = kqueue();
-//     if (this->Kqueue.fd == -1)
-//         EXTMSG("kqueue failed");
-//     std::vector<__network> nets = this->get_networks();
-//     std::cout << "Numbers of networks : " <<  nets.size() << " number of ports inside first networks : " << nets[0].get_Socket().size() << std::endl; 
-//     for (int i = 0; i < nets.size(); i++)
-//     {
-//         std::vector<int> socks = nets[i].get_Socket();
-//         for (int j = 0; j < socks.size(); j++)
-//         {
-//             std::cout << "fd of servers " << socks[j] << std::endl;
-//             EV_SET(&this->Kqueue.change, socks[j] , EVFILT_READ, EV_ADD | EV_ENABLE , 0, 0, 0);
-//             kevent(this->Kqueue.fd, &this->Kqueue.change, 1, NULL, 0, NULL);
-//         }
-//     }
+void    __webserv::kQue(void)
+{
+    this->kq.CreateKqueue();
+    std::vector<__network> nets = this->network;
 
-// }
+    for (int i = 0; i < nets.size(); i++)
+    {
+        std::vector<int> socks = nets[i].get_Socket();
+        for (int j = 0; j < socks.size(); j++)
+            this->kq.add_event(socks[j], EVFILT_READ);
+    }
+    this->kq.kQueue();
+}
 
 void    __webserv::Slct() {
 

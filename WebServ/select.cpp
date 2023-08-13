@@ -18,7 +18,7 @@ void _select::multiplexing() {
         for (int i = 0; i <= Global().max_sock(); i++) {
             if (Global().is_server_sock(i) && FD_ISSET(i, &r)) {
                 __network & net = Global().network(i);
-                clnt_sock = net.accept_new_client(i, net.get_server());
+                clnt_sock = net.accept_new_client(i);
                 FD_SET(clnt_sock, &readable);
                 FD_SET(clnt_sock, &writable);
                 std::cout << "wa njh" << std::endl;

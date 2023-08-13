@@ -25,10 +25,10 @@ void    __network::CreateSocket(void)
     // this loop assign each port to the same address 
     for (int i = 0; i < this->server.get_ports().size(); i++)
     {
-        int getaddrinfo_status = getaddrinfo(this->server.get_host().c_str(), (this->server.get_ports())[i].c_str(), &this->hints, &this->res);
+        int getaddrinfo_status = getaddrinfo(this->server.get_host().c_str(), this->server.get_ports()[i].c_str(), &this->hints, &this->res);
         if (getaddrinfo_status != 0)
             EXTMSG(gai_strerror(getaddrinfo_status));
-        for (struct addrinfo* rp = this->res; rp != NULL; rp = rp->ai_next)
+        for (addrinfo* rp = this->res; rp != NULL; rp = rp->ai_next)
         {
             fd_sock = socket(rp->ai_family, rp->ai_socktype, rp->ai_protocol);
             if (fd_sock == -1)
@@ -47,7 +47,6 @@ void    __network::CreateSocket(void)
             EXTMSG("bind failed"); 
         if (listen(fd_sock, MAX_QUEUE) < 0)
             EXTMSG("listen failed");
-        std::cout << fd_sock << " socket is pushed\n";
         this->set_Socket(fd_sock);
         Global().update_sock(fd_sock);
         Global().add_network(fd_sock, *this);
@@ -66,17 +65,19 @@ void    __network::CreateSocket(void)
 
 }
 
-int __network::accept_new_client(int serv_sock, __server server) {
+int __network::accept_new_client(int serv_sock) {
 
+    int clnt_sock;
     sockaddr_in client_addr;
     socklen_t clnt_addr_size = sizeof(client_addr);
-    int clnt_sock;
 
     if ((clnt_sock = accept(serv_sock, (sockaddr*)&client_addr, &clnt_addr_size)) == -1)
         EXTMSG("accept() error!");
 
-    this->client.push_back(__client(clnt_sock, server));
+    this->client.push_back(__client(clnt_sock, this->server));
+
     Global().update_sock(clnt_sock);
-    std::cout << "hi boro" << std::endl;
+    Global().add_client(clnt_sock, *(--this->client.end()));
+    
     return clnt_sock;
 }
