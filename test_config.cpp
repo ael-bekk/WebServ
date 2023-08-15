@@ -35,6 +35,6 @@ int main() {
     //     }
     // }
     serv.InitNetworks();
-    serv.Slct();
-    //serv.kQue();
+    //serv.Slct();
+    serv.epl();
 }

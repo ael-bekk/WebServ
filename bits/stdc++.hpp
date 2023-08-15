@@ -93,6 +93,10 @@
 #include <unistd.h> // for using close();
 #include <arpa/inet.h> // to test inet_ntoa() function 
 
+#include <sys/types.h> //for open() && file control
+#include <sys/stat.h>
+#include <fcntl.h> 
+
 #include "define.hpp"
 
 

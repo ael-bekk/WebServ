@@ -3,7 +3,7 @@
 
 #include "../bits/stdc++.hpp"
 #include "Network/network.hpp"
-#include "kqueue.hpp"
+#include "epoll.hpp"
 #include "select.hpp"
 #include "../Info/info.hpp"
 
@@ -12,7 +12,7 @@
 class __webserv {
     private:
         std::vector<__network>    network;
-  //      _kqueue                   kq; // ? max_fd ==> network <==> servers 
+        _epoll                    ep;
         _select                   Select; // ? max_fd ==> network <==> servers 
 
     public:
@@ -24,7 +24,7 @@ class __webserv {
         std::vector<__network>    get_networks();
         void    InitNetworks();
         void    Slct();
-        void    kQue();
+        void    epl();
 };
 
 #endif

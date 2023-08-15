@@ -42,19 +42,7 @@ void    __webserv::InitNetworks()
         this->network[i].CreateSocket();
 }
 
-// void    __webserv::kQue(void)
-// {
-//     this->kq.CreateKqueue();
-//     std::vector<__network> nets = this->network;
 
-//     for (int i = 0; i < nets.size(); i++)
-//     {
-//         std::vector<int> socks = nets[i].get_Socket();
-//         for (int j = 0; j < socks.size(); j++)
-//             this->kq.add_event(socks[j], EVFILT_READ);
-//     }
-//     this->kq.kQueue();
-// }
 
 void    __webserv::Slct() {
 
@@ -69,4 +57,16 @@ void    __webserv::Slct() {
         }
     }
     this->Select.multiplexing();
+}
+
+void    __webserv::epl()
+{
+    this->ep.instance();
+    for (int i = 0; i < this->network.size(); i++)
+    {
+        std::vector<int> sock = this->network[i].get_Socket();
+        for (int j = 0; j < sock.size(); j++)
+            this->ep.add_event(EPOLLIN, sock[j]);
+    }
+    this->ep.Epoll();
 }
