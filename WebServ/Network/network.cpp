@@ -74,6 +74,9 @@ int __network::accept_new_client(int serv_sock) {
     if ((clnt_sock = accept(serv_sock, (sockaddr*)&client_addr, &clnt_addr_size)) == -1)
         EXTMSG("accept() error!");
 
+    if (fcntl(clnt_sock, F_SETFL, fcntl(clnt_sock, F_GETFL, 0) | O_NONBLOCK) == -1)
+        EXTMSG("fcntl failed");
+        
     this->client.push_back(__client(clnt_sock, this->server));
 
     Global().update_sock(clnt_sock);
