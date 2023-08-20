@@ -1,8 +1,8 @@
 #ifndef __SERVER_HPP__
 #define __SERVER_HPP__
 
-#include "../../../bits/stdc++.hpp"
-#include "Location/location.hpp"
+#include "../bits/stdc++.hpp"
+#include "../Location/location.hpp"
 
 
 class __server {

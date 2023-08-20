@@ -14,12 +14,13 @@ std::vector<__network>    __webserv::get_networks() { return this->network; }
 void    __webserv::ConfigFile(std::string filename) {
     int line_count = 0;
     std::string line, token, prev_token;
-    std::ifstream configfile(filename);
+    std::ifstream configfile(filename.c_str());
 
     if (configfile.fail()) {
         std::cerr << "Error opening file: " << filename << std::endl;
         exit(1);
     }
+    
     while (std::getline(configfile, line) && ++line_count) {
 
         std::stringstream inp(line);
@@ -41,7 +42,6 @@ void    __webserv::InitNetworks()
     for (int i = 0; i < net_size; i++)
         this->network[i].CreateSocket();
 }
-
 
 
 void    __webserv::Slct() {

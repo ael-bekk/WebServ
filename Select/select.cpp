@@ -4,8 +4,13 @@
 
 // }
 
-void _select::multiplexing() {
+bool    _select::CloseClient() {
     
+    return SUCCESS;
+}
+
+void _select::multiplexing() {
+
     int clnt_sock;
 
     while (true) {
@@ -23,13 +28,12 @@ void _select::multiplexing() {
                 FD_SET(clnt_sock, &writable);
                 std::cout << "wa njh" << std::endl;
             } else if (Global().is_client_sock(i)) {
+                __client & clnt = Global().client(i);
                 if (FD_ISSET(i, &r)) {
-                    
-                } else if (FD_ISSET(i, &w)) {
-
-                }
+                    FAIL(clnt.Receive()) && _select::CloseClient();
+                } else if (FD_ISSET(i, &w))
+                    FAIL(clnt.Send()) && _select::CloseClient();
             }
         }
-        std::cout << Global().max_sock() << std::endl;
     }
 }

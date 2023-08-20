@@ -1,7 +1,7 @@
 NAME	= serv
 
-SRCS	= WebServ/webserv.cpp WebServ/Network/network.cpp WebServ/Network/Server/server.cpp WebServ/Network/Server/Location/location.cpp WebServ/Network/Client/client.cpp WebServ/Network/Client/Request/request.cpp WebServ/Network/Client/Response/response.cpp test_config.cpp \
-			Info/info.cpp WebServ/select.cpp WebServ/epoll.cpp
+SRCS	= Info/info.cpp WebServ/webserv.cpp Network/network.cpp Server/server.cpp Location/location.cpp Request/request.cpp Response/response.cpp Client/client.cpp  test_config.cpp \
+			 Select/select.cpp Epoll/epoll.cpp
 
 CFLAGS	= 
 
@@ -15,7 +15,7 @@ $(NAME):	$(SRCS)
 	$(CC) $(CFLAGS) $(SRCS) -o $(NAME)
 
 clean:
-	$(RM) $(NAME)
+	$(RM) $(NAME)fcntl
 
 re:			clean all
 

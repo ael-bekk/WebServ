@@ -76,11 +76,9 @@ int __network::accept_new_client(int serv_sock) {
 
     if (fcntl(clnt_sock, F_SETFL, fcntl(clnt_sock, F_GETFL, 0) | O_NONBLOCK) == -1)
         EXTMSG("fcntl failed");
-        
-    this->client.push_back(__client(clnt_sock, this->server));
 
     Global().update_sock(clnt_sock);
-    Global().add_client(clnt_sock, *(--this->client.end()));
+    Global().add_client(clnt_sock, NULL);
     
     return clnt_sock;
 }

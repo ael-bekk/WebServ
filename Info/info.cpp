@@ -26,11 +26,18 @@ void __info::add_client_sock(int fd) {
     this->client_sockets[fd] = true;
 }
 
-void __info::add_client(int fd, __client & clt) {
+void __info::add_client(int fd, __server *serv) {
     this->client_sockets[fd] = true;
-    this->clients.insert(std::pair<int, __client*>(fd, &clt));
+    this->clients.insert(std::pair<int, __client*>(fd, new __client(fd, serv)));
 }
 
+void __info::add_RequestHeader(int fd, std::string key, std::string value) {
+    this->RequestHeader[fd][key] = value;
+}
+
+void __info::add_ResponseHeader(int fd, std::string key, std::string value) {
+    this->ResponseHeader[fd][key] = value;
+}
 
 
 int __info::max_sock() {
@@ -55,3 +62,17 @@ __client&  __info::client(int fd) {
 }
 
 __info& Global() { return __info::Instance(); }
+
+std::string __info::get_RequestHeader(int fd, std::string key) {
+    return this->RequestHeader[fd][key];
+}
+
+std::string __info::get_ResponseHeader(int fd, std::string key) {
+    return this->ResponseHeader[fd][key];
+}
+
+
+void    __info::print_header(int fd) {
+    for (auto &it : this->RequestHeader[fd])
+        std::cout << it.first << "  ==>  " << it.second << std::endl;
+}

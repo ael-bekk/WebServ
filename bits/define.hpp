@@ -40,6 +40,18 @@
 #define ON          true
 #define OFF         false
 
-#define MAX_SIMULTANEOUS 2048
+
+#define BUFFER_SIZE 1024
+
+#define CLIENT_CLOSE(X) (X == -1)
+
+#define IS_GET(X)       (X == "GET")
+#define IS_POST(X)      (X == "POST")
+#define IS_DELETE(X)    (X == "DELETE")
+
+#define LINE_DELIMETER(X)   (X == "\r\n")
+#define END_HEADER(X)       (X == "\r\n\r\n")
+
+#define FAIL(X) (!X)
 
 #endif

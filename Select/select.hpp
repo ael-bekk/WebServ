@@ -10,8 +10,8 @@ typedef struct _select {
     fd_set                      readable;
     fd_set                      writable;
 
-    
-    void multiplexing();
+    bool    CloseClient();
+    void    multiplexing();
 }   _select;
 
 #endif

@@ -2,9 +2,9 @@
 #define __WEBSERVE_HPP__
 
 #include "../bits/stdc++.hpp"
-#include "Network/network.hpp"
-#include "epoll.hpp"
-#include "select.hpp"
+#include "../Network/network.hpp"
+#include "../Epoll/epoll.hpp"
+#include "../Select/select.hpp"
 #include "../Info/info.hpp"
 
 

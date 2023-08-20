@@ -1,7 +1,7 @@
 #ifndef __LOCATION_HPP__
 #define __LOCATION_HPP__
 
-#include "../../../../bits/stdc++.hpp"
+#include "../bits/stdc++.hpp"
 
 
 class __location {

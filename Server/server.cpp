@@ -54,7 +54,7 @@ int __server::set_host(std::string host) {
     else {
         while (std::getline(inp, slice, '.') && ++count){
             try {
-                int value = std::stoi(slice);
+                int value = std::atoi(slice.c_str());
                 if (value < 0 || value > 255)
                     return FAILURE;
             } catch (const std::invalid_argument& e) {
@@ -74,12 +74,12 @@ int __server::set_ports(std::string port) {
 }
 
 int __server::set_error_pages(std::string error, std::string page) {
-    this->error_page[std::stoi(error)] = page;
+    this->error_page[std::atoi(error.c_str())] = page;
     return SUCCESS;
 }
 
 int __server::set_client_max_body_size(std::string client_max_body_size) {
-    this->client_max_body_size = std::stoi(client_max_body_size);
+    this->client_max_body_size = std::atoi(client_max_body_size.c_str());
     return SUCCESS;
 }
 
