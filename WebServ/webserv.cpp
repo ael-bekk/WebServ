@@ -50,11 +50,8 @@ void    __webserv::Slct() {
     FD_ZERO(&Select.writable);
 
     for (int i = 0; i < this->network.size(); i++) {
-        std::vector<int> sock = this->network[i].get_Socket();
-        for (int j = 0; j < sock.size(); j++) {
-            FD_SET(sock[j], &Select.readable);
-            FD_SET(sock[j], &Select.writable);
-        }
+        FD_SET(this->network[i].get_Socket(), &Select.readable);
+        FD_SET(this->network[i].get_Socket(), &Select.writable);
     }
     this->Select.multiplexing();
 }
@@ -63,10 +60,6 @@ void    __webserv::epl()
 {
     this->ep.instance();
     for (int i = 0; i < this->network.size(); i++)
-    {
-        std::vector<int> sock = this->network[i].get_Socket();
-        for (int j = 0; j < sock.size(); j++)
-            this->ep.add_event(EPOLLIN, sock[j]);
-    }
+        this->ep.add_event(EPOLLIN, this->network[i].get_Socket());
     this->ep.Epoll();
 }

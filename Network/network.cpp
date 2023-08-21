@@ -7,50 +7,42 @@ __network::~__network() {}
 __server __network::get_server() { return this->server; }
 
 // getters
-std::vector<int> __network::get_Socket() {return this->sock;}
+int __network::get_Socket() {return this->sock;}
 // setters
-void    __network::set_Socket(int Socket){ this->sock.push_back(Socket); }
+void    __network::set_Socket(int Socket){ this->sock = Socket; }
 
 void    __network::CreateSocket(void)
 {
     int k = 1;
-    memset(&this->hints, 0, sizeof(this->hints));
-    this->hints.ai_family = AF_INET;
-    this->hints.ai_socktype = SOCK_STREAM;
-    
-   
-    int BIND_STATUS = 0;
-    int fd_sock;
-    
-    // this loop assign each port to the same address 
-    for (int i = 0; i < this->server.get_ports().size(); i++)
-    {
-        int getaddrinfo_status = getaddrinfo(this->server.get_host().c_str(), this->server.get_ports()[i].c_str(), &this->hints, &this->res);
-        if (getaddrinfo_status != 0)
-            EXTMSG(gai_strerror(getaddrinfo_status));
-        for (addrinfo* rp = this->res; rp != NULL; rp = rp->ai_next)
-        {
-            fd_sock = socket(rp->ai_family, rp->ai_socktype, rp->ai_protocol);
-            if (fd_sock == -1)
-                continue ;
-            if (bind(fd_sock, rp->ai_addr, rp->ai_addrlen) == 0)
-            {
-                BIND_STATUS = 1;
-                break;
-            }
-            close(fd_sock);
-        }
-        if (setsockopt(fd_sock, SOL_SOCKET, SO_REUSEADDR, &k, sizeof(int)) < 0)
-            EXTMSG("setsockopt() error!");
-        freeaddrinfo(this->res);
-        if (BIND_STATUS == 0)
-            EXTMSG("bind failed"); 
-        if (listen(fd_sock, MAX_QUEUE) < 0)
-            EXTMSG("listen failed");
-        this->set_Socket(fd_sock);
-        Global().update_sock(fd_sock);
-        Global().add_network(fd_sock, *this);
+    struct sockaddr_in serv_addr;
+    memset(&serv_addr, 0, sizeof(serv_addr));
+    serv_addr.sin_family = AF_INET;
+    serv_addr.sin_addr.s_addr = inet_addr(this->get_server().get_host().c_str());
+    serv_addr.sin_port = htons(atoi(this->get_server().get_port().c_str()));
+
+    if ((this->sock=socket(PF_INET, SOCK_STREAM, 0)) == -1) {
+        std::cerr << "socket() error!\n";
+        exit(1);
     }
+
+    if (setsockopt(this->sock, SOL_SOCKET, SO_REUSEADDR, &k, sizeof(int)) < 0) {
+        std::cerr << "setsockopt() error!\n";
+        exit(1);
+    }
+
+    if (bind(this->sock, (struct sockaddr*)&serv_addr, sizeof(serv_addr)) == -1) {
+        std::cerr << "bind() error!\n";
+        exit(1);
+    }
+
+    if (listen(this->sock, 5) == -1) {
+        std::cerr << "listen() error!\n";
+        exit(1);
+    }
+    
+    this->set_Socket(this->sock);
+    Global().update_sock(this->sock);
+    Global().add_network(this->sock, *this);
 
     // lsof -i -P -n | grep LISTEN :: this command to check is all port we listening on you to do infinte loop to check this
     /************************** THIS FOR TESTING IS THE ADDRESS USDED IS THE SAME THAT WE USE *****************************************/
@@ -67,18 +59,21 @@ void    __network::CreateSocket(void)
 
 int __network::accept_new_client(int serv_sock) {
 
+    int k = 1;
     int clnt_sock;
     sockaddr_in client_addr;
     socklen_t clnt_addr_size = sizeof(client_addr);
 
     if ((clnt_sock = accept(serv_sock, (sockaddr*)&client_addr, &clnt_addr_size)) == -1)
         EXTMSG("accept() error!");
-
-    if (fcntl(clnt_sock, F_SETFL, fcntl(clnt_sock, F_GETFL, 0) | O_NONBLOCK) == -1)
-        EXTMSG("fcntl failed");
+    
+    // if (fcntl(clnt_sock, F_SETFL, fcntl(clnt_sock, F_GETFL, 0) | O_NONBLOCK) == -1)
+    //     EXTMSG("fcntl failed");
+    if (setsockopt(clnt_sock, SOL_SOCKET, SO_REUSEADDR, &k, sizeof(int)) < 0)
+            EXTMSG("setsockopt() error!");
 
     Global().update_sock(clnt_sock);
     Global().add_client(clnt_sock, NULL);
-    
+
     return clnt_sock;
 }

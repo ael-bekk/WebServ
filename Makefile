@@ -15,7 +15,7 @@ $(NAME):	$(SRCS)
 	$(CC) $(CFLAGS) $(SRCS) -o $(NAME)
 
 clean:
-	$(RM) $(NAME)fcntl
+	$(RM) $(NAME)
 
 re:			clean all
 

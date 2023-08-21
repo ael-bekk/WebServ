@@ -99,18 +99,9 @@
 
 #include "define.hpp"
 
-
-#define SUCCESS     true
-#define FAILURE     false
-#define FOUND       true
-#define NOT_FOUND   false
-#define ON          true
-#define OFF         false
-
 class __info;
 class __client;
 class __response;
-
 
 
 

@@ -22,13 +22,17 @@ void __info::add_network(int fd, __network & net) {
     this->networks.insert(std::pair<int, __network*>(fd, &net));
 }
 
-void __info::add_client_sock(int fd) {
-    this->client_sockets[fd] = true;
-}
-
 void __info::add_client(int fd, __server *serv) {
     this->client_sockets[fd] = true;
     this->clients.insert(std::pair<int, __client*>(fd, new __client(fd, serv)));
+}
+
+void __info::rm_client(int fd) {
+    this->client_sockets[fd] = false;
+    delete this->clients[fd];
+    this->RequestHeader.erase(fd);
+    this->ResponseHeader.erase(fd);
+    this->clients.erase(fd);
 }
 
 void __info::add_RequestHeader(int fd, std::string key, std::string value) {
@@ -38,6 +42,7 @@ void __info::add_RequestHeader(int fd, std::string key, std::string value) {
 void __info::add_ResponseHeader(int fd, std::string key, std::string value) {
     this->ResponseHeader[fd][key] = value;
 }
+
 
 
 int __info::max_sock() {

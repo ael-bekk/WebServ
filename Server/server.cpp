@@ -23,7 +23,7 @@ bool __server::Insert(std::string key, int &line_count, std::ifstream &configfil
     if (IS_HOST(key) && inp >> val)
         ret = set_host(val);
     else if (IS_PORT(key) && inp >> val)
-        ret = set_ports(val);
+        ret = set_port(val);
     else if (IS_ERROR_PAGE(key) && inp >> val && inp >> val2)
         ret = set_error_pages(val, val2);
     else if (IS_CLIENT_MAX_BODY_SIZE(key) && inp >> val)
@@ -39,7 +39,7 @@ void    __server::ConfigError(int line, std::string detail) {
 }
 
 std::string __server::get_host()                        { return this->host; }
-std::vector<std::string> __server::get_ports()       { return this->port; }
+std::string __server::get_port()                        { return this->port; }
 std::map<int, std::string> __server::get_error_pages()  { return this->error_page; }
 size_t __server::get_client_max_body_size()             { return this->client_max_body_size; }
 std::vector<__location> __server::get_locations()       { return this->location; }
@@ -68,8 +68,8 @@ int __server::set_host(std::string host) {
     return SUCCESS;
 }
 
-int __server::set_ports(std::string port) {
-    this->port.push_back(port);
+int __server::set_port(std::string port) {
+    this->port = port;
     return SUCCESS;
 }
 

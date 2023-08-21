@@ -9,8 +9,10 @@ typedef struct _select {
     fd_set                      w;
     fd_set                      readable;
     fd_set                      writable;
+    struct timeval              timeout;
 
-    bool    CloseClient();
+    short    CloseClient(int sock);
+    void    CheckSockStatus(int sock, int status);
     void    multiplexing();
 }   _select;
 

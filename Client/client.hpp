@@ -13,8 +13,6 @@ class __response;
 class __client {
     private:
         int                 socket;
-        size_t              infile;
-        size_t              outfile;
         __server            *server;
         __request           *request;
         __response          *response;
@@ -24,16 +22,12 @@ class __client {
         ~__client();
 
         size_t              get_socket();
-        size_t              get_infile();
-        size_t              get_outfile();
         __server            get_server();
 
-        void                set_infile(size_t infile);
-        void                set_outfile(size_t outfile);
         void                set_server(__server *server);
 
-        bool                Send();
-        bool                Receive();
+        short                 Receive();
+        short                 Send();
 };
 
 #endif

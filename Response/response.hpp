@@ -7,14 +7,16 @@ class   __response {
 
     private:
         int         sock;
+        int             infile;
+        std::string         location;
     public:
-        __response(int sock) :sock(sock) {}
+        __response(int sock) :sock(sock), infile(-1) {}
 
-        bool    Rspns();
+        short    Rspns();
 
-        bool    Get();
-        bool    Post();
-        bool    Delete();
+        short    Get();
+        short    Post();
+        short    Delete();
 };
 
 #endif

@@ -26,8 +26,8 @@ class __info
         void update_sock(int fd);
         void add_server_sock(int fd);
         void add_network(int fd, __network & net);
-        void add_client_sock(int fd);
         void add_client(int fd, __server *serv);
+        void rm_client(int fd);
         void add_RequestHeader(int fd, std::string key, std::string value);
         void add_ResponseHeader(int fd, std::string key, std::string value);
 

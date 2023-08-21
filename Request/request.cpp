@@ -47,28 +47,54 @@ void    __request::InsertData(std::string & buff_rest) {
 }
 
 
-bool    __request::HeaderPars() {
+short    __request::HeaderPars() {
     int r = recv(sock, this->buff, BUFFER_SIZE, 0);
 
     if (CLIENT_CLOSE(r))
-        return FAILURE;
+        return SOCK_CLOSE;
 
     this->buff_rest += std::string(this->buff, r);
 
     InsertData(buff_rest);
 
     if (END_HEADER(this->buff_rest.substr(0, 4))) {
+        buff_rest = buff_rest.substr(4);
         this->header = false;
         this->body = IS_POST(Global().get_RequestHeader(this->sock, "Method"));
     }
-    return SUCCESS;
+    return SOCK_INIT_STATUS;
 }
 
-bool    __request::Rqst() {
-    int res = SUCCESS;
-    // if (this->header)
-    res = this->HeaderPars();
+
+short    __request::BodyPars() {
+    if (!Global().get_RequestHeader(this->sock, "Content-Length").empty()) {
+
+        return SOCK_INIT_STATUS;
+    }
     
-    Global().print_header(this->sock);
+    if (!Global().get_RequestHeader(this->sock, "Transfer-Encoding").empty()) {
+        if (Global().get_RequestHeader(this->sock, "Transfer-Encoding") == "chunked") {
+            
+            return SOCK_INIT_STATUS;
+        }
+    }
+    return METHOD_POST_TRANSFER_NOT_SUPPORTED;
+}
+
+short    __request::Rqst() {
+    int res = SOCK_INIT_STATUS;
+
+    if (this->header)
+        res = this->HeaderPars();
+
+    if (this->body)
+        res = this->BodyPars();
+
+    if (!this->header)
+        Global().print_header(this->sock);
+    
+    if (!this->header && !this->body)
+        return SOCK_END_REQUEST;
+    
     return res;
 }
