@@ -20,6 +20,7 @@ class __request {
         short    Rqst();
 
         short   HeaderPars();
+        short   ReadBlock();
         void    InsertData(std::string & buff_rest);
         void    InsertFirst(std::stringstream inp);
         void    InsertRest(std::string &line);
