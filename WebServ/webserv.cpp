@@ -17,10 +17,8 @@ void    __webserv::ConfigFile(std::string filename) {
     std::string line, token, prev_token;
     std::ifstream configfile(filename.c_str());
 
-    if (configfile.fail()) {
-        std::cerr << "Error opening file: " << filename << std::endl;
-        exit(1);
-    }
+    if (configfile.fail())
+        EXTMSG("Error opening file: " + filename)
     
     while (std::getline(configfile, line) && ++line_count) {
 
@@ -47,13 +45,11 @@ void    __webserv::InitNetworks()
 
 void    __webserv::Slct() {
 
-    FD_ZERO(&Select.readable);
-    FD_ZERO(&Select.writable);
+    this->Select.set_zero();
 
-    for (int i = 0; i < this->network.size(); i++) {
-        FD_SET(this->network[i].get_Socket(), &Select.readable);
-        FD_SET(this->network[i].get_Socket(), &Select.writable);
-    }
+    for (int i = 0; i < this->network.size(); i++)
+        this->Select.set_fd(this->network[i].get_Socket());
+
     this->Select.multiplexing();
 }
 

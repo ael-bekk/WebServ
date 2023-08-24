@@ -5,6 +5,16 @@
 
 // }
 
+void    _select::set_zero() {
+    FD_ZERO(&this->readable);
+    FD_ZERO(&this->writable);
+}
+
+ void    _select::set_fd(int sock) {
+    FD_SET(sock, &this->readable);
+    FD_SET(sock, &this->writable);
+}
+
 short   _select::CloseClient(int sock) {
     
     Global().rm_client(sock);

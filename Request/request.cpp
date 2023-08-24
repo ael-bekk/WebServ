@@ -26,20 +26,15 @@ void    __request::InsertRest(std::string &line) {
 
 void    __request::InsertData(std::string & buff_rest) {
     int p;
-    bool status(true);
 
-    while (!buff_rest.empty() && status) {
-        status = false;
+    while (!buff_rest.empty()) {
         if (END_HEADER(this->buff_rest.substr(0, 4)))
             return;
 
-        if (LINE_DELIMETER(buff_rest.substr(0, 2)) && buff_rest[2] != '\r')
-            buff_rest = buff_rest.substr(2),
-            status = true;
-
         p = buff_rest.find("\r\n");
-        if (p && p != std::string::npos) {
-
+        if (LINE_DELIMETER(buff_rest.substr(0, 2)) && buff_rest[2] != '\r') {
+            buff_rest = buff_rest.substr(2);
+        } else if (p && p != std::string::npos) {
             std::string line = buff_rest.substr(0, p);
             buff_rest = buff_rest.substr(p);
 
@@ -47,9 +42,8 @@ void    __request::InsertData(std::string & buff_rest) {
                 this->InsertFirst(std::stringstream(line));
             else
                 this->InsertRest(line);
-
-            status = true;
-        }
+        } else
+            break;
     }
 }
 
@@ -59,9 +53,8 @@ void    __request::MatchServer() {
     std::string host        = Global().client(this->sock).get_host();
     std::string port        = Global().client(this->sock).get_port();
     std::string server_name = Global().get_RequestHeader(this->sock, "host");
-    // std::cout << Global().is_client_sock(this->sock) << " " << this->sock << std::endl;
+    
     Global().client(this->sock).set_server(new __server(*Global().get_server(host, port, server_name)));
-    // std::cout << Global().get_server(host, port, server_name)->get_host() << std::endl;
 }
 
 short    __request::HeaderPars() {

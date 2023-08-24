@@ -2,7 +2,7 @@
 #define __DEFINE_HPP__
 
 #define EXTMSG(str) {                                                            \
-                        std::cout << str << " " << strerror(errno) << std::endl;  \
+                        std::cerr << str << " " << strerror(errno) << std::endl;  \
                         exit(errno);                                               \
                     }
 
@@ -72,28 +72,28 @@
 
 
 
-#define CLEAR_LOCATION_PATH()   {                                                                                                    \
-                                    token = "/" + token;                                                                              \
-                                    for (int i = 0; i < token.length(); i++)                                                           \
-                                        for (path += token[i]; i + 1 < token.length() && token[i] == '/' && token[i + 1] == '/'; i++);  \
-                                    for (;path.length() > 1 && path.back() == '/';)                                                      \
-                                        path.erase(path.length() - 1);                                                                    \
-                                }
+#define CLEAR_LOCATION_PATH()       {                                                                                                    \
+                                        token = "/" + token;                                                                              \
+                                        for (int i = 0; i < token.length(); i++)                                                           \
+                                            for (path += token[i]; i + 1 < token.length() && token[i] == '/' && token[i + 1] == '/'; i++);  \
+                                        for (;path.length() > 1 && path.back() == '/';)                                                      \
+                                            path.erase(path.length() - 1);                                                                    \
+                                    }
     
-#define CLEAR_REQUEST_PATH()    {                                                                                                             \
-                                    for (int i = 0; i < tmp_path.length() && tmp_path[i] != '?'; i++)                                          \
-                                    for (path += tmp_path[i]; i + 1 < tmp_path.length() && tmp_path[i] == '/' && tmp_path[i + 1] == '/'; i++);  \
-                                }
+#define CLEAR_REQUEST_PATH()        {                                                                                                             \
+                                        for (int i = 0; i < tmp_path.length() && tmp_path[i] != '?'; i++)                                          \
+                                        for (path += tmp_path[i]; i + 1 < tmp_path.length() && tmp_path[i] == '/' && tmp_path[i + 1] == '/'; i++);  \
+                                    }
 
 #define FIND_PATH_FOR_LOCATION()    {                                                                                     \
                                         for(;loc.find(path) == loc.end() && path.find_last_of('/') != std::string::npos;)  \
                                         path = path.substr(0, path.find_last_of('/'));                                      \
                                     }
 
-#define LOCATION_FOUND()    {                                                                         \
-                                actual_path = it->second.get_root() + req_path.substr(path.length());  \
-                                this->request->set_location(actual_path, new __location(it->second));   \
-                                this->response->set_location(actual_path, new __location(it->second));   \
-                            }
+#define LOCATION_FOUND()            {                                                                         \
+                                        actual_path = it->second.get_root() + req_path.substr(path.length());  \
+                                        this->request->set_location(actual_path, new __location(it->second));   \
+                                        this->response->set_location(actual_path, new __location(it->second));   \
+                                    }
 
 #endif

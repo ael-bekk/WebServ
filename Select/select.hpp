@@ -13,6 +13,8 @@ typedef struct _select {
     short    CloseClient(int sock);
     void    CheckSockStatus(int sock, int status);
     void    multiplexing();
+    void    set_zero();
+    void    set_fd(int sock);
 }   _select;
 
 #endif
