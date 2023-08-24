@@ -1,4 +1,5 @@
 #include "network.hpp"
+#include "../Info/info.hpp"
 
 __network::__network(int &line_count, std::ifstream &configfile) : server(line_count, configfile) {}
 
@@ -73,7 +74,7 @@ int __network::accept_new_client(int serv_sock) {
             EXTMSG("setsockopt() error!");
 
     Global().update_sock(clnt_sock);
-    Global().add_client(clnt_sock, NULL);
+    Global().add_client(clnt_sock, this->server.get_host(), this->server.get_port(), NULL);
 
     return clnt_sock;
 }

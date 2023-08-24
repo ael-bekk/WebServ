@@ -3,7 +3,6 @@
 
 #include "../Server/server.hpp"
 #include "../bits/stdc++.hpp"
-#include "../Info/info.hpp"
 
 
 class __network {

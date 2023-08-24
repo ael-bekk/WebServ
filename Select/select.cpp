@@ -1,10 +1,11 @@
 #include "select.hpp"
+#include "../Info/info.hpp"
 
 // void _select::ForEach() {
 
 // }
 
-short    _select::CloseClient(int sock) {
+short   _select::CloseClient(int sock) {
     
     Global().rm_client(sock);
     if (close(sock)) {
@@ -32,7 +33,7 @@ void _select::CheckSockStatus(int sock, int status) {
 void _select::multiplexing() {
 
     int client_sock;
-    
+
     signal(SIGPIPE, SIG_IGN);
     while (true) {
         r = readable;
@@ -49,10 +50,10 @@ void _select::multiplexing() {
             } else if (Global().is_client_sock(i)) {
                 __client & client = Global().client(i);
                 int status = 0;
-                
+
                 FD_ISSET(i, &r) && (status = client.Receive());
                 FD_ISSET(i, &w) && (status = client.Send());
-                
+
                 CheckSockStatus(i, status);
             }
         }

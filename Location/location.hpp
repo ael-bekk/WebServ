@@ -15,10 +15,9 @@ class __location {
         std::map<std::string, std::string>                  cgi_extension;
 
     public:
-        __location(int &line_count, std::ifstream &configfile, std::stringstream &inp);
+        __location(int &line_count, std::ifstream &configfile);
         ~__location();
 
-        std::string                         get_url();
         std::string                         get_root();
         std::vector<std::string>            get_index();
         std::vector<std::string>            get_allow_methods();
@@ -26,7 +25,6 @@ class __location {
         bool                                get_autoindex();
         std::map<std::string, std::string>  get_cgi_extension();
 
-        bool    set_url(std::stringstream &inp);
         bool    set_root(std::stringstream &inp);
         bool    set_index(std::stringstream &inp);
         bool    set_allow_methods(std::stringstream &inp);

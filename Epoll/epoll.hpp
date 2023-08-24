@@ -2,7 +2,6 @@
 #define __EPOLL_HPP__
 
 #include "../bits/stdc++.hpp"
-#include "../Info/info.hpp"
 #include <sys/epoll.h>
 
 

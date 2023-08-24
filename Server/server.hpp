@@ -9,22 +9,25 @@ class __server {
     private:
         std::string                 host;
         std::string                 port;
+        std::string                 server_name;
         std::map<int, std::string>  error_page;
         size_t                      client_max_body_size;
-        std::vector <__location>    location;
+        std::map <std::string, __location>    location;
 
     public:
         __server(int &line_count, std::ifstream &configfile);
         ~__server();
 
-        std::string                 get_host();
-        std::string                 get_port();
-        std::map<int, std::string>  get_error_pages();
-        size_t                      get_client_max_body_size();
-        std::vector<__location>     get_locations();
+        std::string                         get_host();
+        std::string                         get_port();
+        std::string                         get_server_name();
+        std::map<int, std::string>          get_error_pages();
+        size_t                              get_client_max_body_size();
+        std::map <std::string, __location>  get_locations();
 
         int    set_host(std::string host);
         int    set_port(std::string port);
+        int    set_server_name(std::string server_name);
         int    set_error_pages(std::string error, std::string page);
         int    set_client_max_body_size(std::string client_max_body_size);
         int    set_locations(int &line, std::ifstream &configfile, std::stringstream &inp);

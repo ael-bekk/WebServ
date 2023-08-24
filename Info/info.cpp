@@ -22,9 +22,9 @@ void __info::add_network(int fd, __network & net) {
     this->networks.insert(std::pair<int, __network*>(fd, &net));
 }
 
-void __info::add_client(int fd, __server *serv) {
+void __info::add_client(int fd, std::string host, std::string port, __server *serv) {
     this->client_sockets[fd] = true;
-    this->clients.insert(std::pair<int, __client*>(fd, new __client(fd, serv)));
+    this->clients.insert(std::pair<int, __client*>(fd, new __client(fd, host, port, serv)));
 }
 
 void __info::rm_client(int fd) {
@@ -43,6 +43,12 @@ void __info::add_ResponseHeader(int fd, std::string key, std::string value) {
     this->ResponseHeader[fd][key] = value;
 }
 
+void __info::add_server(std::string host, std::string port, std::string server_name, __server * serv) {
+    if (this->servers[host + ":" + port + ":" + server_name] == NULL)
+        this->servers[host + ":" + port + ":" + server_name] = serv;
+    if (this->servers[host + ":" + port] == NULL)
+        this->servers[host + ":" + port] = serv;
+}
 
 
 int __info::max_sock() {
@@ -74,6 +80,12 @@ std::string __info::get_RequestHeader(int fd, std::string key) {
 
 std::string __info::get_ResponseHeader(int fd, std::string key) {
     return this->ResponseHeader[fd][key];
+}
+
+__server * __info::get_server(std::string host, std::string port, std::string server_name) {
+    if (this->servers[host + ":" + port + ":" + server_name] != NULL)
+        return this->servers[host + ":" + port + ":" + server_name];
+    return this->servers[host + ":" + port];
 }
 
 

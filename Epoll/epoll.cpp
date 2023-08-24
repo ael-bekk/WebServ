@@ -1,4 +1,5 @@
 #include "epoll.hpp"
+#include "../Info/info.hpp"
 
 void    _epoll::add_event(uint32_t flags ,int sock)
 {

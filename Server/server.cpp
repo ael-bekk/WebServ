@@ -1,4 +1,5 @@
 #include "server.hpp"
+#include "../Info/info.hpp"
 
 __server::__server(int &line_count, std::ifstream &configfile) {
     std::string line, key;
@@ -11,6 +12,7 @@ __server::__server(int &line_count, std::ifstream &configfile) {
         if (!Insert(key, line_count, configfile, inp) || inp >> line)
             ConfigError(line_count, key);
     }
+    Global().add_server(this->host, this->port, this->server_name, new __server(*this));
 }
 
 __server::~__server() {}
@@ -24,6 +26,8 @@ bool __server::Insert(std::string key, int &line_count, std::ifstream &configfil
         ret = set_host(val);
     else if (IS_PORT(key) && inp >> val)
         ret = set_port(val);
+    else if (IS_SERVER_NAME(key) && inp >> val)
+        ret = set_server_name(val);
     else if (IS_ERROR_PAGE(key) && inp >> val && inp >> val2)
         ret = set_error_pages(val, val2);
     else if (IS_CLIENT_MAX_BODY_SIZE(key) && inp >> val)
@@ -38,11 +42,12 @@ void    __server::ConfigError(int line, std::string detail) {
     exit(1);
 }
 
-std::string __server::get_host()                        { return this->host; }
-std::string __server::get_port()                        { return this->port; }
-std::map<int, std::string> __server::get_error_pages()  { return this->error_page; }
-size_t __server::get_client_max_body_size()             { return this->client_max_body_size; }
-std::vector<__location> __server::get_locations()       { return this->location; }
+std::string __server::get_host()                            { return this->host; }
+std::string __server::get_port()                            { return this->port; }
+std::string __server::get_server_name()                     { return this->server_name; }
+std::map<int, std::string> __server::get_error_pages()      { return this->error_page; }
+size_t __server::get_client_max_body_size()                 { return this->client_max_body_size; }
+std::map<std::string, __location> __server::get_locations() { return this->location; }
 
 int __server::set_host(std::string host) {
     std::stringstream inp(host);
@@ -73,6 +78,11 @@ int __server::set_port(std::string port) {
     return SUCCESS;
 }
 
+int __server::set_server_name(std::string server_name) {
+    this->server_name = server_name;
+    return SUCCESS;
+}
+
 int __server::set_error_pages(std::string error, std::string page) {
     this->error_page[std::atoi(error.c_str())] = page;
     return SUCCESS;
@@ -84,6 +94,12 @@ int __server::set_client_max_body_size(std::string client_max_body_size) {
 }
 
 int __server::set_locations(int &line, std::ifstream &configfile, std::stringstream &inp) {
-    this->location.push_back(__location(line, configfile, inp));
+    std::string end, token, path;
+    if (!(inp >> token) || !(inp >> end) || !IS_ENTER(end) || inp >> end)
+        return FAILURE;
+    
+    CLEAR_LOCATION_PATH()
+
+    this->location.insert(std::pair<std::string, __location>(path, __location(line, configfile)));
     return SUCCESS;
 }

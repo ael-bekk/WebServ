@@ -2,8 +2,9 @@
 #define __REQUEST_HPP__
 
 #include "../bits/stdc++.hpp"
-#include "../Info/info.hpp"
+#include "../Location/location.hpp"
 
+class __location;
 
 class __request {
 
@@ -14,10 +15,13 @@ class __request {
         std::string buff_rest;
         bool        header;
         bool        body;
+        std::string path_req;
+        __location  *location;
     public:
-        __request(int sock) :sock(sock), header(1), body(0){}
-
-        short    Rqst();
+        __request(int sock);
+        ~__request();
+        void    set_location(std::string path, __location *location);
+        short   Rqst();
 
         short   HeaderPars();
         short   ReadBlock();
@@ -25,10 +29,11 @@ class __request {
         void    InsertFirst(std::stringstream inp);
         void    InsertRest(std::string &line);
 
-        short    BodyPars();
+        void    MatchServer();
+        short   BodyPars();
 
-        short    Delete();
-        short    Post();
+        short   Delete();
+        short   Post();
 };
 
 #endif

@@ -1,4 +1,5 @@
 #include "webserv.hpp"
+#include "../Info/info.hpp"
 
 __webserv::__webserv() {}
 

@@ -1,10 +1,10 @@
 #ifndef __DEFINE_HPP__
 #define __DEFINE_HPP__
 
-#define EXTMSG(str) {\
-    std::cout << str << " " << strerror(errno) << std::endl; \
-    exit(errno); \
-}
+#define EXTMSG(str) {                                                            \
+                        std::cout << str << " " << strerror(errno) << std::endl;  \
+                        exit(errno);                                               \
+                    }
 
 #define ENTER_SERVER(TOKEN) (TOKEN == "server {")
 
@@ -12,6 +12,7 @@
 
 #define IS_HOST(TOKEN)                      (TOKEN == "host")
 #define IS_PORT(TOKEN)                      (TOKEN == "port")
+#define IS_SERVER_NAME(TOKEN)               (TOKEN == "server_name")
 #define IS_ERROR_PAGE(TOKEN)                (TOKEN == "error_page")
 #define IS_CLIENT_MAX_BODY_SIZE(TOKEN)      (TOKEN == "client_max_body_size")
 #define IS_LOCATION(TOKEN)                  (TOKEN == "location")
@@ -20,7 +21,6 @@
 #define DEFAULT_PORT                8080
 #define LOCALE_HOST                 "127.0.0.1"
 
-#define IS_PATH(TOKEN)                  (TOKEN == "path")
 #define IS_ROOT(TOKEN)                  (TOKEN == "root")
 #define IS_INDEX(TOKEN)                 (TOKEN == "index")
 #define IS_ALLOW_METHODS(TOKEN)         (TOKEN == "allow_methods")
@@ -68,5 +68,32 @@
 #define IS_SOCK_END_REQUEST(STATUS)   (STATUS == 2)
 #define IS_SOCK_END_RESPONSE(STATUS)  (STATUS == 3)
 
+
+
+
+
+#define CLEAR_LOCATION_PATH()   {                                                                                                    \
+                                    token = "/" + token;                                                                              \
+                                    for (int i = 0; i < token.length(); i++)                                                           \
+                                        for (path += token[i]; i + 1 < token.length() && token[i] == '/' && token[i + 1] == '/'; i++);  \
+                                    for (;path.length() > 1 && path.back() == '/';)                                                      \
+                                        path.erase(path.length() - 1);                                                                    \
+                                }
+    
+#define CLEAR_REQUEST_PATH()    {                                                                                                             \
+                                    for (int i = 0; i < tmp_path.length() && tmp_path[i] != '?'; i++)                                          \
+                                    for (path += tmp_path[i]; i + 1 < tmp_path.length() && tmp_path[i] == '/' && tmp_path[i + 1] == '/'; i++);  \
+                                }
+
+#define FIND_PATH_FOR_LOCATION()    {                                                                                     \
+                                        for(;loc.find(path) == loc.end() && path.find_last_of('/') != std::string::npos;)  \
+                                        path = path.substr(0, path.find_last_of('/'));                                      \
+                                    }
+
+#define LOCATION_FOUND()    {                                                                         \
+                                actual_path = it->second.get_root() + req_path.substr(path.length());  \
+                                this->request->set_location(actual_path, new __location(it->second));   \
+                                this->response->set_location(actual_path, new __location(it->second));   \
+                            }
 
 #endif

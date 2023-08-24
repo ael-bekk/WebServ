@@ -1,10 +1,9 @@
 #include "location.hpp"
+#include "../Info/info.hpp"
 
-__location::__location(int &line_count, std::ifstream &configfile, std::stringstream &inp) {
+__location::__location(int &line_count, std::ifstream &configfile) {
     std::string line, key;
 
-    if (!Insert("path", inp))
-        ConfigError(line_count, key);
     while (std::getline(configfile, line) && ++line_count) {
         std::stringstream inp(line);
 
@@ -20,9 +19,7 @@ __location::~__location() {}
 bool __location::Insert(std::string key, std::stringstream &inp) {
     int ret = FAILURE;
 
-    if (IS_PATH(key))
-        ret = set_url(inp);
-    else if (IS_ROOT(key))
+    if (IS_ROOT(key))
         ret = set_root(inp);
     else if (IS_INDEX(key))
         ret = set_index(inp);
@@ -42,20 +39,12 @@ void    __location::ConfigError(int line, std::string detail) {
     exit(1);
 }
 
-std::string __location::get_url()                                       { return this->path; }
 std::string __location::get_root()                                      { return this->root; }
 std::vector<std::string> __location::get_index()                        { return this->index; }
 std::vector<std::string> __location::get_allow_methods()                { return this->allow_methods; }
 std::pair<int, std::string> __location::get_return()                    { return this->_return; }
 bool __location::get_autoindex()                                        { return this->autoindex; }
 std::map<std::string, std::string> __location::get_cgi_extension()      { return this->cgi_extension; }
-
-bool    __location::set_url(std::stringstream &inp) {
-    std::string end;
-    if (!(inp >> this->path) || !(inp >> end) || !IS_ENTER(end) || inp >> end)
-        return FAILURE;
-    return SUCCESS;
-}
 
 bool    __location::set_root(std::stringstream &inp) {
     std::string end;

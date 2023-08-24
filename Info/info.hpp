@@ -7,29 +7,35 @@
 
 class __network;
 class __client;
+class __server;
 
 class __info
 {
     private:
-        int                         _max;
-        std::map<int, bool>         server_sockets;
-        std::map<int, bool>         client_sockets;
-        std::map<int, __network *>  networks;
-        std::map<int, __client *>   clients;
-        std::map<int, std::map<std::string, std::string> >RequestHeader;
-        std::map<int, std::map<std::string, std::string> >ResponseHeader;
+        int                                                         _max;
+        std::map<int, bool>                                         server_sockets;
+        std::map<int, bool>                                         client_sockets;
+        std::map<int, __network *>                                  networks;
+
+        std::map<std::string, __server * >                          servers;       // 127.0.0.1:8080:server_name = {server1, server2 ...}
+
+        std::map<int, __client *>                                   clients;
+        std::map<int, std::map<std::string, std::string> >          RequestHeader;
+        std::map<int, std::map<std::string, std::string> >          ResponseHeader;
 
     private: __info();
     public: static __info& Instance();
+
 
     public:
         void update_sock(int fd);
         void add_server_sock(int fd);
         void add_network(int fd, __network & net);
-        void add_client(int fd, __server *serv);
+        void add_client(int fd, std::string host, std::string port, __server *serv);
         void rm_client(int fd);
         void add_RequestHeader(int fd, std::string key, std::string value);
         void add_ResponseHeader(int fd, std::string key, std::string value);
+        void add_server(std::string host, std::string port, std::string server_name, __server * serv);
 
         int         max_sock();
         bool        is_server_sock(int fd);
@@ -38,7 +44,8 @@ class __info
         __client&   client(int fd);
         std::string get_RequestHeader(int fd, std::string key);
         std::string get_ResponseHeader(int fd, std::string key);
-
+        __server *    get_server(std::string host, std::string port, std::string server_name);
+        
         void    print_header(int fd);
 };
 
