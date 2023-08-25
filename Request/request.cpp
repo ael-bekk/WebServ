@@ -28,7 +28,7 @@ void    __request::InsertData(std::string & buff_rest) {
     int p;
 
     while (!buff_rest.empty()) {
-        if (END_HEADER(this->buff_rest.substr(0, 4)))
+        if END_HEADER(this->buff_rest.substr(0, 4))
             return;
 
         p = buff_rest.find("\r\n");
@@ -47,7 +47,7 @@ void    __request::InsertData(std::string & buff_rest) {
     }
 }
 
-void    __request::set_location(std::string path, __location *location) { this->path_req = path; this->location = location; }
+void    __request::set_location(std::string path, std::string req_path, __location *location) { this->path = path; this->req_path = req_path; this->location = location; }
 
 void    __request::MatchServer() {
     std::string host        = Global().client(this->sock).get_host();
@@ -60,7 +60,8 @@ void    __request::MatchServer() {
 short    __request::HeaderPars() {
     this->InsertData(buff_rest);
 
-    if (END_HEADER(this->buff_rest.substr(0, 4))) {
+    if END_HEADER(this->buff_rest.substr(0, 4))
+    {
         buff_rest = buff_rest.substr(4);
         this->header = false;
         this->body = IS_POST(Global().get_RequestHeader(this->sock, "Method"));
@@ -71,20 +72,16 @@ short    __request::HeaderPars() {
 
 
 short    __request::BodyPars() {
-    if (!Global().get_RequestHeader(this->sock, "Content-Length").empty()) {
-
-        return SOCK_INIT_STATUS;
-    } else if (Global().get_RequestHeader(this->sock, "Transfer-Encoding") == "chunked") {
-
-        return SOCK_INIT_STATUS;
-    }
-
+    if TRANSFER_CHUNKED()
+        return this->post.transfer_content_length(this->path, this->location);
+    else if TRANSFER_CONTENT_LENT()
+        return this->post.transfer_content_length(this->path, this->location);
     return METHOD_POST_TRANSFER_NOT_SUPPORTED;
 }
 
 short    __request::ReadBlock() {
     int r = recv(this->sock, this->buff, BUFFER_SIZE, 0);
-    if (CLIENT_CLOSE(r))
+    if CLIENT_CLOSE(r)
         return SOCK_CLOSE;
     this->buff_rest += std::string(this->buff, r);
     return SOCK_INIT_STATUS;
@@ -93,7 +90,7 @@ short    __request::ReadBlock() {
 short    __request::Rqst() {
     int res = SOCK_INIT_STATUS;
     
-    if (IS_SOCK_CLOSED(ReadBlock())) return SOCK_CLOSE;
+    if IS_SOCK_CLOSED(ReadBlock()) return SOCK_CLOSE;
 
     this->header && (res = this->HeaderPars());
 

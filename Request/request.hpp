@@ -3,6 +3,7 @@
 
 #include "../bits/stdc++.hpp"
 #include "../Location/location.hpp"
+#include "../Post/post.hpp"
 
 class __location;
 
@@ -10,17 +11,19 @@ class __request {
 
     private:
         int         sock;
-        int         outfile;
         char        buff[BUFFER_SIZE];
         std::string buff_rest;
         bool        header;
         bool        body;
-        std::string path_req;
+        std::string req_path;
+        std::string path;
         __location  *location;
+        __post      post;
+
     public:
         __request(int sock);
         ~__request();
-        void    set_location(std::string path, __location *location);
+        void    set_location(std::string path, std::string req_path, __location *location);
         short   Rqst();
 
         short   HeaderPars();

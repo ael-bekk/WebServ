@@ -8,7 +8,7 @@ __location::__location(int &line_count, std::ifstream &configfile) {
         std::stringstream inp(line);
 
         inp >> key;
-        if (IS_EXIT(key)) break;
+        if IS_EXIT(key)     break;
         if (!Insert(key, inp))
             ConfigError(line_count, key);
     }
@@ -19,18 +19,12 @@ __location::~__location() {}
 bool __location::Insert(std::string key, std::stringstream &inp) {
     int ret = FAILURE;
 
-    if (IS_ROOT(key))
-        ret = set_root(inp);
-    else if (IS_INDEX(key))
-        ret = set_index(inp);
-    else if (IS_ALLOW_METHODS(key))
-        ret = set_allow_methods(inp);
-    else if (IS_RETURN(key))
-        ret = set_return(inp);
-    else if (IS_AUTOINDEX(key))
-        ret = set_autoindex(inp);
-    else if (IS_CGI(key))
-        ret = set_cgi_extension(inp);
+    if IS_ROOT(key)             ret = set_root(inp);
+    if IS_INDEX(key)            ret = set_index(inp);
+    if IS_ALLOW_METHODS(key)    ret = set_allow_methods(inp);
+    if IS_RETURN(key)           ret = set_return(inp);
+    if IS_AUTOINDEX(key)        ret = set_autoindex(inp);
+    if IS_CGI(key)              ret = set_cgi_extension(inp);
     return ret;
 }
 
@@ -63,7 +57,7 @@ bool    __location::set_index(std::stringstream &inp) {
 bool    __location::set_allow_methods(std::stringstream &inp) {
     std::string allow_method;
     while (inp >> allow_method)
-       if (IS_METHOD(allow_method))
+        if IS_METHOD(allow_method)
             this->allow_methods.push_back(allow_method);
         else
             return FAILURE;

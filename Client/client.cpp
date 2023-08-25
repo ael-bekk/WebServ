@@ -16,18 +16,20 @@ size_t __client::get_socket()       { return this->socket; }
 std::string __client::get_host()    { return this->host; }
 std::string __client::get_port()    { return this->port; }
 
-
 void    __client::MatchLocation() {
     std::string actual_path, tmp_path, path, req_path;
 
-    tmp_path = Global().get_RequestHeader(this->socket, "Path") + "/";
+    tmp_path = Global().get_RequestHeader(this->socket, "Path");
     CLEAR_REQUEST_PATH()
     req_path = path;
 
     std::map<std::string, __location> loc = this->server->get_locations();
-    FIND_PATH_FOR_LOCATION()
+    FIND_LOCATION_FROM_PATH()
 
     std::map<std::string, __location>::iterator it = loc.find((path.empty() ? "/" : path));
+    // std::cout << path << std::endl;
+    // if (it != loc.end())
+    //     std::cout << it->second.get_root() << "[[[[[[[[[[[[[]]]]]]]]]]]]]" << req_path << std::endl;
     if (it != loc.end())
         LOCATION_FOUND()
 }

@@ -5,7 +5,7 @@ server {
     error_page 404 file.php
     error_page 504 gbjgj/vgjv.php
     client_max_body_size 3000
-    location / {
+    location /my/page {
         root /var/www/html
         index index.php index.debian-html.html
         cgi .py python3

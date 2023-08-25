@@ -11,13 +11,16 @@ class   __response {
     private:
         int         sock;
         int         infile;
-        std::string path;
+
+        std::string req_path; // /location/../../...
+        std::string path;    // /root/location/../../...
+
         __location  *location;
 
     public:
         __response(int sock);
         ~__response();
-        void    set_location(std::string path, __location *location);
+        void    set_location(std::string path, std::string req_path, __location *location);
         short   Rspns();
 
         short   Get();

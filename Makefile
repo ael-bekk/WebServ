@@ -1,7 +1,7 @@
 NAME	= serv
 
 SRCS	= Info/info.cpp WebServ/webserv.cpp Network/network.cpp Server/server.cpp Location/location.cpp Request/request.cpp Response/response.cpp Client/client.cpp  test_config.cpp \
-			 Select/select.cpp Epoll/epoll.cpp
+			 Select/select.cpp Epoll/epoll.cpp Post/post.cpp
 
 CFLAGS	= 
 

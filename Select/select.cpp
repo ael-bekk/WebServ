@@ -30,12 +30,12 @@ short   _select::CloseClient(int sock) {
 #include <signal.h>
 
 void _select::CheckSockStatus(int sock, int status) {
-    if (IS_SOCK_CLOSED(status))
+    if IS_SOCK_CLOSED(status)
         this->CloseClient(sock);
-    if (IS_SOCK_END_REQUEST(status))
+    if IS_SOCK_END_REQUEST(status)
         FD_CLR(sock, &readable),
         FD_SET(sock, &writable);
-    if (IS_SOCK_END_RESPONSE(status))
+    if IS_SOCK_END_RESPONSE(status)
         FD_CLR(sock, &writable),
         this->CloseClient(sock);
 }

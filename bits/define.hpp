@@ -69,31 +69,33 @@
 #define IS_SOCK_END_RESPONSE(STATUS)  (STATUS == 3)
 
 
-
+#define FILE_NOT_OPEN_YET()              (this->_pipe[0] == -1 && !this->outfile.is_open())
+#define TRANSFER_CHUNKED()               (!Global().get_RequestHeader(this->sock, "Content-Length").empty())
+#define TRANSFER_CONTENT_LENT()          (Global().get_RequestHeader(this->sock, "Transfer-Encoding") == "chunked")
 
 
 #define CLEAR_LOCATION_PATH()       {                                                                                                    \
-                                        token = "/" + token;                                                                              \
+                                        token = "/" + token + "/";                                                                        \
                                         for (int i = 0; i < token.length(); i++)                                                           \
                                             for (path += token[i]; i + 1 < token.length() && token[i] == '/' && token[i + 1] == '/'; i++);  \
-                                        for (;path.length() > 1 && path.back() == '/';)                                                      \
+                                        for (;path.length() > 1 && path[path.length() - 1] == '/';)                                                      \
                                             path.erase(path.length() - 1);                                                                    \
                                     }
-    
+
 #define CLEAR_REQUEST_PATH()        {                                                                                                             \
                                         for (int i = 0; i < tmp_path.length() && tmp_path[i] != '?'; i++)                                          \
                                         for (path += tmp_path[i]; i + 1 < tmp_path.length() && tmp_path[i] == '/' && tmp_path[i + 1] == '/'; i++);  \
                                     }
 
-#define FIND_PATH_FOR_LOCATION()    {                                                                                     \
+#define FIND_LOCATION_FROM_PATH()   {                                                                                     \
                                         for(;loc.find(path) == loc.end() && path.find_last_of('/') != std::string::npos;)  \
                                         path = path.substr(0, path.find_last_of('/'));                                      \
                                     }
 
 #define LOCATION_FOUND()            {                                                                         \
-                                        actual_path = it->second.get_root() + req_path.substr(path.length());  \
-                                        this->request->set_location(actual_path, new __location(it->second));   \
-                                        this->response->set_location(actual_path, new __location(it->second));   \
+                                        actual_path = it->second.get_root() + req_path;                        \
+                                        this->request->set_location(actual_path, req_path, new __location(it->second));   \
+                                        this->response->set_location(actual_path, req_path, new __location(it->second));   \
                                     }
 
 #endif
