@@ -1,7 +1,7 @@
 #include "webserv.hpp"
 #include "../Info/info.hpp"
 
-__webserv::__webserv() {}
+__webserv::__webserv() { Global().set_MimeTypes(); }
 
 __webserv::~__webserv() {}
 
@@ -20,19 +20,20 @@ void    __webserv::ConfigFile(std::string filename) {
     if (configfile.fail())
         EXTMSG("Error opening file: " + filename)
     
-    while (std::getline(configfile, line) && ++line_count) {
+    while (std::getline(configfile, line) && ++line_count)
+        if NOT_EMPTY()
+        {
+            std::stringstream inp(line);
 
-        std::stringstream inp(line);
+            inp >> token;
+            prev_token = token + " ";
+            inp >> token;
 
-        inp >> token;
-        prev_token = token + " ";
-        inp >> token;
-
-        if (ENTER_SERVER(prev_token + token) && !(inp >> line))
-            network.push_back(__network(line_count, configfile));
-        else
-            ConfigError(line_count, prev_token + token);
-    }
+            if (ENTER_SERVER(prev_token + token) && !(inp >> line))
+                network.push_back(__network(line_count, configfile));
+            else
+                ConfigError(line_count, prev_token + token);
+        }
 }
 
 void    __webserv::InitNetworks()

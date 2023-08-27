@@ -35,6 +35,7 @@ void    __network::CreateSocket(void)
     this->set_Socket(this->sock);
     Global().update_sock(this->sock);
     Global().add_network(this->sock, *this);
+
 }
 
 int __network::accept_new_client(int serv_sock) {
@@ -43,6 +44,7 @@ int __network::accept_new_client(int serv_sock) {
     int clnt_sock;
     sockaddr_in client_addr;
     socklen_t clnt_addr_size = sizeof(client_addr);
+    
 
     if ((clnt_sock = accept(serv_sock, (sockaddr*)&client_addr, &clnt_addr_size)) == -1)
         EXTMSG("accept() error!")

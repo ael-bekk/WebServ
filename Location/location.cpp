@@ -4,14 +4,16 @@
 __location::__location(int &line_count, std::ifstream &configfile) {
     std::string line, key;
 
-    while (std::getline(configfile, line) && ++line_count) {
-        std::stringstream inp(line);
+    while (std::getline(configfile, line) && ++line_count)
+        if NOT_EMPTY()
+        {
+            std::stringstream inp(line);
 
-        inp >> key;
-        if IS_EXIT(key)     break;
-        if (!Insert(key, inp))
-            ConfigError(line_count, key);
-    }
+            inp >> key;
+            if IS_EXIT(key)     break;
+            if (!Insert(key, inp))
+                ConfigError(line_count, key);
+        }
 }
 
 __location::~__location() {}
@@ -25,6 +27,7 @@ bool __location::Insert(std::string key, std::stringstream &inp) {
     if IS_RETURN(key)           ret = set_return(inp);
     if IS_AUTOINDEX(key)        ret = set_autoindex(inp);
     if IS_CGI(key)              ret = set_cgi_extension(inp);
+    if IS_UPLOAD(key)           ret = set_upload(inp);
     return ret;
 }
 
@@ -39,6 +42,7 @@ std::vector<std::string> __location::get_allow_methods()                { return
 std::pair<int, std::string> __location::get_return()                    { return this->_return; }
 bool __location::get_autoindex()                                        { return this->autoindex; }
 std::map<std::string, std::string> __location::get_cgi_extension()      { return this->cgi_extension; }
+std::string __location::get_upload()                                    { return this->upload; }
 
 bool    __location::set_root(std::stringstream &inp) {
     std::string end;
@@ -87,5 +91,12 @@ bool    __location::set_cgi_extension(std::stringstream &inp) {
     if (!(inp >> extention) || !(inp >> path) || inp >> end)
         return FAILURE;
     this->cgi_extension[extention] = path;
+    return SUCCESS;
+}
+
+bool    __location::set_upload(std::stringstream &inp) {
+    std::string end;
+    if (!(inp >> this->upload) || inp >> end)
+        return FAILURE;
     return SUCCESS;
 }

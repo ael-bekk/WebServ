@@ -4,14 +4,16 @@
 __server::__server(int &line_count, std::ifstream &configfile) {
     std::string line, key;
 
-    while (std::getline(configfile, line) && ++line_count) {
-        std::stringstream inp(line);
+    while (std::getline(configfile, line) && ++line_count)
+        if NOT_EMPTY()
+        {
+            std::stringstream inp(line);
 
-        inp >> key;
-        if (IS_EXIT(key)) break;
-        if (!Insert(key, line_count, configfile, inp) || inp >> line)
-            ConfigError(line_count, key);
-    }
+            inp >> key;
+            if (IS_EXIT(key)) break;
+            if (!Insert(key, line_count, configfile, inp) || inp >> line)
+                ConfigError(line_count, key);
+        }
     Global().add_server(this->host, this->port, this->server_name, new __server(*this));
 }
 

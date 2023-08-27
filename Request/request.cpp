@@ -38,7 +38,7 @@ void    __request::InsertData(std::string & buff_rest) {
             std::string line = buff_rest.substr(0, p);
             buff_rest = buff_rest.substr(p);
 
-            if (Global().get_RequestHeader(this->sock, "Method").empty())
+            if (GET_REQ_METHOD().empty())
                 this->InsertFirst(std::stringstream(line));
             else
                 this->InsertRest(line);
@@ -52,7 +52,7 @@ void    __request::set_location(std::string path, std::string req_path, __locati
 void    __request::MatchServer() {
     std::string host        = Global().client(this->sock).get_host();
     std::string port        = Global().client(this->sock).get_port();
-    std::string server_name = Global().get_RequestHeader(this->sock, "host");
+    std::string server_name = GET_REQ_SERVER_NAME();
     
     Global().client(this->sock).set_server(new __server(*Global().get_server(host, port, server_name)));
 }
@@ -64,7 +64,7 @@ short    __request::HeaderPars() {
     {
         buff_rest = buff_rest.substr(4);
         this->header = false;
-        this->body = IS_POST(Global().get_RequestHeader(this->sock, "Method"));
+        this->body = IS_POST(GET_REQ_METHOD());
         this->MatchServer();
     }
     return SOCK_INIT_STATUS;
@@ -72,18 +72,22 @@ short    __request::HeaderPars() {
 
 
 short    __request::BodyPars() {
+    if TRANSFER_CONTENT_LENT()
+        return  this->post.open_file_if_not(Global().get_ServerMimeTypes(GET_REQ_CONTENT_TYPE()), path, location),
+                this->post.transfer_content_length(std::atoi(GET_REQ_CONTENT_LENT().c_str()), this->buff_rest);
     if TRANSFER_CHUNKED()
-        return this->post.transfer_content_length(this->path, this->location);
-    else if TRANSFER_CONTENT_LENT()
-        return this->post.transfer_content_length(this->path, this->location);
+        return  this->post.open_file_if_not(Global().get_ServerMimeTypes(GET_REQ_CONTENT_TYPE()), path, location),
+                this->post.transfer_encoding_chunked(this->buff_rest);
     return METHOD_POST_TRANSFER_NOT_SUPPORTED;
 }
 
 short    __request::ReadBlock() {
     int r = recv(this->sock, this->buff, BUFFER_SIZE, 0);
+ 
     if CLIENT_CLOSE(r)
         return SOCK_CLOSE;
     this->buff_rest += std::string(this->buff, r);
+
     return SOCK_INIT_STATUS;
 }
 
@@ -96,9 +100,9 @@ short    __request::Rqst() {
 
     this->body && (res = this->BodyPars());
 
-    if (!this->header)
-        Global().print_header(this->sock);
-    
+    // if (!this->header)
+    //     Global().print_header(this->sock);
+
     if (!this->header && !this->body)
         return SOCK_END_REQUEST;
 

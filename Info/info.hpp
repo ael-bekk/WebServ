@@ -22,31 +22,36 @@ class __info
         std::map<int, __client *>                                   clients;
         std::map<int, std::map<std::string, std::string> >          RequestHeader;
         std::map<int, std::map<std::string, std::string> >          ResponseHeader;
+        std::map<std::string, std::string>                          ClientMimeTypes;
+        std::map<std::string, std::string>                          ServerMimeTypes;
 
     private: __info();
     public: static __info& Instance();
 
 
     public:
-        void update_sock(int fd);
-        void add_server_sock(int fd);
-        void add_network(int fd, __network & net);
-        void add_client(int fd, std::string host, std::string port, __server *serv);
-        void rm_client(int fd);
-        void add_RequestHeader(int fd, std::string key, std::string value);
-        void add_ResponseHeader(int fd, std::string key, std::string value);
-        void add_server(std::string host, std::string port, std::string server_name, __server * serv);
+        void            update_sock(int fd);
+        void            add_server_sock(int fd);
+        void            add_network(int fd, __network & net);
+        void            add_client(int fd, std::string host, std::string port, __server *serv);
+        void            rm_client(int fd);
+        void            add_RequestHeader(int fd, std::string key, std::string value);
+        void            add_ResponseHeader(int fd, std::string key, std::string value);
+        void            add_server(std::string host, std::string port, std::string server_name, __server * serv);
+        void            set_MimeTypes();
 
-        int         max_sock();
-        bool        is_server_sock(int fd);
-        __network&  network(int fd);
-        bool        is_client_sock(int fd);
-        __client&   client(int fd);
-        std::string get_RequestHeader(int fd, std::string key);
-        std::string get_ResponseHeader(int fd, std::string key);
-        __server *    get_server(std::string host, std::string port, std::string server_name);
+        int             max_sock();
+        bool            is_server_sock(int fd);
+        __network&      network(int fd);
+        bool            is_client_sock(int fd);
+        __client&       client(int fd);
+        std::string     get_RequestHeader(int fd, std::string key);
+        std::string     get_ResponseHeader(int fd, std::string key);
+        __server *      get_server(std::string host, std::string port, std::string server_name);
+        std::string     get_ClientMimeTypes(std::string key);
+        std::string     get_ServerMimeTypes(std::string key);
         
-        void    print_header(int fd);
+        void            print_header(int fd);
 };
 
 __info& Global();

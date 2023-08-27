@@ -9,14 +9,15 @@ class __post {
     private:
         std::fstream    outfile;
         int             _pipe[2];
-        int             content_lent;
+        int             content_length;
+        int             count_content_lent;
         bool            cgi;
 
     public:
         __post();
-        void    open_file_if_not(std::string path, __location  *location);
-        short   transfer_encoding_chunked(std::string path, __location  *location);
-        short   transfer_content_length(std::string path, __location  *location);
+        void    open_file_if_not(std::string type, std::string path, __location  *location);
+        short   transfer_encoding_chunked(std::string &buff_rest);
+        short   transfer_content_length(int content_lent, std::string &buff_rest);
 };
 
 #endif

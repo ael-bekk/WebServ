@@ -27,6 +27,7 @@
 #define IS_RETURN(TOKEN)                (TOKEN == "return")
 #define IS_AUTOINDEX(TOKEN)             (TOKEN == "autoindex")
 #define IS_CGI(TOKEN)                   (TOKEN == "cgi")
+#define IS_UPLOAD(TOKEN)                (TOKEN == "upload")
 #define IS_EXIT(TOKEN)                  (TOKEN == "}")
 #define IS_ENTER(TOKEN)                 (TOKEN == "{")
 #define IS_METHOD(TOKEN)                (TOKEN == "GET" || TOKEN == "POST" || TOKEN == "DELETE")
@@ -48,8 +49,9 @@
 #define IS_POST(METHOD)      (METHOD == "POST")
 #define IS_DELETE(METHOD)    (METHOD == "DELETE")
 
-#define LINE_DELIMETER(BUFFER)   (BUFFER == "\r\n")
-#define END_HEADER(BUFFER)       (BUFFER == "\r\n\r\n")
+#define CHUNKED_DELIMETER(BUFFER)   (BUFFER == "\r\n")
+#define LINE_DELIMETER(BUFFER)    (BUFFER == "\r\n")
+#define END_HEADER(BUFFER)      (BUFFER == "\r\n\r\n")
 
 
 #define END_PARS_RQST       -1
@@ -69,16 +71,21 @@
 #define IS_SOCK_END_RESPONSE(STATUS)  (STATUS == 3)
 
 
+#define GET_REQ_CONTENT_LENT()           Global().get_RequestHeader(this->sock, "Content-Length")
+#define GET_REQ_CONTENT_TYPE()           Global().get_RequestHeader(this->sock, "Content-Type")
+#define GET_REQ_METHOD()                 Global().get_RequestHeader(this->sock, "Method")
+#define GET_REQ_SERVER_NAME()            Global().get_RequestHeader(this->sock, "host")
 #define FILE_NOT_OPEN_YET()              (this->_pipe[0] == -1 && !this->outfile.is_open())
-#define TRANSFER_CHUNKED()               (!Global().get_RequestHeader(this->sock, "Content-Length").empty())
-#define TRANSFER_CONTENT_LENT()          (Global().get_RequestHeader(this->sock, "Transfer-Encoding") == "chunked")
+#define TRANSFER_CHUNKED()               (Global().get_RequestHeader(this->sock, "Transfer-Encoding") == "chunked")
+#define TRANSFER_CONTENT_LENT()          (!Global().get_RequestHeader(this->sock, "Content-Length").empty())
+
 
 
 #define CLEAR_LOCATION_PATH()       {                                                                                                    \
                                         token = "/" + token + "/";                                                                        \
                                         for (int i = 0; i < token.length(); i++)                                                           \
                                             for (path += token[i]; i + 1 < token.length() && token[i] == '/' && token[i + 1] == '/'; i++);  \
-                                        for (;path.length() > 1 && path[path.length() - 1] == '/';)                                                      \
+                                        for (;path.length() > 1 && path[path.length() - 1] == '/';)                                          \
                                             path.erase(path.length() - 1);                                                                    \
                                     }
 
@@ -87,9 +94,9 @@
                                         for (path += tmp_path[i]; i + 1 < tmp_path.length() && tmp_path[i] == '/' && tmp_path[i + 1] == '/'; i++);  \
                                     }
 
-#define FIND_LOCATION_FROM_PATH()   {                                                                                     \
-                                        for(;loc.find(path) == loc.end() && path.find_last_of('/') != std::string::npos;)  \
-                                        path = path.substr(0, path.find_last_of('/'));                                      \
+#define FIND_LOCATION_FROM_PATH()   {                                                                                 \
+                                        for(;loc.find(path) == loc.end() && !path.empty();)                            \
+                                            path.erase(path.length() - 1);                                              \
                                     }
 
 #define LOCATION_FOUND()            {                                                                         \
@@ -97,5 +104,25 @@
                                         this->request->set_location(actual_path, req_path, new __location(it->second));   \
                                         this->response->set_location(actual_path, req_path, new __location(it->second));   \
                                     }
+
+
+#define NOT_EMPTY()                      (!line.empty())
+
+#define MIMETYPESFILE               "bits/mime.types.txt"
+
+#define REACH_CONTENT_LENT()    (this->count_content_lent == content_lent)
+#define NEED_FOR_NEW_CHUNK()    (!this->count_content_lent && buff_rest.length() >= 7)
+#define BODY_ENDS()             (buff_rest.substr(0, 7) == "\r\n0\r\n\r\n")
+#define THERE_IS_NEW_CHUNK()    ((pos = buff_rest.find("\r\n", 2)) != std::string::npos)
+#define CHUNK_FILLED()      (this->count_content_lent)
+#define CORRECT_PATH()          {                                                                      \
+                                    filename = "./" + path + "/" + location->get_upload() + "/" + filename.substr(0, filename.find('\n', 1)) + "." + type; \
+                                    for (int i = 0; i < filename.length(); i++)                           \
+                                        (filename[i] == ' ') && (filename[i] = '_');                       \
+                                }
+
+#define OPEN_FOR_CGI()          (location->get_upload().empty() && extention.find("." + type) != extention.end())
+#define OPEN_FOR_UPLOAD()       (!location->get_upload().empty())
+
 
 #endif

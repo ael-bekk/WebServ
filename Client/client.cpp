@@ -27,9 +27,8 @@ void    __client::MatchLocation() {
     FIND_LOCATION_FROM_PATH()
 
     std::map<std::string, __location>::iterator it = loc.find((path.empty() ? "/" : path));
-    // std::cout << path << std::endl;
-    // if (it != loc.end())
-    //     std::cout << it->second.get_root() << "[[[[[[[[[[[[[]]]]]]]]]]]]]" << req_path << std::endl;
+
+
     if (it != loc.end())
         LOCATION_FOUND()
 }

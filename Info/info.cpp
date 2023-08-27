@@ -50,6 +50,27 @@ void __info::add_server(std::string host, std::string port, std::string server_n
         this->servers[host + ":" + port] = serv;
 }
 
+void __info::set_MimeTypes() {
+    std::ifstream   mime_file(MIMETYPESFILE);
+    std::string     line;
+    std::string     m1, m2;
+
+    if (mime_file.fail())
+        EXTMSG("Error opening file: mime.types.txt")
+
+    while (std::getline(mime_file, line))
+        if NOT_EMPTY()
+        {
+            std::stringstream inp(line);
+            if (!(inp >> m1 >> m2))
+                EXTMSG("Error parsing file: mime.types.txt")
+            this->ClientMimeTypes[m2] = m1;
+            this->ServerMimeTypes[m1] = m2;
+            while (inp >> m2)
+                this->ClientMimeTypes[m2] = m1;
+        }
+}
+
 
 int __info::max_sock() {
     return this->_max;
@@ -86,6 +107,14 @@ __server * __info::get_server(std::string host, std::string port, std::string se
     if (this->servers[host + ":" + port + ":" + server_name] != NULL)
         return this->servers[host + ":" + port + ":" + server_name];
     return this->servers[host + ":" + port];
+}
+
+std::string __info::get_ClientMimeTypes(std::string key) {
+    return this->ClientMimeTypes[key];
+}
+
+std::string __info::get_ServerMimeTypes(std::string key) {
+    return this->ServerMimeTypes[key];
 }
 
 

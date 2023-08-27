@@ -43,17 +43,20 @@ void _select::CheckSockStatus(int sock, int status) {
 void _select::multiplexing() {
 
     int client_sock;
-
+    timeout.tv_usec = 500;
+    timeout.tv_sec = 0;
     signal(SIGPIPE, SIG_IGN);
     while (true) {
-        r = readable;
-        w = writable;
+        FD_ZERO(&this->r);
+        FD_ZERO(&this->w);
+        this->r = readable;
+        this->w = writable;
 
-        if (!select(Global().max_sock() + 1, &r, &w, 0, &this->timeout))
+        if (!select(Global().max_sock() + 1, &this->r, &this->w, 0, &this->timeout))
             continue;
 
-        for (int i = 0; i <= Global().max_sock(); i++) {
-            if (Global().is_server_sock(i) && FD_ISSET(i, &r)) {
+        for (int i = 0; i <= Global().max_sock(); i++)
+            if (Global().is_server_sock(i) && FD_ISSET(i, &this->r)) {
                 __network & net = Global().network(i);
                 client_sock = net.accept_new_client(i);
                 FD_SET(client_sock, &readable);
@@ -61,11 +64,10 @@ void _select::multiplexing() {
                 __client & client = Global().client(i);
                 int status = 0;
 
-                FD_ISSET(i, &r) && (status = client.Receive());
-                FD_ISSET(i, &w) && (status = client.Send());
+                FD_ISSET(i, &this->r) && (status = client.Receive());
+                FD_ISSET(i, &this->w) && (status = client.Send());
 
                 CheckSockStatus(i, status);
             }
-        }
     }
 }
