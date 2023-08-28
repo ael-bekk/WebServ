@@ -114,9 +114,9 @@
 #define NEED_FOR_NEW_CHUNK()    (!this->count_content_lent && buff_rest.length() >= 7)
 #define BODY_ENDS()             (buff_rest.substr(0, 7) == "\r\n0\r\n\r\n")
 #define THERE_IS_NEW_CHUNK()    ((pos = buff_rest.find("\r\n", 2)) != std::string::npos)
-#define CHUNK_FILLED()      (this->count_content_lent)
+#define CHUNK_FILLED()          (this->count_content_lent)
 #define CORRECT_PATH()          {                                                                      \
-                                    filename = "./" + path + "/" + location->get_upload() + "/" + filename.substr(0, filename.find('\n', 1)) + "." + type; \
+                                    filename = path + "/" + location->get_upload() + "/" + filename.substr(0, filename.find('\n', 1)) + "." + type; \
                                     for (int i = 0; i < filename.length(); i++)                           \
                                         (filename[i] == ' ') && (filename[i] = '_');                       \
                                 }

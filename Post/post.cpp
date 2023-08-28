@@ -12,14 +12,12 @@ void    __post::open_file_if_not(std::string type, std::string path, __location 
         
         if OPEN_FOR_UPLOAD()
         {
-
             this->outfile.open(std::string(filename), std::ios::out);
             if (!this->outfile.is_open())
                 EXTMSG("open() error!")
         }
         if OPEN_FOR_CGI()
         {
-
             if (pipe(this->_pipe))
                 EXTMSG("pipe() error!")
             this->cgi = true;
@@ -30,7 +28,6 @@ void    __post::open_file_if_not(std::string type, std::string path, __location 
 short   __post::transfer_encoding_chunked(std::string &buff_rest) {
     int pos;
     bool read_chunk(true);
-
 
     while (read_chunk) {
         read_chunk = false;

@@ -1,12 +1,12 @@
 server {
     port 8080
-    host 10.13.9.5
+    host 10.13.7.5
     server_name sdgsdg
     error_page 404 file.php
     error_page 504 gbjgj/vgjv.php
     client_max_body_size 3000
-    location /m {
-        root /var/www/html
+    location / {
+        root /nfs/homes/ael-bekk/Desktop/WebServ
         index index.php index.debian-html.html
         cgi .py python3
         cgi .mp4 fast-cgi
