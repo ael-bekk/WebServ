@@ -4,12 +4,14 @@ __post::__post() : _pipe{-1, -1}, count_content_lent(0), content_length(0), cgi(
 
 void    __post::open_file_if_not(std::string type, std::string path, __location  *location) {
     if FILE_NOT_OPEN_YET() {
-        std::time_t result = std::time(NULL);
-        std::string filename = std::asctime(std::localtime(&result));
+        std::string filename;
+        
+        NEW_NAME(filename)
+
         std::map<std::string, std::string> extention = location->get_cgi_extension();
 
         CORRECT_PATH()
-        
+
         if OPEN_FOR_UPLOAD()
         {
             this->outfile.open(std::string(filename), std::ios::out);

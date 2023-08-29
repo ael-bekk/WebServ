@@ -20,19 +20,43 @@ std::string __response::autoindex() {
     return path;
 }
 
+// HTTP/1.1 200 OK
+// Date: Mon, 27 Jul 2009 12:28:53 GMT
+// Server: Apache/2.2.14 (Win32)
+// Content-Length: 88
+// Content-Type: text/html
+
 std::string __response::Get() {
     std::string header;
-    return header;
+    
+    this->path = this->def_errors["200"];
+
+    header += "HTTP/1.1 200 OK";
+    header += "";
+
+    return header + SEP_END_RESPONSE;
 }
 
 std::string __response::Post() {
     std::string header;
-    return header;
+
+    this->path = this->def_errors["201"];
+
+    header += "HTTP/1.1 201 OK";
+    header += "";
+
+    return header + SEP_END_RESPONSE;
 }
 
 std::string __response::Delete() {
     std::string header;
-    return header;
+
+    this->path = this->def_errors["204"];
+
+    header += "HTTP/1.1 204 OK";
+    header += "";
+
+    return header + SEP_END_RESPONSE;
 }
 
 

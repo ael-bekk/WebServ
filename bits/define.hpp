@@ -115,11 +115,14 @@
 #define BODY_ENDS()             (buff_rest.substr(0, 7) == "\r\n0\r\n\r\n")
 #define THERE_IS_NEW_CHUNK()    ((pos = buff_rest.find("\r\n", 2)) != std::string::npos)
 #define CHUNK_FILLED()          (this->count_content_lent)
-#define CORRECT_PATH()          {                                                                      \
-                                    filename = path + "/" + location->get_upload() + "/" + filename.substr(0, filename.find('\n', 1)) + "." + type; \
-                                    for (int i = 0; i < filename.length(); i++)                           \
-                                        (filename[i] == ' ') && (filename[i] = '_');                       \
+
+#define NEW_NAME(FILENAME)      {                                                                                                    \
+                                    std::time_t result = std::time(NULL);                                                             \
+                                    FILENAME = std::string(std::asctime(std::localtime(&result))).substr(0, filename.find('\n', 1));   \
+                                    for (int i = 0; i < FILENAME.length(); i++)                                                         \
+                                        (FILENAME[i] == ' ') && (FILENAME[i] = '_');                                                     \
                                 }
+#define CORRECT_PATH()          filename = path + "/" + location->get_upload() + "/" + filename + "." + type;
 
 #define OPEN_FOR_CGI()          (location->get_upload().empty() && extention.find("." + type) != extention.end())
 #define OPEN_FOR_UPLOAD()       (!location->get_upload().empty())
@@ -156,5 +159,8 @@
                                 if (rd == -1 || std::stoi(GET_RESP_CONTENT_LENT()) == this->content_lent)  \
                                     this->in_body = false;                                                  \
                             }
+
+#define SEP_RESPONSE                "/r/n"
+#define SEP_END_RESPONSE            "/r/n/r/n"
 
 #endif
