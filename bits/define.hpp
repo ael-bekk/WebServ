@@ -102,7 +102,7 @@
 #define LOCATION_FOUND()            {                                                                         \
                                         actual_path = it->second.get_root() + req_path;                        \
                                         this->request->set_location(actual_path, req_path, new __location(it->second));   \
-                                        this->response->set_location(actual_path, req_path, new __location(it->second));   \
+                                        this->response->set_location(actual_path, req_path, new __location(it->second), this->server->get_error_pages());   \
                                     }
 
 
@@ -124,5 +124,37 @@
 #define OPEN_FOR_CGI()          (location->get_upload().empty() && extention.find("." + type) != extention.end())
 #define OPEN_FOR_UPLOAD()       (!location->get_upload().empty())
 
+#define ERROR_OCCURRED()        (!Global().get_ResponseHeader(this->sock, "status").empty())
+#define POST()                  (Global().get_ResponseHeader(this->sock, "Method") == "POST")
+#define GET()                   (Global().get_ResponseHeader(this->sock, "Method") == "GET")
+#define DELETE()                (Global().get_ResponseHeader(this->sock, "Method") == "DELETE")
+#define HEADER_SENDING()        (this->in_header)
+#define BODY_SENDING()          (this->in_body)
+#define RESPONSE_ENDS()        (!this->in_body)
+#define ERROR_OVERRIDEN()       (!this->errors[err].empty())
+#define DEF_ERROR()             (!this->def_errors[err].empty())
+
+#define DEFAULT_PATH_FOR_ERROR_PAGE     "/"
+
+// #define SET_PATH_IF_NOT()       {                                               \
+//                                     if (this->path.empty())                      \
+//                                         this->path = DEFAULT_PATH_FOR_ERROR_PAGE; \
+//                                 }
+
+#define OPEN_INFILE_NOT_OPENED()     {                                                  \
+                                    if (this->infile != -1)                              \
+                                        this->infile = open(this->path.c_str(), O_RDONLY);\
+                                }
+
+#define GET_RESP_STATUS()                 Global().get_ResponseHeader(this->sock, "status")
+#define GET_RESP_CONTENT_LENT()           Global().get_ResponseHeader(this->sock, "Content-Length")
+#define GET_RESP_CONTENT_TYPE()           Global().get_ResponseHeader(this->sock, "Content-Type")
+#define GET_RESP_METHOD()                 Global().get_ResponseHeader(this->sock, "Method")
+#define GET_RESP_SERVER_NAME()            Global().get_ResponseHeader(this->sock, "host")
+
+#define CHECK_READ_ENDS()   {                                                                             \
+                                if (rd == -1 || std::stoi(GET_RESP_CONTENT_LENT()) == this->content_lent)  \
+                                    this->in_body = false;                                                  \
+                            }
 
 #endif

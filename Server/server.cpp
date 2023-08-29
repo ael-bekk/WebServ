@@ -47,7 +47,7 @@ void    __server::ConfigError(int line, std::string detail) {
 std::string __server::get_host()                            { return this->host; }
 std::string __server::get_port()                            { return this->port; }
 std::string __server::get_server_name()                     { return this->server_name; }
-std::map<int, std::string> __server::get_error_pages()      { return this->error_page; }
+std::map<std::string, std::string> __server::get_error_pages()      { return this->error_page; }
 size_t __server::get_client_max_body_size()                 { return this->client_max_body_size; }
 std::map<std::string, __location> __server::get_locations() { return this->location; }
 
@@ -86,7 +86,7 @@ int __server::set_server_name(std::string server_name) {
 }
 
 int __server::set_error_pages(std::string error, std::string page) {
-    this->error_page[std::atoi(error.c_str())] = page;
+    this->error_page[error] = page;
     return SUCCESS;
 }
 

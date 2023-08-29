@@ -72,12 +72,12 @@ short    __request::HeaderPars() {
 
 
 short    __request::BodyPars() {
-    if TRANSFER_CONTENT_LENT()
-        return  this->post.open_file_if_not(Global().get_ServerMimeTypes(GET_REQ_CONTENT_TYPE()), path, location),
-                this->post.transfer_content_length(std::atoi(GET_REQ_CONTENT_LENT().c_str()), this->buff_rest);
     if TRANSFER_CHUNKED()
         return  this->post.open_file_if_not(Global().get_ServerMimeTypes(GET_REQ_CONTENT_TYPE()), path, location),
                 this->post.transfer_encoding_chunked(this->buff_rest);
+    if TRANSFER_CONTENT_LENT()
+        return  this->post.open_file_if_not(Global().get_ServerMimeTypes(GET_REQ_CONTENT_TYPE()), path, location),
+                this->post.transfer_content_length(std::atoi(GET_REQ_CONTENT_LENT().c_str()), this->buff_rest);
     return METHOD_POST_TRANSFER_NOT_SUPPORTED;
 }
 

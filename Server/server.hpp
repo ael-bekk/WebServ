@@ -10,7 +10,7 @@ class __server {
         std::string                 host;
         std::string                 port;
         std::string                 server_name;
-        std::map<int, std::string>  error_page;
+        std::map<std::string, std::string>  error_page;
         size_t                      client_max_body_size;
         std::map <std::string, __location>    location;
 
@@ -21,7 +21,7 @@ class __server {
         std::string                         get_host();
         std::string                         get_port();
         std::string                         get_server_name();
-        std::map<int, std::string>          get_error_pages();
+        std::map<std::string, std::string>  get_error_pages();
         size_t                              get_client_max_body_size();
         std::map <std::string, __location>  get_locations();
 

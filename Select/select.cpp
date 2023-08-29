@@ -31,6 +31,8 @@ short   _select::CloseClient(int sock) {
 
 void _select::CheckSockStatus(int sock, int status) {
     if IS_SOCK_CLOSED(status)
+        FD_CLR(sock, &readable),
+        FD_CLR(sock, &writable),
         this->CloseClient(sock);
     if IS_SOCK_END_REQUEST(status)
         FD_CLR(sock, &readable),
