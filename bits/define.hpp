@@ -118,9 +118,15 @@
 
 #define NEW_NAME(FILENAME)      {                                                                                                    \
                                     std::time_t result = std::time(NULL);                                                             \
-                                    FILENAME = std::string(std::asctime(std::localtime(&result))).substr(0, filename.find('\n', 1));   \
-                                    for (int i = 0; i < FILENAME.length(); i++)                                                         \
-                                        (FILENAME[i] == ' ') && (FILENAME[i] = '_');                                                     \
+                                    FILENAME = std::string(std::asctime(std::localtime(&result))).substr(0, FILENAME.find('\n', 1));   \
+                                    FILENAME = FILENAME.substr(0, FILENAME.find('\n', 1));                                              \
+                                    for (int i = 0; i < FILENAME.length(); i++)                                                          \
+                                        (FILENAME[i] == ' ') && (FILENAME[i] = '_');                                                      \
+                                }
+#define CURR_TIME(TIME)         {                                                                                                       \
+                                    std::time_t result = std::time(NULL);                                                             \
+                                    TIME = std::string(std::asctime(std::localtime(&result))).substr(0, TIME.find('\n', 1));   \
+                                    TIME = TIME.substr(0, TIME.find('\n', 1));                                                  \
                                 }
 #define CORRECT_PATH()          filename = path + "/" + location->get_upload() + "/" + filename + "." + type;
 
@@ -128,9 +134,9 @@
 #define OPEN_FOR_UPLOAD()       (!location->get_upload().empty())
 
 #define ERROR_OCCURRED()        (!Global().get_ResponseHeader(this->sock, "status").empty())
-#define POST()                  (Global().get_ResponseHeader(this->sock, "Method") == "POST")
-#define GET()                   (Global().get_ResponseHeader(this->sock, "Method") == "GET")
-#define DELETE()                (Global().get_ResponseHeader(this->sock, "Method") == "DELETE")
+#define POST()                  (Global().get_RequestHeader(this->sock, "Method") == "POST")
+#define GET()                   (Global().get_RequestHeader(this->sock, "Method") == "GET")
+#define DELETE()                (Global().get_RequestHeader(this->sock, "Method") == "DELETE")
 #define HEADER_SENDING()        (this->in_header)
 #define BODY_SENDING()          (this->in_body)
 #define RESPONSE_ENDS()        (!this->in_body)
@@ -145,8 +151,9 @@
 //                                 }
 
 #define OPEN_INFILE_NOT_OPENED()     {                                                  \
-                                    if (this->infile != -1)                              \
+                                    if (this->infile == -1)                              \
                                         this->infile = open(this->path.c_str(), O_RDONLY);\
+                                    rd = (rd == -1) ? 0 : rd;                              \
                                 }
 
 #define GET_RESP_STATUS()                 Global().get_ResponseHeader(this->sock, "status")
@@ -162,5 +169,15 @@
 
 #define SEP_RESPONSE                "/r/n"
 #define SEP_END_RESPONSE            "/r/n/r/n"
+
+#define COUNT_CONTENT_LENT(PATH, LENT)      {                                      \
+                                                FILE *f = fopen(PATH.c_str(), "r"); \
+                                                if (f != NULL) {                     \
+                                                    fseek(f, 0, SEEK_END);            \
+                                                    LENT = ftell(f);                   \
+                                                    fclose(f);                          \
+                                                }                                        \
+                                            }
+
 
 #endif

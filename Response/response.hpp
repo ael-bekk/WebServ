@@ -29,6 +29,7 @@ class   __response {
         short   Rspns();
 
         std::string autoindex(); // creat a path and fill it and return it 
+        void        standard_header(std::string &header, std::string status, std::string first_line);
         std::string Get();
         std::string Post();
         std::string Delete();

@@ -18,7 +18,7 @@ void    _select::set_zero() {
 short   _select::CloseClient(int sock) {
     
     Global().rm_client(sock);
-    if (close(sock)) {
+    if (close(sock) == -1) {
         std::cerr << "close() error!\n";
         exit(1);
     }
@@ -30,6 +30,10 @@ short   _select::CloseClient(int sock) {
 #include <signal.h>
 
 void _select::CheckSockStatus(int sock, int status) {
+    if (METHOD_POST_TRANSFER_NOT_SUPPORTED == status)
+        FD_CLR(sock, &readable),
+        FD_CLR(sock, &writable),
+        this->CloseClient(sock);
     if IS_SOCK_CLOSED(status)
         FD_CLR(sock, &readable),
         FD_CLR(sock, &writable),
@@ -38,6 +42,7 @@ void _select::CheckSockStatus(int sock, int status) {
         FD_CLR(sock, &readable),
         FD_SET(sock, &writable);
     if IS_SOCK_END_RESPONSE(status)
+        FD_CLR(sock, &readable),
         FD_CLR(sock, &writable),
         this->CloseClient(sock);
 }
@@ -60,7 +65,10 @@ void _select::multiplexing() {
         for (int i = 0; i <= Global().max_sock(); i++)
             if (Global().is_server_sock(i) && FD_ISSET(i, &this->r)) {
                 __network & net = Global().network(i);
+                std::cout << "E : ";
                 client_sock = net.accept_new_client(i);
+
+                std::cout << client_sock << std::endl;
                 FD_SET(client_sock, &readable);
             } else if (Global().is_client_sock(i)) {
                 __client & client = Global().client(i);

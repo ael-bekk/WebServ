@@ -45,7 +45,7 @@ int __network::accept_new_client(int serv_sock) {
     sockaddr_in client_addr;
     socklen_t clnt_addr_size = sizeof(client_addr);
     
-
+    std::cout << "here\n";
     if ((clnt_sock = accept(serv_sock, (sockaddr*)&client_addr, &clnt_addr_size)) == -1)
         EXTMSG("accept() error!")
 
