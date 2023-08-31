@@ -179,5 +179,21 @@
                                                 }                                        \
                                             }
 
+#define AUTO_INDEXING()                 (this->path[this->path.length() - 1] == '/')
+
+//////////////////////////http errors ===========?
+#define HTTP_400_BAD_REQUEST                    400
+#define HTTP_403_FORBIDDEN                      403
+#define HTTP_404_NOT_FOUND                      404
+#define HTTP_405_METHOD_NOT_ALLOWED             405
+#define HTTP_408_REQUEST_TIMEOUT                408
+#define HTTP_410_GONE                           410
+#define HTTP_411_LENGTH_REQUIRE                 411
+#define HTTP_413_PAYLOAD_TOO_LARGE              413
+#define HTTP_500_INTERNAL_SERVER_ERROR          500
+#define HTTP_501_NOT_IMPLEMENTED                501
+#define HTTP_505_HTTP_VERSION_NOT_SUPPORTED     505
+#define HTTP_507_INSUFFICIENT_STORAGE           507
+#define HTTP_508_LOOP_DETECTED                  508
 
 #endif

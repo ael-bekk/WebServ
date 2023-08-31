@@ -11,7 +11,7 @@ server {
         cgi .py python3
         cgi .mp4 fast-cgi
         autoindex ON
-        upload upload
+        upload Upload
         allow_methods  POST DELETE
         return 200 file.html
     }

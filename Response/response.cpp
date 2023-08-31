@@ -4,7 +4,7 @@
 __response::__response(int sock) :sock(sock), infile(-1), location(NULL), in_header(true), in_body(false), content_lent(0) {
     this->def_errors["201"] = "./default_error_pages/201.html";
     this->def_errors["204"] = "./default_error_pages/204.html";
-    this->def_errors["300"] = "path1";
+    this->def_errors["500"] = "path1";
     this->def_errors["301"] = "path2";
     this->def_errors["404"] = "path3";
     this->def_errors["501"] = "path4";
@@ -44,6 +44,8 @@ void __response::standard_header(std::string &header, std::string status, std::s
 std::string __response::Get() {
     std::string     header;
 
+    if AUTO_INDEXING()
+        this->path = this->autoindex();
     this->standard_header(header, "200", "HTTP/1.1 200 OK");
 
     return header;

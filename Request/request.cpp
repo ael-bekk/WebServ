@@ -17,7 +17,7 @@ void    __request::InsertFirst(std::stringstream inp) {
 }
 
 void    __request::InsertRest(std::string &line) {
-    int p = line.find(':');
+    int p = line.find(": ");
 
     std::string key = line.substr(0, p);
     std::string value = line.substr(p + 2);
@@ -72,12 +72,12 @@ short    __request::HeaderPars() {
 
 
 short    __request::BodyPars() {
+    if (this->post.open_file_if_not(Global().get_ServerMimeTypes(GET_REQ_CONTENT_TYPE()), path, location) != SOCK_INIT_STATUS)
+        return SOCK_END_REQUEST;
     if TRANSFER_CHUNKED()
-        return  this->post.open_file_if_not(Global().get_ServerMimeTypes(GET_REQ_CONTENT_TYPE()), path, location),
-                this->post.transfer_encoding_chunked(this->buff_rest);
+        return  this->post.transfer_encoding_chunked(this->buff_rest);
     if TRANSFER_CONTENT_LENT()
-        return  this->post.open_file_if_not(Global().get_ServerMimeTypes(GET_REQ_CONTENT_TYPE()), path, location),
-                this->post.transfer_content_length(std::atoi(GET_REQ_CONTENT_LENT().c_str()), this->buff_rest);
+        return  this->post.transfer_content_length(std::atoi(GET_REQ_CONTENT_LENT().c_str()), this->buff_rest);
     return METHOD_POST_TRANSFER_NOT_SUPPORTED;
 }
 

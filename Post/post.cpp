@@ -2,10 +2,10 @@
 
 __post::__post() : _pipe{-1, -1}, count_content_lent(0), content_length(0), cgi(false) {}
 
-void    __post::open_file_if_not(std::string type, std::string path, __location  *location) {
+short    __post::open_file_if_not(std::string type, std::string path, __location  *location) {
     if FILE_NOT_OPEN_YET() {
         std::string filename;
-        
+
         NEW_NAME(filename)
 
         std::map<std::string, std::string> extention = location->get_cgi_extension();
@@ -15,16 +15,18 @@ void    __post::open_file_if_not(std::string type, std::string path, __location 
         if OPEN_FOR_UPLOAD()
         {
             this->outfile.open(std::string(filename), std::ios::out);
-            if (!this->outfile.is_open())
-                EXTMSG("open() error!")
+            if (!this->outfile.is_open()) {
+                return SOCK_END_REQUEST;
+            }
         }
         if OPEN_FOR_CGI()
         {
             if (pipe(this->_pipe))
-                EXTMSG("pipe() error!")
+                return SOCK_END_REQUEST;
             this->cgi = true;
         } /*else error*/
     }
+    return SOCK_INIT_STATUS;
 }
 
 short   __post::transfer_encoding_chunked(std::string &buff_rest) {
