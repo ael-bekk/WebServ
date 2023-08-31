@@ -150,11 +150,10 @@
 //                                         this->path = DEFAULT_PATH_FOR_ERROR_PAGE; \
 //                                 }
 
-#define OPEN_INFILE_NOT_OPENED()     {                                                  \
-                                    if (this->infile == -1)                              \
-                                        this->infile = open(this->path.c_str(), O_RDONLY);\
-                                    rd = (rd == -1) ? 0 : rd;                              \
-                                }
+#define OPEN_INFILE_NOT_OPENED()    {                                                       \
+                                        if (this->infile == -1)                              \
+                                            this->infile = open(this->path.c_str(), O_RDONLY);\
+                                    }
 
 #define GET_RESP_STATUS()                 Global().get_ResponseHeader(this->sock, "status")
 #define GET_RESP_CONTENT_LENT()           Global().get_ResponseHeader(this->sock, "Content-Length")
@@ -165,6 +164,7 @@
 #define CHECK_READ_ENDS()   {                                                                             \
                                 if (rd == -1 || std::stoi(GET_RESP_CONTENT_LENT()) == this->content_lent)  \
                                     this->in_body = false;                                                  \
+                                rd = (rd == -1) ? 0 : rd;                                                    \
                             }
 
 #define SEP_RESPONSE                "/r/n"

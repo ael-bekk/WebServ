@@ -17,7 +17,7 @@ void    __request::InsertFirst(std::stringstream inp) {
 }
 
 void    __request::InsertRest(std::string &line) {
-    int p = line.find(": ");
+    int p = line.find(':');
 
     std::string key = line.substr(0, p);
     std::string value = line.substr(p + 2);

@@ -27,8 +27,8 @@ void __response::standard_header(std::string &header, std::string status, std::s
     int             lent(0);
     std::string     type;
     if (status != "200") this->path = this->def_errors[status];
-    if (this->path.find('.') != std::string::npos)
-        type = this->path.substr(this->path.find('.') + 1);
+    if (this->path.rfind('.') != std::string::npos)
+        type = this->path.substr(this->path.rfind('.') + 1);
     header += first_line + std::string("\r\n");
     CURR_TIME(_time)
     header += "Date: " + _time + " GMT" + std::string("\r\n");

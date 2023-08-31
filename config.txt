@@ -6,7 +6,7 @@ server {
     error_page 504 gbjgj/vgjv.php
     client_max_body_size 3000
     location / {
-        root /nfs/homes/ael-bekk/Desktop/WebServ
+        root ./www
         index index.php index.debian-html.html
         cgi .py python3
         cgi .mp4 fast-cgi
