@@ -5,7 +5,7 @@ SRCS	= Info/info.cpp WebServ/webserv.cpp Network/network.cpp Server/server.cpp L
 
 CFLAGS	= 
 
-CC		= g++ -std=c++11 -fsanitize=address -g
+CC		= c++ -std=c++11 -fsanitize=address -g
 
 RM		= rm -fr
 

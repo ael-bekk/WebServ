@@ -4,11 +4,11 @@
 __response::__response(int sock) :sock(sock), infile(-1), location(NULL), in_header(true), in_body(false), content_lent(0) {
     this->def_errors["201"] = "./default_error_pages/201.html";
     this->def_errors["204"] = "./default_error_pages/204.html";
-    this->def_errors["500"] = "path1";
-    this->def_errors["301"] = "path2";
-    this->def_errors["404"] = "path3";
-    this->def_errors["501"] = "path4";
-    this->def_errors["300"] = "path5";
+    this->def_errors["500"] = "./default_error_pages/500.html";
+    // this->def_errors["301"] = "./default_error_pages/204.html";
+    // this->def_errors["404"] = "./default_error_pages/204.html";
+    // this->def_errors["501"] = "./default_error_pages/204.html";
+    // this->def_errors["300"] = "./default_error_pages/204.html";
     // ...........
 }
 
@@ -26,15 +26,18 @@ void __response::standard_header(std::string &header, std::string status, std::s
     std::string     _time;
     int             lent(0);
     std::string     type;
+
     if (status != "200") this->path = this->def_errors[status];
+
     if (this->path.rfind('.') != std::string::npos)
         type = this->path.substr(this->path.rfind('.') + 1);
-    header += first_line + std::string("\r\n");
+
     CURR_TIME(_time)
-    header += "Date: " + _time + " GMT" + std::string("\r\n");
-    header += "Server: " + Global().client(this->sock).get_server().get_server_name() + std::string("\r\n");
     COUNT_CONTENT_LENT(this->path, lent)
     Global().add_ResponseHeader(this->sock, "Content-Length", std::to_string(lent));
+    header += first_line + std::string("\r\n");
+    header += "Date: " + _time + " GMT" + std::string("\r\n");
+    header += "Server: " + Global().client(this->sock).get_server().get_server_name() + std::string("\r\n");
     header += "Content-Length: " + std::to_string(lent) + std::string("\r\n");
     header += "Content-Type: " + Global().get_ClientMimeTypes(type) + std::string("\r\n");
     header += "Connection: close" + std::string("\r\n");
