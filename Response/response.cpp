@@ -18,8 +18,66 @@ __response::~__response() {
 
 
 std::string __response::autoindex() {
-    std::string path;
-    return path;
+    std::string path_autoindex;
+    DIR* dir = opendir(this->path.c_str());
+    struct dirent* list;
+    int fd;
+
+    NEW_NAME(path_autoindex);
+    std::string tmp = "/goinfre/";
+    tmp += path_autoindex;
+    tmp += ".html";
+
+    std::cout << "this is the file : " << tmp << std::endl;
+    fd = open(tmp.c_str(),  O_CREAT | O_TRUNC  | O_RDWR, 0755);
+    if (fd == -1)
+        EXTMSG("open failed inside autoindex");
+    if (dir == NULL)
+        EXTMSG("opendir failed");
+
+    std::string html_file;
+    html_file = "<!DOCTYPE html>"\
+            "<html lang=\"en\">"\
+            "<head>" \
+            "<meta charset=\"UTF-8\">"\
+            "<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">"\
+            "<title>Document</title>"\
+            "</head>"\
+            "<style>" \
+            "a:link {"\
+            "color: green;"\
+            "background-color: transparent;"\
+            "text-decoration: none;"\
+            "}"\
+            "a:visited { color: pink; background-color: transparent; text-decoration: none; }"\
+            "a:hover { color: red;background-color: transparent;text-decoration: underline; }"\
+            "a:active { color: yellow; background-color: transparent; text-decoration: underline; } "\
+            "</style>"\
+            "<body>";
+
+    std::string html_copy = html_file;
+    if (write(fd, html_copy.c_str(), html_copy.size()) <= 0)
+        EXTMSG("write failed ");
+    
+    while ((list = readdir(dir)) != NULL)
+    {
+        
+        html_copy += "\n <p><a href=";
+        html_copy += list->d_name;
+        html_copy += ">";
+        html_copy += list->d_name;
+        html_copy += "</a></p>";
+        if (write(fd, html_copy.c_str(), html_copy.size()) <= 0)
+            EXTMSG("write failed ");
+        html_copy = "";
+    }
+    html_copy += "</body></html>";
+    if (write(fd, html_copy.c_str(), html_copy.size()) <= 0)
+        EXTMSG("write failed ");
+    closedir(dir);
+    close (fd);
+    return tmp;
+
 }
 
 void __response::standard_header(std::string &header, std::string status, std::string first_line) {
