@@ -56,7 +56,7 @@ std::string __response::autoindex() {
                 if (new_path.rfind('.') != std::string::npos)
                     type = new_path.substr(new_path.rfind('.') + 1);
 
-                if (!Global().get_ClientMimeTypes(type).empty()) {
+                if (!Global().check_icon(type)) {
                     type = host + type + ".png";
                 } else {
                     COUNT_CONTENT_LENT(new_path, count)

@@ -24,6 +24,7 @@ class __info
         std::map<int, std::map<std::string, std::string> >          ResponseHeader;
         std::map<std::string, std::string>                          ClientMimeTypes;
         std::map<std::string, std::string>                          ServerMimeTypes;
+        std::map<std::string, bool>                                  icons;
 
     private: __info();
     public: static __info& Instance();
@@ -39,6 +40,7 @@ class __info
         void            add_ResponseHeader(int fd, std::string key, std::string value);
         void            add_server(std::string host, std::string port, std::string server_name, __server * serv);
         void            set_MimeTypes();
+        void            set_all_icons();
 
         int             max_sock();
         bool            is_server_sock(int fd);
@@ -50,6 +52,7 @@ class __info
         __server *      get_server(std::string host, std::string port, std::string server_name);
         std::string     get_ClientMimeTypes(std::string key);
         std::string     get_ServerMimeTypes(std::string key);
+        bool            check_icon(std::string key);
         
         void            print_header(int fd);
 };

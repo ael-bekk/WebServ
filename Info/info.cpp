@@ -71,6 +71,27 @@ void __info::set_MimeTypes() {
         }
 }
 
+void __info::set_all_icons() {
+    this->icons["c++"]  = true;
+    this->icons["cpp"]  = true;
+    this->icons["css"]  = true;
+    this->icons["html"] = true;
+    this->icons["jpeg"] = true;
+    this->icons["jpg"]  = true;
+    this->icons["js"]   = true;
+    this->icons["mp4"]  = true;
+    this->icons["pdf"]  = true;
+    this->icons["php"]  = true;
+    this->icons["png"]  = true;
+    this->icons["py"]   = true;
+    this->icons["scss"] = true;
+    this->icons["ico"] = true;
+}
+
+
+bool __info::check_icon(std::string key) {
+    return this->icons[key];
+}
 
 int __info::max_sock() {
     return this->_max;
