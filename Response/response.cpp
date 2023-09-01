@@ -18,8 +18,48 @@ __response::~__response() {
 
 
 std::string __response::autoindex() {
-    std::string path;
-    return path;
+    std::string path_autoindex;
+    DIR* dir = opendir(this->path.c_str());
+    DIR* test;
+    struct dirent* list;
+    int fd;
+
+    NEW_NAME(path_autoindex);
+    std::string tmp = "/goinfre/" + path_autoindex + ".html";
+
+    // std::cout << "this is the file : " << tmp << std::endl;
+    fd = open(tmp.c_str(),  O_CREAT | O_TRUNC  | O_RDWR, 0755);
+    
+    if (fd == -1)       EXTMSG("open failed inside autoindex");
+    if (dir == NULL)    EXTMSG("opendir failed");
+
+    std::string upper_html(HTML_UP_BODY(this->path));
+    if (write(fd, upper_html.c_str(), upper_html.length()) <= 0)
+        EXTMSG("write failed ");
+    std::string cur_dir("."), old_dir("..");
+    while ((list = readdir(dir)) != NULL)
+        if (list->d_name != cur_dir && list->d_name != old_dir)
+        {
+            std::string type;
+            std::string href(list->d_name);
+            if ((test = opendir((this->path + list->d_name).c_str()))) {
+                href += "/";
+                int count = 0;
+                while (readdir(test) && ++count < 3);
+                type = ((count == 3) ? "../icons/folder.png" : "/icons/empty_folder.png");
+                closedir(test);
+            }
+            std::string html_file(HTML_COMPONENT(type, href, list->d_name));
+            if (write(fd, html_file.c_str(), html_file.size()) <= 0)
+                EXTMSG("write failed ");
+        }
+    if (write(fd, "</ul><div class='go-back-link-container'><a href='../' class='go-back-link'>Go Back</a></div></body></html>", 108) <= 0)
+        EXTMSG("write failed ");
+
+    closedir(dir);
+    close (fd);
+    return tmp;
+
 }
 
 void __response::standard_header(std::string &header, std::string status, std::string first_line) {

@@ -200,4 +200,108 @@
 #define HTTP_507_INSUFFICIENT_STORAGE           "507"
 #define HTTP_508_LOOP_DETECTED                  "508"
 
+
+////////////// AUTOINDEX
+#define HTML_UP_BODY(PATH) "<!DOCTYPE html>\n\
+<html lang='en'>\n\
+<head>\n\
+    <meta charset='UTF-8'>\n\
+    <meta name='viewport' content='width=device-width, initial-scale=1.0'>\n\
+    <title>Auto Index Page</title>\n\
+    <style>\n\
+        body {\n\
+            font-family: Arial, sans-serif;\n\
+            background-color: #4d4343;\n\
+            margin: 0;\n\
+            padding: 0;\n\
+        }\n\
+\n\
+        header {\n\
+            background-color: #333;\n\
+            color: #b17a7a;\n\
+            padding: 10px 0;\n\
+            text-align: center;\n\
+        }\n\
+\n\
+        h1 {\n\
+            margin: 0;\n\
+        }\n\
+\n\
+        h2 {\n\
+            text-align: center;\n\
+        }\n\
+        .container {\n\
+            max-width: 800px;\n\
+            margin: 20px auto;\n\
+            background-color: #c0c0c0;\n\
+            padding: 20px;\n\
+            box-shadow: 0 0 10px rgba(85, 1, 1, 0.1);\n\
+            border-radius: 5px;\n\
+        }\n\
+\n\
+        ul {\n\
+            list-style: none;\n\
+            padding: 0;\n\
+        }\n\
+\n\
+        li {\n\
+            margin: 10px 0;\n\
+        }\n\
+\n\
+        a {\n\
+            text-decoration: none;\n\
+            color: #103b69;\n\
+        }\n\
+\n\
+        a:hover {\n\
+            text-decoration: none;\n\
+            color: #a200ff;\n\
+        }\n\
+\n\
+        a:active {\n\
+            text-decoration: none;\n\
+            color: #44006b;\n\
+        }\n\
+        \n\
+        .file-icon {\n\
+            width: 30px;\n\
+            vertical-align: middle;\n\
+        }\n\
+        .go-back-link-container {\n\
+            display: flex;\n\
+            justify-content: center;\n\
+            align-items: center;\n\
+            margin-top: 20px;\n\
+        }\n\
+        .go-back-link {\n\
+            display: inline-block;\n\
+            margin-top: 20px;\n\
+            padding: 5px 10px;\n\
+            background-color: #103b69;\n\
+            color: #fff;\n\
+            border-radius: 5px;\n\
+            text-decoration: none;\n\
+            transition: background-color 0.3s;\n\
+        }\n\
+\n\
+        .go-back-link:hover {\n\
+            background-color: #015dc0;\n\
+            color: #7c7c7c;\n\
+        }\n\
+        .go-back-link:active {\n\
+            background-color: #58a6fa;\n\
+            color: #363636;\n\
+        }\n\
+    </style>\n\
+</head>\n\
+<body>\n\
+    <header>\n\
+        <h1>Auto Index Page</h1>\n\
+    </header>\n\
+    <div class='container'>\n\
+        <h2>"+PATH+"</h2>\n\
+        <ul>"
+
+#define HTML_COMPONENT(SRC, HREF, NAME) ("<li><img src='"+SRC+"' class='file-icon'><a href='"+HREF+"'>"+NAME+"</a></li>")
+
 #endif

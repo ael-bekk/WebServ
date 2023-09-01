@@ -97,6 +97,7 @@
 #include <sys/stat.h>
 #include <fcntl.h> 
 
+#include <dirent.h> //for dirtectoys
 #include "define.hpp"
 
 class __info;
