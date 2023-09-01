@@ -40,14 +40,28 @@ std::string __response::autoindex() {
     while ((list = readdir(dir)) != NULL)
         if (list->d_name != cur_dir && list->d_name != old_dir)
         {
+            std::string host("https://raw.githubusercontent.com/ael-bekk/WebServ/main/icons/");
             std::string type;
             std::string href(list->d_name);
+            std::string new_path(this->path + list->d_name);
+            int count = 0;
+
             if ((test = opendir((this->path + list->d_name).c_str()))) {
                 href += "/";
-                int count = 0;
                 while (readdir(test) && ++count < 3);
-                type = ((count == 3) ? "../icons/folder.png" : "/icons/empty_folder.png");
+                type = host + ((count == 3) ? "folder.png" : "empty_folder.png");
                 closedir(test);
+            } else {
+                
+                if (new_path.rfind('.') != std::string::npos)
+                    type = new_path.substr(new_path.rfind('.') + 1);
+
+                if (!Global().get_ClientMimeTypes(type).empty()) {
+                    type = host + type + ".png";
+                } else {
+                    COUNT_CONTENT_LENT(new_path, count)
+                    type = host + (count ? "file.png" : "empty_file.png");
+                }
             }
             std::string html_file(HTML_COMPONENT(type, href, list->d_name));
             if (write(fd, html_file.c_str(), html_file.size()) <= 0)
