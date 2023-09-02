@@ -1,6 +1,8 @@
 #include "info.hpp"
 
-__info::__info() : _max(0) {}
+__info::__info() : _max(0) {
+    this->set_all_icons();
+}
 
 
 __info& __info::Instance()
@@ -85,7 +87,7 @@ void __info::set_all_icons() {
     this->icons["png"]  = true;
     this->icons["py"]   = true;
     this->icons["scss"] = true;
-    this->icons["ico"] = true;
+    this->icons["ico"]  = true;
 }
 
 

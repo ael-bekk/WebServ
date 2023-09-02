@@ -56,9 +56,9 @@ std::string __response::autoindex() {
                 if (new_path.rfind('.') != std::string::npos)
                     type = new_path.substr(new_path.rfind('.') + 1);
 
-                if (!Global().check_icon(type)) {
+                if (Global().check_icon(type))
                     type = host + type + ".png";
-                } else {
+                else {
                     COUNT_CONTENT_LENT(new_path, count)
                     type = host + (count ? "file.png" : "empty_file.png");
                 }

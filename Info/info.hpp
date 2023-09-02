@@ -24,7 +24,7 @@ class __info
         std::map<int, std::map<std::string, std::string> >          ResponseHeader;
         std::map<std::string, std::string>                          ClientMimeTypes;
         std::map<std::string, std::string>                          ServerMimeTypes;
-        std::map<std::string, bool>                                  icons;
+        std::map<std::string, bool>                                 icons;
 
     private: __info();
     public: static __info& Instance();
@@ -53,7 +53,7 @@ class __info
         std::string     get_ClientMimeTypes(std::string key);
         std::string     get_ServerMimeTypes(std::string key);
         bool            check_icon(std::string key);
-        
+
         void            print_header(int fd);
 };
 
