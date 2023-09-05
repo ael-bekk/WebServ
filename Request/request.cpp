@@ -78,7 +78,7 @@ short    __request::BodyPars() {
         return  this->post.transfer_encoding_chunked(this->buff_rest);
     if TRANSFER_CONTENT_LENT()
         return  this->post.transfer_content_length(std::atoi(GET_REQ_CONTENT_LENT().c_str()), this->buff_rest);
-    return METHOD_POST_TRANSFER_NOT_SUPPORTED;
+    return SOCK_END_REQUEST;
 }
 
 short    __request::ReadBlock() {

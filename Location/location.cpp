@@ -38,7 +38,7 @@ void    __location::ConfigError(int line, std::string detail) {
 
 std::string __location::get_root()                                      { return this->root; }
 std::vector<std::string> __location::get_index()                        { return this->index; }
-std::vector<std::string> __location::get_allow_methods()                { return this->allow_methods; }
+std::map<std::string, bool> __location::get_allow_methods()             { return this->allow_methods; }
 std::pair<int, std::string> __location::get_return()                    { return this->_return; }
 bool __location::get_autoindex()                                        { return this->autoindex; }
 std::map<std::string, std::string> __location::get_cgi_extension()      { return this->cgi_extension; }
@@ -62,7 +62,7 @@ bool    __location::set_allow_methods(std::stringstream &inp) {
     std::string allow_method;
     while (inp >> allow_method)
         if IS_METHOD(allow_method)
-            this->allow_methods.push_back(allow_method);
+            this->allow_methods[allow_method] = true;
         else
             return FAILURE;
     return SUCCESS;

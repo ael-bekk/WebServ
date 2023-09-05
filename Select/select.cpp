@@ -42,7 +42,6 @@ void _select::CheckSockStatus(int sock, int status) {
         FD_CLR(sock, &readable),
         FD_SET(sock, &writable);
     if IS_SOCK_END_RESPONSE(status)
-        FD_CLR(sock, &readable),
         FD_CLR(sock, &writable),
         this->CloseClient(sock);
 }
@@ -62,22 +61,22 @@ void _select::multiplexing() {
         if (!select(Global().max_sock() + 1, &this->r, &this->w, 0, &this->timeout))
             continue;
 
-        for (int i = 0; i <= Global().max_sock(); i++)
-            if (Global().is_server_sock(i) && FD_ISSET(i, &this->r)) {
-                __network & net = Global().network(i);
+        for (int socket = 0; socket <= Global().max_sock(); socket++)
+            if (Global().is_server_sock(socket) && FD_ISSET(socket, &this->r)) {
+                __network & net = Global().network(socket);
                 std::cout << "E : ";
-                client_sock = net.accept_new_client(i);
+                client_sock = net.accept_new_client(socket);
 
                 std::cout << client_sock << std::endl;
                 FD_SET(client_sock, &readable);
-            } else if (Global().is_client_sock(i)) {
-                __client & client = Global().client(i);
+            } else if (Global().is_client_sock(socket)) {
+                __client & client = Global().client(socket);
                 int status = 0;
 
-                FD_ISSET(i, &this->r) && (status = client.Receive());
-                FD_ISSET(i, &this->w) && (status = client.Send());
+                FD_ISSET(socket, &this->r) && (status = client.Receive());
+                FD_ISSET(socket, &this->w) && (status = client.Send());
 
-                CheckSockStatus(i, status);
+                CheckSockStatus(socket, status);
             }
     }
 }

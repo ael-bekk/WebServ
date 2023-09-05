@@ -6,12 +6,13 @@
 #include "../Check_err/check_err.hpp"
 
 class __location;
+class __check_err;
 
 class   __response {
 
     private:
         int                                 sock;
-        int                                 infile;
+        std::ifstream                       infile;
         bool                                in_header;
         bool                                in_body;
         int                                 content_lent;
@@ -20,7 +21,7 @@ class   __response {
         std::map<std::string, std::string>  def_errors;
         std::map<std::string, std::string>  errors;
         __location                          *location;
-        __check_err                         check_err;
+        __check_err                         *check_err;
 
     public:
         __response(int sock);
@@ -28,8 +29,18 @@ class   __response {
         void    set_location(std::string path, std::string req_path, __location *location, std::map<std::string, std::string> error_page);
         short   Rspns();
 
-        std::string autoindex(); // creat a path and fill it and return it 
-        void        standard_header(std::string &header, std::string status, std::string first_line);
+        int                                 get_sock();
+        bool                                get_in_header();
+        bool                                get_in_body();
+        int                                 get_content_lent();
+        std::string                         get_req_path();
+        std::string                         get_path();
+        std::map<std::string, std::string>  get_def_errors();
+        std::map<std::string, std::string>  get_errors();
+        __location                          *get_location();
+
+        void                                set_path(std::string path);
+        std::string generate_header(std::string status, bool redirected);
         std::string Get();
         std::string Post();
         std::string Delete();

@@ -31,15 +31,18 @@
 #define IS_EXIT(TOKEN)                  (TOKEN == "}")
 #define IS_ENTER(TOKEN)                 (TOKEN == "{")
 #define IS_METHOD(TOKEN)                (TOKEN == "GET" || TOKEN == "POST" || TOKEN == "DELETE")
+#define IS_OTHER_METHOD(TOKEN)          (TOKEN == "HEAD" || TOKEN == "PUT" || TOKEN == "CONNECT" || TOKEN == "OPTIONS" || TOKEN == "TRACE" || TOKEN == "PATCH")
 #define IS_ENTER(TOKEN)                 (TOKEN == "{")
 #define IS_ENTER(TOKEN)                 (TOKEN == "{")
 
-#define SUCCESS     true
-#define FAILURE     false
-#define FOUND       true
-#define NOT_FOUND   false
-#define ON          true
-#define OFF         false
+#define SUCCESS         true
+#define FAILURE         false
+#define FOUND           true
+#define NOT_FOUND       false
+#define ON              true
+#define OFF             false
+#define REDIRECTED      true
+#define NOT_REDIRECTED  false
 
 #define BUFFER_SIZE 1024
 
@@ -105,6 +108,17 @@
                                         this->response->set_location(actual_path, req_path, new __location(it->second), this->server->get_error_pages());   \
                                     }
 
+#define TO_STRING(NUM, STR)                 {                                \
+                                                std::stringstream ss;         \
+                                                ss << NUM;                     \
+                                                STR = ss.str();                 \
+                                            }
+
+#define TO_INT(STR, NUM)                    {                                \
+                                                std::stringstream ss(STR);    \
+                                                ss >> NUM;                     \
+                                            }
+
 
 #define NOT_EMPTY()                      (!line.empty())
 
@@ -143,16 +157,9 @@
 #define ERROR_OVERRIDEN()       (!this->errors[err].empty())
 #define DEF_ERROR()             (!this->def_errors[err].empty())
 
-#define DEFAULT_PATH_FOR_ERROR_PAGE     "/"
-
-// #define SET_PATH_IF_NOT()       {                                               \
-//                                     if (this->path.empty())                      \
-//                                         this->path = DEFAULT_PATH_FOR_ERROR_PAGE; \
-//                                 }
-
 #define OPEN_INFILE_NOT_OPENED()    {                                                       \
-                                        if (this->infile == -1)                              \
-                                            this->infile = open(this->path.c_str(), O_RDONLY);\
+                                        if (!this->infile.is_open())                              \
+                                            this->infile.open(this->path.c_str());\
                                     }
 
 #define GET_RESP_STATUS()                 Global().get_ResponseHeader(this->sock, "status")
@@ -161,8 +168,10 @@
 #define GET_RESP_METHOD()                 Global().get_ResponseHeader(this->sock, "Method")
 #define GET_RESP_SERVER_NAME()            Global().get_ResponseHeader(this->sock, "host")
 
-#define CHECK_READ_ENDS()   {                                                                             \
-                                if (rd == -1 || std::stoi(GET_RESP_CONTENT_LENT()) == this->content_lent)  \
+#define CHECK_READ_ENDS()   {                                                                           \
+                                int content;                                                             \
+                                TO_INT(GET_RESP_CONTENT_LENT(), content)                                  \
+                                if (rd == -1 || content == this->content_lent)                             \
                                     this->in_body = false;                                                  \
                                 rd = (rd == -1) ? 0 : rd;                                                    \
                             }
@@ -179,129 +188,42 @@
                                                 }                                        \
                                             }
 
-#define AUTO_INDEXING()                 (this->path[this->path.length() - 1] == '/')
+#define AUTO_INDEXING()                 (path[path.length() - 1] == '/')
 
+#define FILE_OPENED(FILE_NAME, STATUS)          {               \
+                                                    FILE *f = fopen(FILE_NAME.c_str(), "r"); \
+                                                    STATUS = (f != NULL);\
+                                                    STATUS && fclose(f);\
+                                                }
 
-//////////////////////////http status ===========?
+////////////////////////// http status ==============?
 #define HTTP_200_OK                             "200"
 #define HTTP_201_CREATED                        "201"
 #define HTTP_204_NO_CONTENT                     "204"
-#define HTTP_400_BAD_REQUEST                    "400"
-#define HTTP_403_FORBIDDEN                      "403"
+#define HTTP_300_MULTIPLE_CHOICE                "300"
 #define HTTP_404_NOT_FOUND                      "404"
 #define HTTP_405_METHOD_NOT_ALLOWED             "405"
-#define HTTP_408_REQUEST_TIMEOUT                "408"
-#define HTTP_410_GONE                           "410"
 #define HTTP_411_LENGTH_REQUIRE                 "411"
-#define HTTP_413_PAYLOAD_TOO_LARGE              "413"
-#define HTTP_500_INTERNAL_SERVER_ERROR          "500"
+#define HTTP_400_BAD_REQUEST                    "400"
 #define HTTP_501_NOT_IMPLEMENTED                "501"
 #define HTTP_505_HTTP_VERSION_NOT_SUPPORTED     "505"
+
+#define HTTP_413_PAYLOAD_TOO_LARGE              "413"
+
+#define HTTP_403_FORBIDDEN                      "403"
+#define HTTP_408_REQUEST_TIMEOUT                "408"
+#define HTTP_410_GONE                           "410"
+#define HTTP_500_INTERNAL_SERVER_ERROR          "500"
 #define HTTP_507_INSUFFICIENT_STORAGE           "507"
 #define HTTP_508_LOOP_DETECTED                  "508"
 
 
 ////////////// AUTOINDEX
-#define HTML_UP_BODY(PATH) "<!DOCTYPE html>\n\
-<html lang='en'>\n\
-<head>\n\
-    <meta charset='UTF-8'>\n\
-    <meta name='viewport' content='width=device-width, initial-scale=1.0'>\n\
-    <title>Auto Index Page</title>\n\
-    <style>\n\
-        body {\n\
-            font-family: Arial, sans-serif;\n\
-            background-color: #4d4343;\n\
-            margin: 0;\n\
-            padding: 0;\n\
-        }\n\
-\n\
-        header {\n\
-            background-color: #333;\n\
-            color: #b17a7a;\n\
-            padding: 10px 0;\n\
-            text-align: center;\n\
-        }\n\
-\n\
-        h1 {\n\
-            margin: 0;\n\
-        }\n\
-\n\
-        h2 {\n\
-            text-align: center;\n\
-        }\n\
-        .container {\n\
-            max-width: 800px;\n\
-            margin: 20px auto;\n\
-            background-color: #c0c0c0;\n\
-            padding: 20px;\n\
-            box-shadow: 0 0 10px rgba(85, 1, 1, 0.1);\n\
-            border-radius: 5px;\n\
-        }\n\
-\n\
-        ul {\n\
-            list-style: none;\n\
-            padding: 0;\n\
-        }\n\
-\n\
-        li {\n\
-            margin: 10px 0;\n\
-        }\n\
-\n\
-        a {\n\
-            text-decoration: none;\n\
-            color: #103b69;\n\
-        }\n\
-\n\
-        a:hover {\n\
-            text-decoration: none;\n\
-            color: #a200ff;\n\
-        }\n\
-\n\
-        a:active {\n\
-            text-decoration: none;\n\
-            color: #44006b;\n\
-        }\n\
-        \n\
-        .file-icon {\n\
-            width: 30px;\n\
-            vertical-align: middle;\n\
-        }\n\
-        .go-back-link-container {\n\
-            display: flex;\n\
-            justify-content: center;\n\
-            align-items: center;\n\
-            margin-top: 20px;\n\
-        }\n\
-        .go-back-link {\n\
-            display: inline-block;\n\
-            margin-top: 20px;\n\
-            padding: 5px 10px;\n\
-            background-color: #103b69;\n\
-            color: #fff;\n\
-            border-radius: 5px;\n\
-            text-decoration: none;\n\
-            transition: background-color 0.3s;\n\
-        }\n\
-\n\
-        .go-back-link:hover {\n\
-            background-color: #015dc0;\n\
-            color: #7c7c7c;\n\
-        }\n\
-        .go-back-link:active {\n\
-            background-color: #58a6fa;\n\
-            color: #363636;\n\
-        }\n\
-    </style>\n\
-</head>\n\
-<body>\n\
-    <header>\n\
-        <h1>Auto Index Page</h1>\n\
-    </header>\n\
-    <div class='container'>\n\
-        <h2>"+PATH+"</h2>\n\
-        <ul>"
+#define HTML_UP_BODY(PATH) "<!DOCTYPE html>\n<html lang='en'>\n<head>\n <meta charset='UTF-8'>\n <meta name='viewport' content='width=device-width, initial-scale=1.0'>\n <title>Auto Index Page</title>\n <style>\n  body {\n   font-family: Arial, sans-serif;\n   background-color: #4d4343;\n   margin: 0;\n   padding: 0;\n  }\n\n  header {\n   background-color: #333;\n   color: #b17a7a;\n   padding: 10px 0;\n   text-align: center;\n   box-shadow: 0 0 30px 6px #0a0a0abe;\n   margin-bottom: 50px;\n  }\n\n  h1 {\n   margin: 0;\n  }\n\n  h2 {\n   text-align: center;\n  }\n  .container {\n   max-width: 800px;\n   margin: 20px auto;\n   background-color: #c0c0c0;\n   padding: 20px;\n   box-shadow: 0 0 30px 6px #0a0a0abe;\n   border-radius: 5px;\n  }\n\n  ul {\n   list-style: none;\n   padding: 0;\n  }\n\n  li {\n   margin: 10px 0;\n  }\n\n  a {\n   text-decoration: none;\n   color: #103b69;\n  }\n\n  a:hover {\n   text-decoration: none;\n   color: #a200ff;\n  }\n\n  a:active {\n   text-decoration: none;\n   color: #44006b;\n  }\n  \n  .file-icon {\n   width: 30px;\n   vertical-align: middle;\n  }\n  .go-back-link-container {\n   display: flex;\n   justify-content: center;\n   align-items: center;\n   margin-top: 20px;\n  }\n  .go-back-link {\n   display: inline-block;\n   margin-top: 20px;\n   padding: 5px 10px;\n   background-color: #103b69;\n   color: #fff;\n   border-radius: 5px;\n   text-decoration: none;\n   transition: background-color 0.3s;\n  }\n\n  .go-back-link:hover {\n   background-color: #015dc0;\n   color: #7c7c7c;\n  }\n  .go-back-link:active {\n   background-color: #58a6fa;\n   color: #363636;\n  }\n </style>\n</head>\n<body>\n <header>\n  <h1>Auto Index Page</h1>\n </header>\n <div class='container'>\n  <h2>"+PATH+"</h2>\n  <ul>"
+
+#define HTML_DOWN_BODY "</ul><div class='go-back-link-container'><a href='../' class='go-back-link'>Go Back</a></div></body></html>"
 
 #define HTML_COMPONENT(SRC, HREF, NAME) ("<li><img src='"+SRC+"' class='file-icon'><a href='"+HREF+"'>"+NAME+"</a></li>")
-
+#define OLD_DIR std::string("..")
+#define CUR_DIR std::string(".")
 #endif

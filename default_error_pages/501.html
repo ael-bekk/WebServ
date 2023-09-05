@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>501 Not Implemented - Error Page</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #e74c3c, #3498db);
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            overflow: hidden;
+        }
+        .error-container {
+            text-align: center;
+        }
+        .error-code {
+            font-size: 100px;
+            color: #fff;
+            margin-bottom: 10px;
+            animation: bounce 1s ease-in-out infinite alternate;
+        }
+        .error-message {
+            font-size: 24px;
+            color: #fff;
+            margin-bottom: 20px;
+            opacity: 0;
+            animation: fadeIn 1s ease-in-out forwards;
+        }
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        @keyframes bounce {
+            0%, 100% {
+                transform: translateY(0);
+            }
+            50% {
+                transform: translateY(-20px);
+            }
+        }
+        .back-link {
+            font-size: 18px;
+            color: #fff;
+            text-decoration: none;
+            opacity: 0.7;
+            transition: opacity 0.3s ease-in-out;
+        }
+        .back-link:hover {
+            opacity: 1;
+        }
+    </style>
+</head>
+<body>
+    <div class="error-container">
+        <div class="error-code">501</div>
+        <div class="error-message">Oops! The server does not support the functionality required to fulfill the request.</div>
+        <a class="back-link" href="/">Take me back to safety</a>
+    </div>
+</body>
+</html>

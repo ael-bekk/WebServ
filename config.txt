@@ -7,12 +7,11 @@ server {
     client_max_body_size 3000
     location / {
         root ./www
-        index index.php index.debian-html.html
         cgi .py python3
         cgi .mp4 fast-cgi
         autoindex ON
         upload Upload
-        allow_methods  POST DELETE
+        allow_methods  POST DELETE GET
         return 200 file.html
     }
 }
