@@ -11,11 +11,6 @@ __response::__response(int sock) :sock(sock), location(NULL), in_header(true), i
     this->def_errors["500"] = "./default_error_pages/500.html";
     this->def_errors["501"] = "./default_error_pages/501.html";
     this->def_errors["505"] = "./default_error_pages/505.html";
-    // this->def_errors["301"] = "./default_error_pages/204.html";
-    // this->def_errors["404"] = "./default_error_pages/204.html";
-    // this->def_errors["501"] = "./default_error_pages/204.html";
-    // this->def_errors["300"] = "./default_error_pages/204.html";
-    // ...........
 }
 
 __response::~__response() {
@@ -28,8 +23,9 @@ std::string __response::generate_header(std::string status, bool redirected) {
     std::string     type;
     std::string     header;
     std::string     int_tostr;
+    std::string     delimeter("\r\n");
 
-    if (status != "200" && status != HTTP_300_MULTIPLE_CHOICE) this->path = this->def_errors[status];
+    if (status != HTTP_200_OK && status != HTTP_301_MULTIPLE_CHOICE) this->path = this->def_errors[status];
 
     if (this->path.rfind('.') != std::string::npos)
         type = this->path.substr(this->path.rfind('.') + 1);
@@ -38,14 +34,16 @@ std::string __response::generate_header(std::string status, bool redirected) {
     COUNT_CONTENT_LENT(this->path, lent)
     TO_STRING(lent, int_tostr)
     Global().add_ResponseHeader(this->sock, "Content-Length", int_tostr);
-    header += "HTTP/1.1 " + status + std::string("\r\n");
-    header += "Date: " + _time + " GMT" + std::string("\r\n");
-    header += "Server: " + Global().client(this->sock).get_server().get_server_name() + std::string("\r\n");
-    header += "Content-Length: " + int_tostr + std::string("\r\n");
-    header += "Content-Type: " + Global().get_ClientMimeTypes(type) + std::string("\r\n");
-    header += "Connection: close" + std::string("\r\n");
-    if (redirected) header += "Location: " + this->path + std::string("\r\n");
-    header += std::string("\r\n");
+    header += "HTTP/1.1 " + status + delimeter;
+    header += "Date: " + _time + " GMT" + delimeter;
+    header += "Server: " + Global().client(this->sock).get_server().get_server_name() + delimeter;
+    if (int_tostr != "0" || status != HTTP_301_MULTIPLE_CHOICE) {
+        header += "Content-Length: " + int_tostr + delimeter;
+        header += "Content-Type: " + Global().get_ClientMimeTypes(type) + delimeter;
+    }
+    header += "Connection: close" + delimeter;
+    if (redirected) header += "Location: " + this->path + delimeter;
+    header += delimeter;
     return header;
 }
 
@@ -66,12 +64,11 @@ std::string __response::error_page() {
     std::string err = GET_RESP_STATUS();
     std::string header;
 
-    std::cout<<"mmmm >>>" << this->path <<std::endl;
-    if (err == HTTP_300_MULTIPLE_CHOICE) {
+    if (err == HTTP_301_MULTIPLE_CHOICE) {
         return this->generate_header(err, REDIRECTED);
     } else {
         this->path.clear();
-        
+
         if ERROR_OVERRIDEN()    this->path = this->errors[err];
         else if DEF_ERROR()     this->path = this->def_errors[err];
 
@@ -95,7 +92,12 @@ std::string __response::body() {
     return std::string(buffer, rd);
 }
 
-void    __response::set_location(std::string path, std::string req_path, __location *location, std::map<std::string, std::string> error_page) { this->path = path; this->req_path = req_path; this->location = location; this->errors = error_page; }
+void    __response::set_location(std::string path, std::string req_path, __location *location, std::map<std::string, std::string> error_page) {
+    this->path = path;
+    this->req_path = req_path;
+    this->location = location;
+    this->errors = error_page;
+}
 
 short    __response::Rspns() {
     std::string block;
@@ -124,9 +126,6 @@ short    __response::Rspns() {
 
     return RESPONSE_ENDS() ? (infile.close(), SOCK_END_RESPONSE) : SOCK_INIT_STATUS;
 }
-
-
-
 
 int                                 __response::get_sock()          { return this->sock; }
 bool                                __response::get_in_header()     { return this->in_header; }

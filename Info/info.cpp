@@ -4,7 +4,6 @@ __info::__info() : _max(0) {
     this->set_all_icons();
 }
 
-
 __info& __info::Instance()
 {
     static __info INSTANCE;
@@ -74,20 +73,11 @@ void __info::set_MimeTypes() {
 }
 
 void __info::set_all_icons() {
-    this->icons["c++"]  = true;
-    this->icons["cpp"]  = true;
-    this->icons["css"]  = true;
-    this->icons["html"] = true;
-    this->icons["jpeg"] = true;
-    this->icons["jpg"]  = true;
-    this->icons["js"]   = true;
-    this->icons["mp4"]  = true;
-    this->icons["pdf"]  = true;
-    this->icons["php"]  = true;
-    this->icons["png"]  = true;
-    this->icons["py"]   = true;
-    this->icons["scss"] = true;
-    this->icons["ico"]  = true;
+    this->icons["c++"]  = this->icons["cpp"]  = this->icons["css"] = \
+    this->icons["html"] = this->icons["jpeg"] = this->icons["jpg"] = \
+    this->icons["js"]   = this->icons["mp4"]  = this->icons["pdf"] = \
+    this->icons["php"]  = this->icons["png"]  = this->icons["py"]  = \
+    this->icons["scss"] = this->icons["ico"]  = true;
 }
 
 

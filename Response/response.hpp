@@ -16,8 +16,8 @@ class   __response {
         bool                                in_header;
         bool                                in_body;
         int                                 content_lent;
-        std::string                         req_path; // /location/../../...
-        std::string                         path;    // /root/location/../../...
+        std::string                         req_path;
+        std::string                         path;
         std::map<std::string, std::string>  def_errors;
         std::map<std::string, std::string>  errors;
         __location                          *location;

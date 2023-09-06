@@ -1,10 +1,6 @@
 #include "select.hpp"
 #include "../Info/info.hpp"
 
-// void _select::ForEach() {
-
-// }
-
 void    _select::set_zero() {
     FD_ZERO(&this->readable);
     FD_ZERO(&this->writable);
@@ -30,10 +26,6 @@ short   _select::CloseClient(int sock) {
 #include <signal.h>
 
 void _select::CheckSockStatus(int sock, int status) {
-    if (METHOD_POST_TRANSFER_NOT_SUPPORTED == status)
-        FD_CLR(sock, &readable),
-        FD_CLR(sock, &writable),
-        this->CloseClient(sock);
     if IS_SOCK_CLOSED(status)
         FD_CLR(sock, &readable),
         FD_CLR(sock, &writable),
@@ -52,9 +44,8 @@ void _select::multiplexing() {
     timeout.tv_usec = 500;
     timeout.tv_sec = 0;
     signal(SIGPIPE, SIG_IGN);
+
     while (true) {
-        FD_ZERO(&this->r);
-        FD_ZERO(&this->w);
         this->r = readable;
         this->w = writable;
 

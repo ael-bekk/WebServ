@@ -72,7 +72,7 @@ void __check_err::check_get() {
         }
         if (!status) path = this->autoindex(path);
     } else if ((test = opendir((path).c_str()))) {
-        Global().add_ResponseHeader(this->sock, "status", HTTP_300_MULTIPLE_CHOICE);
+        Global().add_ResponseHeader(this->sock, "status", HTTP_301_MULTIPLE_CHOICE);
         this->response->set_path(this->response->get_req_path() + "/");
         closedir(test);
         return;

@@ -200,7 +200,7 @@
 #define HTTP_200_OK                             "200"
 #define HTTP_201_CREATED                        "201"
 #define HTTP_204_NO_CONTENT                     "204"
-#define HTTP_300_MULTIPLE_CHOICE                "300"
+#define HTTP_301_MULTIPLE_CHOICE                "301"
 #define HTTP_404_NOT_FOUND                      "404"
 #define HTTP_405_METHOD_NOT_ALLOWED             "405"
 #define HTTP_411_LENGTH_REQUIRE                 "411"
