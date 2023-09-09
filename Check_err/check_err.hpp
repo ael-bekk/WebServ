@@ -15,7 +15,8 @@ class __check_err {
         __check_err(__response &obj);
         void check_post();
         void check_get();
-        void check_delete();
+        void check_delete(std::string FolderPath);
+        std::string insert_html_document(struct dirent* list, std::string path);
         std::string autoindex(std::string path);
         bool header_err();
         void check_errors();

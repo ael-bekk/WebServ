@@ -17,13 +17,14 @@ class __request {
         bool        body;
         std::string req_path;
         std::string path;
+        std::string p_loc;
         __location  *location;
         __post      post;
 
     public:
         __request(int sock);
         ~__request();
-        void    set_location(std::string path, std::string req_path, __location *location);
+        void    set_location(std::string p_loc, std::string path, std::string req_path, __location *location);
         short   Rqst();
 
         short   HeaderPars();

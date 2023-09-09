@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>File Upload Without Form Field Info</title>
+</head>
+<body>
+    
+    <input type="file" id="fileInput">
+
+    <button onclick="uploadFile()">Upload File</button>
+
+    <script>
+        function uploadFile() {
+            const fileInput = document.getElementById('fileInput');
+
+            if (fileInput.files[0]) {
+                // Make a POST request to your server
+                fetch('your_server_endpoint', {
+                    method: 'POST',
+                    body: fileInput.files[0],
+                })
+                .then(response => {
+                    if (response.ok) {
+                        // File uploaded successfully
+                        console.log('File uploaded successfully');
+                    } else {
+                        // Handle any errors
+                        console.error('Error uploading file');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                });
+            } else {
+                console.error('No file selected');
+            }
+        }
+    </script>
+</body>
+</html>

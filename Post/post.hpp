@@ -15,7 +15,7 @@ class __post {
 
     public:
         __post();
-        short    open_file_if_not(std::string type, std::string path, __location  *location);
+        short    open_file_if_not(std::string type, std::string p_loc, std::string path, __location  *location);
         short   transfer_encoding_chunked(std::string &buff_rest);
         short   transfer_content_length(int content_lent, std::string &buff_rest);
 };

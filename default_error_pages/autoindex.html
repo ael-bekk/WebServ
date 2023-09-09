@@ -102,15 +102,18 @@
         <ul>
             <li>
                 <img src="css.png" class="file-icon">
-                <a href="/File 0.pdf">File 0.pdf</a>
+                <a href="/File_0.pdf">File 0.pdf</a>
+                <button onclick="deleteFile('File_0.pdf')">Delete</button>
             </li>
             <li>
                 <img src="js.png" class="file-icon">
                 <a href="/file1.pdf">File 1.pdf</a>
+                <button onclick="deleteFile('File_1.pdf')">Delete</button>
             </li>
             <li>
                 <img src="php.png" class="file-icon">
                 <a href="/file2.txt">File 2.txt</a>
+                <button onclick="deleteFile('/File 2.pdf')">Delete</button>
             </li>
             <li>
                 <img src="html.png" class="file-icon">
@@ -142,5 +145,26 @@
             <a href="/default_error_pages/" class="go-back-link">Go Back</a>
         </div>
     </div>
+    <script>
+        function deleteFile(filePath) {
+            // Make a DELETE request to your server
+            fetch(`${encodeURIComponent(filePath)}`, {
+                method: 'DELETE',
+            })
+            .then(response => {
+                if (response.ok) {
+                    // File deleted successfully
+                    console.log('File deleted successfully');
+                    // You can update the UI as needed (e.g., remove the file entry)
+                } else {
+                    // Handle any errors
+                    console.error('Error deleting file');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+        }
+    </script>
 </body>
 </html>

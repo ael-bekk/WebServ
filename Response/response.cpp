@@ -5,6 +5,7 @@ __response::__response(int sock) :sock(sock), location(NULL), in_header(true), i
     this->def_errors["201"] = "./default_error_pages/201.html";
     this->def_errors["204"] = "./default_error_pages/204.html";
     this->def_errors["400"] = "./default_error_pages/400.html";
+    this->def_errors["403"] = "./default_error_pages/403.html";
     this->def_errors["404"] = "./default_error_pages/404.html";
     this->def_errors["405"] = "./default_error_pages/405.html";
     this->def_errors["411"] = "./default_error_pages/411.html";

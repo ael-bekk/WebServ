@@ -47,7 +47,7 @@ void    __request::InsertData(std::string & buff_rest) {
     }
 }
 
-void    __request::set_location(std::string path, std::string req_path, __location *location) { this->path = path; this->req_path = req_path; this->location = location; }
+void    __request::set_location(std::string p_loc, std::string path, std::string req_path, __location *location) { this->p_loc = p_loc; this->path = path; this->req_path = req_path; this->location = location; }
 
 void    __request::MatchServer() {
     std::string host        = Global().client(this->sock).get_host();
@@ -72,7 +72,7 @@ short    __request::HeaderPars() {
 
 
 short    __request::BodyPars() {
-    if (this->post.open_file_if_not(Global().get_ServerMimeTypes(GET_REQ_CONTENT_TYPE()), path, location) != SOCK_INIT_STATUS)
+    if (this->post.open_file_if_not(Global().get_ServerMimeTypes(GET_REQ_CONTENT_TYPE()), p_loc, path, location) != SOCK_INIT_STATUS)
         return SOCK_END_REQUEST;
     if TRANSFER_CHUNKED()
         return  this->post.transfer_encoding_chunked(this->buff_rest);

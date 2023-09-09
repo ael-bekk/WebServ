@@ -2,7 +2,7 @@
 
 __post::__post() : _pipe{-1, -1}, count_content_lent(0), content_length(0), cgi(false) {}
 
-short    __post::open_file_if_not(std::string type, std::string path, __location  *location) {
+short    __post::open_file_if_not(std::string type, std::string p_loc, std::string path, __location  *location) {
     if FILE_NOT_OPEN_YET() {
         std::string filename;
 
