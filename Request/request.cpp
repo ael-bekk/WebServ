@@ -97,8 +97,10 @@ short    __request::BodyPars() {
 short    __request::ReadBlock() {
     int r = recv(this->sock, this->buff, BUFFER_SIZE, 0);
  
-    if CLIENT_CLOSE(r)
-        return SOCK_CLOSE;
+    if CLIENT_CLOSE(r) {
+        this->post.rm_file();
+        return SOCK_END_REQUEST_MAX_SIZE;
+    }
     this->buff_rest += std::string(this->buff, r);
 
     return SOCK_INIT_STATUS;
@@ -107,7 +109,7 @@ short    __request::ReadBlock() {
 short    __request::Rqst() {
     int res = SOCK_INIT_STATUS;
     
-    if IS_SOCK_CLOSED(ReadBlock()) return SOCK_CLOSE;
+    if IS_SOCK_END_REQUEST_MAX_SIZE(ReadBlock()) return SOCK_END_REQUEST_MAX_SIZE;
 
     this->header && (res = this->HeaderPars());
 

@@ -28,6 +28,11 @@ short    __post::open_file_if_not(std::string type, std::string p_loc, std::stri
     return SOCK_INIT_STATUS;
 }
 
+void __post::rm_file() {
+    this->outfile.close();
+    remove(this->filename.c_str());
+}
+
 short   __post::transfer_encoding_chunked(unsigned long long max_body_size, std::string &buff_rest) {
     int pos;
     bool read_chunk(true);
@@ -46,10 +51,9 @@ short   __post::transfer_encoding_chunked(unsigned long long max_body_size, std:
             {
                 STR_HEX_TO_INT(buff_rest.substr(0, pos), this->count_content_lent)
                 this->content_length += this->count_content_lent;
-                std::cout << max_body_size << std::endl;
+                // std::cout << max_body_size << std::endl;
                 if (this->content_length > max_body_size) {
-                    this->outfile.close();
-                    remove(this->filename.c_str());
+                    this->rm_file();
                     return  SOCK_END_REQUEST_MAX_SIZE;
                 }
                 buff_rest = buff_rest.substr(pos + 2);
@@ -72,10 +76,10 @@ short   __post::transfer_encoding_chunked(unsigned long long max_body_size, std:
 short   __post::transfer_content_length(unsigned long long max_body_size, int content_lent, std::string &buff_rest) {
 
     int pos;
-std::cout << content_lent << " " << max_body_size << std::endl;
+    
+    // std::cout << content_lent << " " << max_body_size << std::endl;
     if (content_lent > max_body_size) {
-        this->outfile.close();
-        remove(this->filename.c_str());
+        this->rm_file();
         return  SOCK_END_REQUEST_MAX_SIZE;
     }
 

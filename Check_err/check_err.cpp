@@ -37,7 +37,7 @@ std::string __check_err::autoindex(std::string path) {
 
     NEW_NAME(path_autoindex);
     std::string tmp = "/goinfre/ael-bekk/" + path_autoindex + ".html";
-    std::cout << tmp << std::endl;
+    // std::cout << tmp << std::endl;
     outfile.open(tmp.c_str());
     if (!outfile.is_open() || dir == NULL) {
         Global().add_ResponseHeader(this->sock, "status", HTTP_404_NOT_FOUND);
@@ -61,7 +61,7 @@ void __check_err::check_get() {
     int             status(0);
     DIR *test;
 
-    std::cout << path << std::endl;
+    // std::cout << path << std::endl;
     if AUTO_INDEXING() {
         std::vector<std::string> indexes(location->get_index());
         for (int i = 0; i < indexes.size() && !status; i++) {

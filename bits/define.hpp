@@ -46,7 +46,7 @@
 
 #define BUFFER_SIZE 1024
 
-#define CLIENT_CLOSE(X) (X == -1)
+#define CLIENT_CLOSE(X) (X <= 0)
 
 #define IS_GET(METHOD)       (METHOD == "GET")
 #define IS_POST(METHOD)      (METHOD == "POST")

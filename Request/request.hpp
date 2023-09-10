@@ -24,6 +24,7 @@ class __request {
     public:
         __request(int sock);
         ~__request();
+
         void    set_location(std::string p_loc, std::string path, std::string req_path, __location *location);
         short   Rqst();
 
