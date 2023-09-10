@@ -54,10 +54,10 @@ void    __webserv::Slct() {
     this->Select.multiplexing();
 }
 
-void    __webserv::epl()
-{
-    this->ep.instance();
-    for (int i = 0; i < this->network.size(); i++)
-        this->ep.add_event(EPOLLIN, this->network[i].get_Socket());
-    this->ep.Epoll();
-}
+// void    __webserv::epl()
+// {
+//     this->ep.instance();
+//     for (int i = 0; i < this->network.size(); i++)
+//         this->ep.add_event(EPOLLIN, this->network[i].get_Socket());
+//     this->ep.Epoll();
+// }

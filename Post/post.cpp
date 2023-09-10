@@ -45,8 +45,7 @@ short   __post::transfer_encoding_chunked(std::string &buff_rest) {
             }
             if THERE_IS_NEW_CHUNK()
             {
-                std::istringstream inp(buff_rest.substr(0, pos));
-                inp >> std::hex >> this->count_content_lent;
+                STR_HEX_TO_INT(buff_rest.substr(0, pos), this->count_content_lent)
                 this->content_length += this->count_content_lent;
                 buff_rest = buff_rest.substr(pos + 2);
             }
@@ -77,7 +76,7 @@ short   __post::transfer_content_length(int content_lent, std::string &buff_rest
     if REACH_CONTENT_LENT()
     {
         this->outfile.close();
-        this->content_length == this->count_content_lent;
+        this->content_length = this->count_content_lent;
         return SOCK_END_REQUEST;
     }
     return SOCK_INIT_STATUS;

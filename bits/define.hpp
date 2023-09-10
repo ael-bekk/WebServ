@@ -119,6 +119,11 @@
                                                 ss >> NUM;                     \
                                             }
 
+#define STR_HEX_TO_INT(STR, NUM)            {                                \
+                                                std::istringstream inp(STR);  \
+                                                inp >> std::hex >> NUM;        \
+                                            }
+
 #define NOT_EMPTY()                      (!line.empty())
 
 #define MIMETYPESFILE               "bits/mime.types.txt"
@@ -216,19 +221,20 @@
 #define HTTP_507_INSUFFICIENT_STORAGE           "507"
 #define HTTP_508_LOOP_DETECTED                  "508"
 
-
 ////////////// AUTOINDEX
-#define HTML_UP_BODY(PATH) "<!DOCTYPE html>\n<html lang='en'>\n<head>\n <meta charset='UTF-8'>\n <meta name='viewport' content='width=device-width, initial-scale=1.0'>\n <title>Auto Index Page</title>\n <style>\n  body {\n   font-family: Arial, sans-serif;\n   background-color: #4d4343;\n   margin: 0;\n   padding: 0;\n  }\n\n  header {\n   background-color: #333;\n   color: #b17a7a;\n   padding: 10px 0;\n   text-align: center;\n   box-shadow: 0 0 30px 6px #0a0a0abe;\n   margin-bottom: 50px;\n  }\n\n  h1 {\n   margin: 0;\n  }\n\n  h2 {\n   text-align: center;\n  }\n  .container {\n   max-width: 800px;\n   margin: 20px auto;\n   background-color: #c0c0c0;\n   padding: 20px;\n   box-shadow: 0 0 30px 6px #0a0a0abe;\n   border-radius: 5px;\n  }\n\n  ul {\n   list-style: none;\n   padding: 0;\n  }\n\n  li {\n   margin: 10px 0;\n  }\n\n  a {\n   text-decoration: none;\n   color: #103b69;\n  }\n\n  a:hover {\n   text-decoration: none;\n   color: #a200ff;\n  }\n\n  a:active {\n   text-decoration: none;\n   color: #44006b;\n  }\n  \n  .file-icon {\n   width: 30px;\n   vertical-align: middle;\n  }\n  .go-back-link-container {\n   display: flex;\n   justify-content: center;\n   align-items: center;\n   margin-top: 20px;\n  }\n  .go-back-link {\n   display: inline-block;\n   margin-top: 20px;\n   padding: 5px 10px;\n   background-color: #103b69;\n   color: #fff;\n   border-radius: 5px;\n   text-decoration: none;\n   transition: background-color 0.3s;\n  }\n\n  .go-back-link:hover {\n   background-color: #015dc0;\n   color: #7c7c7c;\n  }\n  .go-back-link:active {\n   background-color: #58a6fa;\n   color: #363636;\n  }\n </style>\n</head>\n<body>\n <header>\n  <h1>Auto Index Page</h1>\n </header>\n <div class='container'>\n  <h2>"+PATH+"</h2>\n  <ul>"
+#define HTML_UP_BODY(PATH) "<!DOCTYPE html>\n<html lang='en'>\n<head>\n <meta charset='UTF-8'>\n <meta name='viewport' content='width=device-width, initial-scale=1.0'>\n <title>Auto Index Page</title>\n <style>\
+                            body {\n   font-family: Arial, sans-serif;\n   background-color: #4d4343;\n   margin: 0;\n   padding: 0;\n  }\n\n  header {\n   background-color: #333;\n   color: #b17a7a;\n   padding: 10px 0;\n   text-align: center;\n   box-shadow: 0 0 30px 6px #0a0a0abe;\n   margin-bottom: 50px;\n  }\n\n  h1 {\n   margin: 0;\n  }\n\n  h2 {\n   text-align: center;\n  }\n  .container {\n   max-width: 800px;\n   margin: 20px auto;\n   background-color: #c0c0c0;\n   padding: 20px;\n   box-shadow: 0 0 30px 6px #0a0a0abe;\n   border-radius: 5px;\n  }\n\n  ul {\n   list-style: none;\n   padding: 0;\n  }\n\n  li {\n   margin: 10px 0;\n \n display: flex; \n justify-content: space-between; \n }\n\n  a {\n   text-decoration: none;\n   color: #103b69;\n  }\n\n  a:hover {\n   text-decoration: none;\n   color: #a200ff;\n  }\n\n  a:active {\n   text-decoration: none;\n   color: #44006b;\n  }\n  \n  .file-icon {\n   width: 30px;\n   vertical-align: middle;\n  }\n  .go-back-link-container {\n   display: flex;\n   justify-content: center;\n   align-items: center;\n   margin-top: 20px;\n  }\n  .go-back-link {\n   display: inline-block;\n   margin-top: 20px;\n   padding: 5px 10px;\n   background-color: #103b69;\n   color: #fff;\n   border-radius: 5px;\n   text-decoration: none;\n   transition: background-color 0.3s;\n  }\n\n  .go-back-link:hover {\n   background-color: #015dc0;\n   color: #7c7c7c;\n  }\n  .go-back-link:active {\n   background-color: #58a6fa;\n   color: #363636;\n  }\n .delete-button {\n background-color: #ff0000;\n color: #fff;\n border: none;\n padding: 5px 10px;\n border-radius: 5px;\n cursor: pointer;\n transition: background-color 0.3s;\n }\n .delete-button:hover {\n background-color: #cc0000;\n }\n .delete-button:active {\n background-color: #990000;\n .delete-button-container {\n text-align: right;\n } .file-info {\n flex-grow: 1;\n } } </style>\
+                            </head>\n<body>\n <header>\n  <h1>Auto Index Page</h1>\n </header>\n <div class='container'>\n  <h2>"+PATH+"</h2>\n  <ul>"
 
 #define HTML_DOWN_BODY "</ul><div class='go-back-link-container'><a href='../' class='go-back-link'>Go Back</a></div><script>\
         function deleteFile(filePath) {\
-            // Make a DELETE request to your server\
             fetch(`${encodeURIComponent(filePath)}`, {\
                 method: 'DELETE',\
             })\
             .then(response => {\
                 if (response.ok) {\
                     console.log('File deleted successfully');\
+                    window.location.reload();\
                 } else {\
                     console.error('Error deleting file');\
                 }\
@@ -239,7 +245,7 @@
         }\
     </script></body></html>"
 
-#define HTML_DOCUMENT(SRC, HREF, NAME) ("<li><img src='"+SRC+"' class='file-icon'><a href='"+HREF+"'>"+NAME+"</a></li>")
+#define HTML_DOCUMENT(SRC, HREF, NAME) ("<li><div class='file-info'><img src='"+SRC+"' class='file-icon'> <a href='"+HREF+"'>"+NAME+"</a></div> <div class='delete-button-container'><button  class='delete-button' onclick=deleteFile(\""+HREF+"\")>Delete</button></div></li>")
 
 #define ICONS_HOST  std::string("https://raw.githubusercontent.com/ael-bekk/WebServ/main/icons/")
 #define OLD_DIR     std::string("..")

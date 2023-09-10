@@ -8,11 +8,23 @@ __request::~__request() {
 }
 
 void    __request::InsertFirst(std::stringstream inp) {
-    std::string method, path, http;
+    std::string method, path, http, uri, Query;
 
     inp >> method >> path >> http;
+    if (path.find('?') != std::string::npos)
+        Query = path.substr(path.find('?') + 1),
+        path = path.substr(0, path.find('?'));
+    for (int i = 0, num; i < path.length(); i++)
+        if (path[i] == '%' && path.length() - i > 2) {
+            STR_HEX_TO_INT(path.substr(i + 1, 2), num)
+            uri += char(num);
+            i+=2;
+        } else
+            uri += path[i];
+    std::cout << uri << std::endl;
     Global().add_RequestHeader(this->sock, "Method", method);
-    Global().add_RequestHeader(this->sock, "Path", path);
+    Global().add_RequestHeader(this->sock, "Path", uri);
+    Global().add_RequestHeader(this->sock, "Query", Query);
     Global().add_RequestHeader(this->sock, "Http", http);
 }
 
@@ -57,7 +69,7 @@ void    __request::MatchServer() {
     Global().client(this->sock).set_server(new __server(*Global().get_server(host, port, server_name)));
 }
 
-short    __request::HeaderPars() {
+short    __request::HeadeffffrPars() {
     this->InsertData(buff_rest);
 
     if END_HEADER(this->buff_rest.substr(0, 4))

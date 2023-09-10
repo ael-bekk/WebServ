@@ -3,7 +3,7 @@
 
 #include "../bits/stdc++.hpp"
 #include "../Network/network.hpp"
-#include "../Epoll/epoll.hpp"
+// #include "../Epoll/epoll.hpp"
 #include "../Select/select.hpp"
 
 
@@ -11,7 +11,7 @@
 class __webserv {
     private:
         std::vector<__network>    network;
-        _epoll                    ep;
+        // _epoll                    ep;
         _select                   Select; // ? max_fd ==> network <==> servers 
 
     public:
@@ -23,7 +23,7 @@ class __webserv {
         std::vector<__network>    get_networks();
         void    InitNetworks();
         void    Slct();
-        void    epl();
+        // void    epl();
 };
 
 #endif

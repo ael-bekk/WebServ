@@ -36,8 +36,8 @@ std::string __check_err::autoindex(std::string path) {
     std::ofstream outfile;
 
     NEW_NAME(path_autoindex);
-    std::string tmp = "/goinfre/" + path_autoindex + ".html";
-
+    std::string tmp = "/goinfre/ael-bekk/" + path_autoindex + ".html";
+    std::cout << tmp << std::endl;
     outfile.open(tmp.c_str());
     if (!outfile.is_open() || dir == NULL) {
         Global().add_ResponseHeader(this->sock, "status", HTTP_404_NOT_FOUND);

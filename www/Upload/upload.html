@@ -1,41 +1,166 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>File Upload Without Form Field Info</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+        }
+
+        #fileInput {
+            overflow: hidden;
+            /* opacity: 0; */
+            display: none;
+        }
+
+        .upload-btn-wrapper {
+            overflow: hidden;
+            display: inline-block;
+        }
+
+        .btn1 {
+            border: 2px solid gray;
+            color: gray;
+            background-color: white;
+            padding: 8px 20px;
+            border-radius: 8px;
+            font-size: 20px;
+            cursor: pointer;
+        }
+
+        .btn1:hover {
+            border: 2px solid rgb(171, 162, 162);
+            color: rgb(255, 255, 255);
+            background-color: rgb(190, 190, 190);
+            padding: 8px 20px;
+            border-radius: 8px;
+            font-size: 20px;
+            cursor: pointer;
+        }
+
+        .btn1:active {
+            border: 2px solid rgb(187, 158, 107);
+            color: rgb(187, 158, 107);
+            background-color: rgb(86, 86, 86);
+            padding: 8px 20px;
+            border-radius: 8px;
+            font-size: 20px;
+            cursor: pointer;
+        }
+
+        .btn2 {
+            border: 2px solid gray;
+            color: rgb(0, 0, 0);
+            background-color: white;
+            padding: 8px 20px;
+            border-radius: 8px;
+            font-size: 20px;
+            cursor: pointer;
+        }
+
+        .btn2:hover {
+            border: 2px solid rgb(44, 86, 66);
+            color: rgb(255, 255, 255);
+            background-color: rgb(107, 105, 105);
+            padding: 8px 20px;
+            border-radius: 8px;
+            font-size: 20px;
+            cursor: pointer;
+        }
+
+        .btn2:active {
+            border: 2px solid rgb(0, 255, 132);
+            color: rgb(255, 255, 255);
+            background-color: rgb(45, 45, 45);
+            padding: 8px 20px;
+            border-radius: 8px;
+            font-size: 20px;
+            cursor: pointer;
+        }
+
+        #fileLabel {
+            font-size: 20px;
+        }
+
+        label {
+            cursor: pointer;
+        }
+
+        .success-msg {
+            color: green;
+        }
+
+        .error-msg {
+            color: red;
+        }
+    </style>
 </head>
 <body>
-    
-    <input type="file" id="fileInput">
+    <div class="upload-btn-wrapper">
+        <button class="btn1"><input type="file" id="fileInput"><label for="fileInput">Choose file</label></button>
+        
+    </div>
+    <p id="fileLabel">No file selected</p>
 
-    <button onclick="uploadFile()">Upload File</button>
+    <button class="btn2" onclick="uploadFile()">Upload File</button>
+    <p id="resultMessage"></p>
 
     <script>
-        function uploadFile() {
-            const fileInput = document.getElementById('fileInput');
+        const fileInput = document.getElementById('fileInput');
+        const fileLabel = document.getElementById('fileLabel');
+        const resultMessage = document.getElementById('resultMessage');
 
-            if (fileInput.files[0]) {
-                // Make a POST request to your server
-                fetch('your_server_endpoint', {
-                    method: 'POST',
-                    body: fileInput.files[0],
-                })
-                .then(response => {
-                    if (response.ok) {
-                        // File uploaded successfully
-                        console.log('File uploaded successfully');
-                    } else {
-                        // Handle any errors
-                        console.error('Error uploading file');
-                    }
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                });
+        fileInput.addEventListener('change', () => {
+            if (fileInput.files.length > 0) {
+                fileLabel.innerText = `Selected File: ${fileInput.files[0].name}`;
             } else {
-                console.error('No file selected');
+                fileLabel.innerText = 'No file selected';
             }
+        });
+
+        function uploadFile() {
+            if (fileInput.files.length === 0) {
+                resultMessage.innerText = 'No file selected';
+                resultMessage.classList.remove('success-msg');
+                resultMessage.classList.add('error-msg');
+                return;
+            }
+
+            const formData = new FormData();
+            formData.append('file', fileInput.files[0]);
+
+            // Replace 'your_server_endpoint' with your actual server endpoint
+            fetch('/', {
+                method: 'POST',
+                body: formData,
+            })
+            .then(response => {
+                if (response.ok) {
+                    resultMessage.innerText = 'File uploaded successfully';
+                    resultMessage.classList.remove('error-msg');
+                    resultMessage.classList.add('success-msg');
+                } else {
+                    resultMessage.innerText = 'Error uploading file';
+                    resultMessage.classList.remove('success-msg');
+                    resultMessage.classList.add('error-msg');
+                }
+            })
+            .catch(error => {
+                resultMessage.innerText = `Error: ${error.message}`;
+                resultMessage.classList.remove('success-msg');
+                resultMessage.classList.add('error-msg');
+            });
         }
     </script>
 </body>

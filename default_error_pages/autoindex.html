@@ -91,6 +91,38 @@
             background-color: #58a6fa;
             color: #363636;
         }
+
+        .delete-button-container {
+            text-align: right;
+        }
+
+        .delete-button {
+            background-color: #ff0000; /* Change to your desired button color */
+            color: #fff;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .delete-button:hover {
+            background-color: #cc0000; /* Change to your desired hover color */
+        }
+
+        .delete-button:active {
+            background-color: #990000; /* Change to your desired active color */
+        }
+
+        /* Adjust the file entry layout */
+        .file-entry {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin: 10px 0;
+        }
+
+        .file-info { flex-grow: 1; }
     </style>
 </head>
 <body>
@@ -101,9 +133,13 @@
         <h2>Directory Listing</h2>
         <ul>
             <li>
-                <img src="css.png" class="file-icon">
-                <a href="/File_0.pdf">File 0.pdf</a>
-                <button onclick="deleteFile('File_0.pdf')">Delete</button>
+                <div class="file-info">
+                    <img src="css.png" class="file-icon">
+                    <a href="/File_0.pdf">File 0.pdf</a>
+                </div>
+                <div class="delete-button-container">
+                    <button class="delete-button" onclick="deleteFile('File_0.pdf')">Delete</button>
+                </div>
             </li>
             <li>
                 <img src="js.png" class="file-icon">
@@ -156,6 +192,7 @@
                     // File deleted successfully
                     console.log('File deleted successfully');
                     // You can update the UI as needed (e.g., remove the file entry)
+                    window.location.reload();
                 } else {
                     // Handle any errors
                     console.error('Error deleting file');
