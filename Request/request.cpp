@@ -69,7 +69,7 @@ void    __request::MatchServer() {
     Global().client(this->sock).set_server(new __server(*Global().get_server(host, port, server_name)));
 }
 
-short    __request::HeadeffffrPars() {
+short    __request::HeaderPars() {
     this->InsertData(buff_rest);
 
     if END_HEADER(this->buff_rest.substr(0, 4))
