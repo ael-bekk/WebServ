@@ -44,12 +44,12 @@ void    __server::ConfigError(int line, std::string detail) {
     exit(1);
 }
 
-std::string __server::get_host()                            { return this->host; }
-std::string __server::get_port()                            { return this->port; }
-std::string __server::get_server_name()                     { return this->server_name; }
-std::map<std::string, std::string> __server::get_error_pages()      { return this->error_page; }
-size_t __server::get_client_max_body_size()                 { return this->client_max_body_size; }
-std::map<std::string, __location> __server::get_locations() { return this->location; }
+std::string __server::get_host()                                { return this->host; }
+std::string __server::get_port()                                { return this->port; }
+std::string __server::get_server_name()                         { return this->server_name; }
+std::map<std::string, std::string> __server::get_error_pages()  { return this->error_page; }
+unsigned long long __server::get_client_max_body_size()         { return this->client_max_body_size; }
+std::map<std::string, __location> __server::get_locations()     { return this->location; }
 
 int __server::set_host(std::string host) {
     std::stringstream inp(host);
@@ -91,7 +91,7 @@ int __server::set_error_pages(std::string error, std::string page) {
 }
 
 int __server::set_client_max_body_size(std::string client_max_body_size) {
-    this->client_max_body_size = std::atoi(client_max_body_size.c_str());
+    this->client_max_body_size = std::atoll(client_max_body_size.c_str());
     return SUCCESS;
 }
 

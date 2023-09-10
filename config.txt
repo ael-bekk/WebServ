@@ -4,7 +4,7 @@ server {
     server_name sdgsdg
     error_page 404 file.php
     error_page 504 gbjgj/vgjv.php
-    client_max_body_size 3000
+    client_max_body_size 200000000
     location / {
         root ./www
         cgi .py python3

@@ -137,13 +137,10 @@
                 return;
             }
 
-            const formData = new FormData();
-            formData.append('file', fileInput.files[0]);
-
             // Replace 'your_server_endpoint' with your actual server endpoint
             fetch('/', {
                 method: 'POST',
-                body: formData,
+                body: fileInput.files[0],
             })
             .then(response => {
                 if (response.ok) {

@@ -61,17 +61,17 @@
 #define PARS_RQST_ENDS(X)   (X == -1)
 
 
-#define METHOD_POST_TRANSFER_NOT_SUPPORTED        -2
-#define SOCK_CLOSE              -1
-#define SOCK_INIT_STATUS        0
-#define SOCK_END_REQUEST        2
-#define SOCK_END_RESPONSE       3
+#define SOCK_CLOSE                  -1
+#define SOCK_INIT_STATUS            0
+#define SOCK_END_REQUEST            2
+#define SOCK_END_RESPONSE           3
+#define SOCK_END_REQUEST_MAX_SIZE   4
 
-#define IS_METHOD_POST_TRANSFER_NOT_SUPPORTED(STATUS)   (STATUS == -2)
-#define IS_SOCK_CLOSED(STATUS)        (STATUS == -1)
-#define IS_SOCK_INIT_STATUS(STATUS)   (STATUS == 0)
-#define IS_SOCK_END_REQUEST(STATUS)   (STATUS == 2)
-#define IS_SOCK_END_RESPONSE(STATUS)  (STATUS == 3)
+#define IS_SOCK_CLOSED(STATUS)                          (STATUS == -1)
+#define IS_SOCK_INIT_STATUS(STATUS)                     (STATUS == 0)
+#define IS_SOCK_END_REQUEST(STATUS)                     (STATUS == 2)
+#define IS_SOCK_END_RESPONSE(STATUS)                    (STATUS == 3)
+#define IS_SOCK_END_REQUEST_MAX_SIZE(STATUS)            (STATUS == 4)
 
 
 #define GET_REQ_CONTENT_LENT()           Global().get_RequestHeader(this->sock, "Content-Length")
@@ -204,7 +204,9 @@
 #define HTTP_200_OK                             "200"
 #define HTTP_201_CREATED                        "201"
 #define HTTP_204_NO_CONTENT                     "204"
+
 #define HTTP_301_MULTIPLE_CHOICE                "301"
+
 #define HTTP_404_NOT_FOUND                      "404"
 #define HTTP_405_METHOD_NOT_ALLOWED             "405"
 #define HTTP_411_LENGTH_REQUIRE                 "411"
@@ -250,4 +252,7 @@
 #define ICONS_HOST  std::string("https://raw.githubusercontent.com/ael-bekk/WebServ/main/icons/")
 #define OLD_DIR     std::string("..")
 #define CUR_DIR     std::string(".")
+
+#define PAGE_OF(ERR) ("./default_error_pages/"+std::string(ERR)+".html")
+
 #endif

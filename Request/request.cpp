@@ -61,7 +61,7 @@ void    __request::InsertData(std::string & buff_rest) {
 
 void    __request::set_location(std::string p_loc, std::string path, std::string req_path, __location *location) { this->p_loc = p_loc; this->path = path; this->req_path = req_path; this->location = location; }
 
-void    __request::MatchServer()  {
+void    __request::MatchServer() {
     std::string host        = Global().client(this->sock).get_host();
     std::string port        = Global().client(this->sock).get_port();
     std::string server_name = GET_REQ_SERVER_NAME();
@@ -84,12 +84,13 @@ short    __request::HeaderPars() {
 
 
 short    __request::BodyPars() {
+    unsigned long long max_body_size = Global().client(this->sock).get_server().get_client_max_body_size();
     if (this->post.open_file_if_not(Global().get_ServerMimeTypes(GET_REQ_CONTENT_TYPE()), p_loc, path, location) != SOCK_INIT_STATUS)
         return SOCK_END_REQUEST;
     if TRANSFER_CHUNKED()
-        return  this->post.transfer_encoding_chunked(this->buff_rest);
+        return  this->post.transfer_encoding_chunked(max_body_size, this->buff_rest);
     if TRANSFER_CONTENT_LENT()
-        return  this->post.transfer_content_length(std::atoi(GET_REQ_CONTENT_LENT().c_str()), this->buff_rest);
+        return  this->post.transfer_content_length(max_body_size, std::atoi(GET_REQ_CONTENT_LENT().c_str()), this->buff_rest);
     return SOCK_END_REQUEST;
 }
 

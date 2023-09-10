@@ -35,6 +35,11 @@ void _select::CheckSockStatus(int sock, int status) {
         FD_CLR(sock, &readable);
         FD_SET(sock, &writable);
     }
+    if IS_SOCK_END_REQUEST_MAX_SIZE(status) {
+        Global().add_ResponseHeader(sock, "status", HTTP_413_PAYLOAD_TOO_LARGE);
+        FD_CLR(sock, &readable);
+        FD_SET(sock, &writable);
+    }
     if IS_SOCK_END_RESPONSE(status) {
         FD_CLR(sock, &writable);
         this->CloseClient(sock);

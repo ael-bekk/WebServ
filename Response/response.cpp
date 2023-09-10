@@ -2,16 +2,17 @@
 #include "../Info/info.hpp"
 
 __response::__response(int sock) :sock(sock), location(NULL), in_header(true), in_body(false), content_lent(0), check_err(new __check_err(*this)) {
-    this->def_errors["201"] = "./default_error_pages/201.html";
-    this->def_errors["204"] = "./default_error_pages/204.html";
-    this->def_errors["400"] = "./default_error_pages/400.html";
-    this->def_errors["403"] = "./default_error_pages/403.html";
-    this->def_errors["404"] = "./default_error_pages/404.html";
-    this->def_errors["405"] = "./default_error_pages/405.html";
-    this->def_errors["411"] = "./default_error_pages/411.html";
-    this->def_errors["500"] = "./default_error_pages/500.html";
-    this->def_errors["501"] = "./default_error_pages/501.html";
-    this->def_errors["505"] = "./default_error_pages/505.html";
+    this->def_errors["201"] = PAGE_OF("201");
+    this->def_errors["204"] = PAGE_OF("204");
+    this->def_errors["400"] = PAGE_OF("400");
+    this->def_errors["403"] = PAGE_OF("403");
+    this->def_errors["404"] = PAGE_OF("404");
+    this->def_errors["405"] = PAGE_OF("405");
+    this->def_errors["411"] = PAGE_OF("411");
+    this->def_errors["413"] = PAGE_OF("413");
+    this->def_errors["500"] = PAGE_OF("500");
+    this->def_errors["501"] = PAGE_OF("501");
+    this->def_errors["505"] = PAGE_OF("505");
 }
 
 __response::~__response() {

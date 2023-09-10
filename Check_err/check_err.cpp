@@ -129,6 +129,7 @@ bool __check_err::header_err() {
 }
 
 void __check_err::check_errors() {
+    if ERROR_OCCURRED() return;
     this->sock = this->response->get_sock();
     std::map<std::string, bool> allowed(this->response->get_location()->get_allow_methods());
     if (this->header_err())
