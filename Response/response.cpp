@@ -1,5 +1,46 @@
 #include "response.hpp"
 #include "../Info/info.hpp"
+#include <sys/types.h>
+#include <sys/wait.h>
+
+std::string __response::cgi(std::string extension, std::string absolute_path)
+{
+    std::string ext;
+    std::string file;
+    std::string stored_exec_file = "/goinfre/";
+    int status;
+
+    NEW_NAME(file);
+    file += extension;
+
+    stored_exec_file += file;
+
+
+    int fd = open(file.c_str(), O_CREAT | O_RDWR, 0755);
+    if (fd ==- 1)
+        EXTMSG("open failed : ");
+    
+    int id = fork();
+    if (id < 0)
+        EXTMSG("fork failed : ");
+    if (id == 0)
+    {
+        dup2(fd, 1);
+        char *arr[3];
+        
+        arr[0] = strdup(absolute_path.c_str());
+        arr[1] = strdup(this->path.c_str());
+        arr[2] = NULL;
+
+        if (execve(arr[0], arr, NULL) == -1)
+            EXTMSG("execve failed : ");
+        
+    }
+    //waitpid(-1, &status, WNOHANG); // we will work with this
+    wait(&status);
+    
+    return (stored_exec_file);
+}
 
 __response::__response(int sock) :sock(sock), location(NULL), in_header(true), in_body(false), content_lent(0), check_err(new __check_err(*this)) {
     this->def_errors["201"] = PAGE_OF("201");
