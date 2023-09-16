@@ -39,6 +39,8 @@ class   __response {
         std::map<std::string, std::string>  get_errors();
         __location                          *get_location();
 
+        std::string cgi(std::string extension, std::string absolute_path);
+
         void                                set_path(std::string path);
         std::string generate_header(std::string status, bool redirected);
         std::string Get();
