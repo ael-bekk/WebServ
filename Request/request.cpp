@@ -84,7 +84,7 @@ short    __request::HeaderPars() {
 
 
 short    __request::BodyPars() {
-    unsigned long long max_body_size = Global().client(this->sock).get_server().get_client_max_body_size();
+    unsigned long long max_body_size = Global().client(this->sock).get_server()->get_client_max_body_size();
     if (this->post.open_file_if_not(Global().get_ServerMimeTypes(GET_REQ_CONTENT_TYPE()), p_loc, path, location) != SOCK_INIT_STATUS)
         return SOCK_END_REQUEST;
     if TRANSFER_CHUNKED()

@@ -36,7 +36,8 @@ std::string __check_err::autoindex(std::string path) {
     std::ofstream outfile;
 
     NEW_NAME(path_autoindex);
-    std::string tmp = "/nfs/sgoinfre/goinfre/Perso/ael-bekk/" + path_autoindex + ".html";
+    mkdir("./Tmp", S_IRWXU | S_IRWXG);
+    std::string tmp = "./Tmp/" + path_autoindex + ".html";
     // std::cout << tmp << std::endl;
     outfile.open(tmp.c_str());
     if (!outfile.is_open() || dir == NULL) {
@@ -96,7 +97,7 @@ void __check_err::check_delete(std::string FolderPath) {
         Global().add_ResponseHeader(this->sock, "status", HTTP_403_FORBIDDEN);
         return;
     }
-   
+
     while (!ERROR_OCCURRED() && dir && (entry = readdir(dir)))
         if (entry->d_name != CUR_DIR && entry->d_name != OLD_DIR ) {
             std::string entryPath = std::string(FolderPath) + "/" + entry->d_name;
@@ -131,7 +132,12 @@ bool __check_err::header_err() {
 void __check_err::check_errors() {
     if ERROR_OCCURRED() return;
     this->sock = this->response->get_sock();
-    std::map<std::string, bool> allowed(this->response->get_location()->get_allow_methods());
+    std::cout << this->sock << std::endl;
+    std::map<std::string, bool> allowed;
+
+    if (this->response && this->response->get_location())
+        allowed = this->response->get_location()->get_allow_methods();
+
     if (this->header_err())
         return;
     else if (allowed[GET_REQ_METHOD()]) {

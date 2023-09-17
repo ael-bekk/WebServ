@@ -13,7 +13,7 @@ __client::~__client() {
 }
 
 size_t __client::get_socket()       { return this->socket; }
-__server __client::get_server()     { return *this->server; }
+__server *__client::get_server()     { return this->server; }
 std::string __client::get_host()    { return this->host; }
 std::string __client::get_port()    { return this->port; }
 

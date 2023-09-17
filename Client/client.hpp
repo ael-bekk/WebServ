@@ -24,7 +24,7 @@ class __client {
         ~__client();
 
         size_t              get_socket();
-        __server            get_server();
+        __server            *get_server();
         std::string         get_host();
         std::string         get_port();
 

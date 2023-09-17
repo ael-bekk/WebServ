@@ -27,10 +27,10 @@ __response::~__response() {
 
 void __response::cgi(std::string extension, std::string absolute_path) // trow an error
 {
-    std::string ext;
     std::string file;
-    std::string stored_exec_file = "/nfs/sgoinfre/goinfre/Perso/ael-bekk/";
+    std::string stored_exec_file = "./Tmp/";
 
+    mkdir(stored_exec_file.c_str(), S_IRWXU | S_IRWXG);
     NEW_NAME(file);
 
     stored_exec_file += file + extension;
@@ -76,13 +76,16 @@ void __response::cgi_exec(std::string &status) {
 
             if (Global().exec_cgi<:this->sock:>.status != -1)
                 this->path = Global().exec_cgi<:this->sock:>.path;
-            else if (curr_time - Global().exec_cgi<:this->sock:>.tm < 20)
+            else if (curr_time - Global().exec_cgi<:this->sock:>.tm < 5)
                 throw "cgi still hang";
             else
                 cgi_enter = false,
                 status = HTTP_500_INTERNAL_SERVER_ERROR,
                 kill(Global().exec_cgi<:this->sock:>.pid, SIGQUIT);
-
+            
+            if (this->location->get_cgi_extension()["." + type].find("php-cgi") == std::string::npos)
+                cgi_enter = false;
+            
             Global().exec_cgi.erase(this->sock);
         }
     }
@@ -111,7 +114,8 @@ std::string __response::generate_header(std::string status, bool redirected) {
     Global().add_ResponseHeader(this->sock, "Content-Length", int_tostr);
     header += "HTTP/1.1 " + status + delimeter;
     header += "Date: " + _time + " GMT" + delimeter;
-    header += "Server: " + Global().client(this->sock).get_server().get_server_name() + delimeter;
+    if (Global().client(this->sock).get_server())
+        header += "Server: " + Global().client(this->sock).get_server()->get_server_name() + delimeter;
     if (!cgi_enter && (int_tostr != "0" || status != HTTP_301_MULTIPLE_CHOICE)) {
         header += "Content-Length: " + int_tostr + delimeter;
         header += "Content-Type: " + Global().get_ClientMimeTypes(type) + delimeter;
