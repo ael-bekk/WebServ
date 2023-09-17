@@ -1,6 +1,6 @@
 #include "post.hpp"
 
-__post::__post() : _pipe{-1, -1}, count_content_lent(0), content_length(0), cgi(false) {}
+__post::__post() : count_content_lent(0), content_length(0), cgi(false) {}
 
 short    __post::open_file_if_not(std::string type, std::string p_loc, std::string path, __location  *location) {
     if FILE_NOT_OPEN_YET() {
@@ -11,19 +11,10 @@ short    __post::open_file_if_not(std::string type, std::string p_loc, std::stri
 
         CORRECT_PATH()
 
-        if OPEN_FOR_UPLOAD()
-        {
-            this->outfile.open(std::string(this->filename), std::ios::out);
-            if (!this->outfile.is_open()) {
-                return SOCK_END_REQUEST;
-            }
+        this->outfile.open(std::string(this->filename), std::ios::out);
+        if (!this->outfile.is_open()) {
+            return SOCK_END_REQUEST;
         }
-        if OPEN_FOR_CGI()
-        {
-            if (pipe(this->_pipe))
-                return SOCK_END_REQUEST;
-            this->cgi = true;
-        } /*else error*/
     }
     return SOCK_INIT_STATUS;
 }

@@ -9,7 +9,6 @@ class __post {
     private:
         std::string     filename;
         std::fstream    outfile;
-        int             _pipe[2];
         unsigned long long             content_length;
         unsigned long long             count_content_lent;
         bool            cgi;

@@ -53,8 +53,9 @@ void _select::CheckSockStatus(int sock, int status) {
 void _select::multiplexing() {
 
     int client_sock;
+    srand(time(NULL));
     timeout.tv_usec = 500;
-    // timeout.tv_sec = 0;
+    timeout.tv_sec = 0;
     signal(SIGPIPE, SIG_IGN);
 
     while (true) {

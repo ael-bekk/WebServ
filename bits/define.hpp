@@ -78,7 +78,7 @@
 #define GET_REQ_CONTENT_TYPE()           Global().RequestHeader[this->sock]["Content-Type"]
 #define GET_REQ_METHOD()                 Global().RequestHeader[this->sock]["Method"]
 #define GET_REQ_SERVER_NAME()            Global().RequestHeader[this->sock]["host"]
-#define FILE_NOT_OPEN_YET()              (this->_pipe[0] == -1 && !this->outfile.is_open())
+#define FILE_NOT_OPEN_YET()              (!this->outfile.is_open())
 #define TRANSFER_CHUNKED()               (Global().RequestHeader[this->sock]["Transfer-Encoding"] == "chunked")
 #define TRANSFER_CONTENT_LENT()          (!Global().RequestHeader[this->sock]["Content-Length"].empty())
 
@@ -136,7 +136,7 @@
 
 #define NEW_NAME(FILENAME)      {                                                                                                    \
                                     std::time_t result = std::time(NULL);                                                             \
-                                    FILENAME = std::string(std::asctime(std::localtime(&result))).substr(0, FILENAME.find('\n', 1));   \
+                                    FILENAME = std::to_string(std::rand() % 1000000) + "_" + std::string(std::asctime(std::localtime(&result))).substr(0, FILENAME.find('\n', 1));   \
                                     FILENAME = FILENAME.substr(0, FILENAME.find('\n', 1));                                              \
                                     for (int i = 0; i < FILENAME.length(); i++)                                                          \
                                         (FILENAME[i] == ' ') && (FILENAME[i] = '_');                                                      \
