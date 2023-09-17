@@ -29,7 +29,7 @@ void __response::cgi(std::string extension, std::string absolute_path) // trow a
 {
     std::string ext;
     std::string file;
-    std::string stored_exec_file = "/goinfre/";
+    std::string stored_exec_file = "/nfs/sgoinfre/goinfre/Perso/ael-bekk/";
 
     NEW_NAME(file);
 
@@ -76,10 +76,11 @@ void __response::cgi_exec(std::string &status) {
 
             if (Global().exec_cgi<:this->sock:>.status != -1)
                 this->path = Global().exec_cgi<:this->sock:>.path;
-            else if (curr_time - Global().exec_cgi<:this->sock:>.tm < 5)
+            else if (curr_time - Global().exec_cgi<:this->sock:>.tm < 20)
                 throw "cgi still hang";
             else
-                status = HTTP_408_REQUEST_TIMEOUT,
+                cgi_enter = false,
+                status = HTTP_500_INTERNAL_SERVER_ERROR,
                 kill(Global().exec_cgi<:this->sock:>.pid, SIGQUIT);
 
             Global().exec_cgi.erase(this->sock);
@@ -111,13 +112,14 @@ std::string __response::generate_header(std::string status, bool redirected) {
     header += "HTTP/1.1 " + status + delimeter;
     header += "Date: " + _time + " GMT" + delimeter;
     header += "Server: " + Global().client(this->sock).get_server().get_server_name() + delimeter;
-    if (int_tostr != "0" || status != HTTP_301_MULTIPLE_CHOICE) {
+    if (!cgi_enter && (int_tostr != "0" || status != HTTP_301_MULTIPLE_CHOICE)) {
         header += "Content-Length: " + int_tostr + delimeter;
         header += "Content-Type: " + Global().get_ClientMimeTypes(type) + delimeter;
     }
     header += "Connection: close" + delimeter;
     if (redirected) header += "Location: " + this->path + delimeter;
-    header += delimeter;
+    
+    if (!cgi_enter) header += delimeter;
 
     return header;
 }

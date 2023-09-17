@@ -36,7 +36,7 @@ std::string __check_err::autoindex(std::string path) {
     std::ofstream outfile;
 
     NEW_NAME(path_autoindex);
-    std::string tmp = "/goinfre/" + path_autoindex + ".html";
+    std::string tmp = "/nfs/sgoinfre/goinfre/Perso/ael-bekk/" + path_autoindex + ".html";
     // std::cout << tmp << std::endl;
     outfile.open(tmp.c_str());
     if (!outfile.is_open() || dir == NULL) {
