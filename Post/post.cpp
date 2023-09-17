@@ -29,7 +29,6 @@ short    __post::open_file_if_not(std::string type, std::string p_loc, std::stri
 }
 
 void __post::rm_file() {
-    this->outfile.close();
     remove(this->filename.c_str());
 }
 
@@ -44,7 +43,6 @@ short   __post::transfer_encoding_chunked(unsigned long long max_body_size, std:
         {
             if BODY_ENDS()
             {
-                this->outfile.close();
                 return SOCK_END_REQUEST;
             }
             if THERE_IS_NEW_CHUNK()
@@ -90,7 +88,6 @@ short   __post::transfer_content_length(unsigned long long max_body_size, int co
     buff_rest = buff_rest.substr(pos);
 
     if REACH_CONTENT_LENT() {
-        this->outfile.close();
         this->content_length = this->count_content_lent;
         return SOCK_END_REQUEST;
     }

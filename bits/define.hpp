@@ -74,13 +74,13 @@
 #define IS_SOCK_END_REQUEST_MAX_SIZE(STATUS)            (STATUS == 4)
 
 
-#define GET_REQ_CONTENT_LENT()           Global().get_RequestHeader(this->sock, "Content-Length")
-#define GET_REQ_CONTENT_TYPE()           Global().get_RequestHeader(this->sock, "Content-Type")
-#define GET_REQ_METHOD()                 Global().get_RequestHeader(this->sock, "Method")
-#define GET_REQ_SERVER_NAME()            Global().get_RequestHeader(this->sock, "host")
+#define GET_REQ_CONTENT_LENT()           Global().RequestHeader[this->sock]["Content-Length"]
+#define GET_REQ_CONTENT_TYPE()           Global().RequestHeader[this->sock]["Content-Type"]
+#define GET_REQ_METHOD()                 Global().RequestHeader[this->sock]["Method"]
+#define GET_REQ_SERVER_NAME()            Global().RequestHeader[this->sock]["host"]
 #define FILE_NOT_OPEN_YET()              (this->_pipe[0] == -1 && !this->outfile.is_open())
-#define TRANSFER_CHUNKED()               (Global().get_RequestHeader(this->sock, "Transfer-Encoding") == "chunked")
-#define TRANSFER_CONTENT_LENT()          (!Global().get_RequestHeader(this->sock, "Content-Length").empty())
+#define TRANSFER_CHUNKED()               (Global().RequestHeader[this->sock]["Transfer-Encoding"] == "chunked")
+#define TRANSFER_CONTENT_LENT()          (!Global().RequestHeader[this->sock]["Content-Length"].empty())
 
 
 
@@ -151,13 +151,13 @@
 #define OPEN_FOR_CGI()          (location->get_upload().empty() && extention.find("." + type) != extention.end())
 #define OPEN_FOR_UPLOAD()       (!location->get_upload().empty())
 
-#define ERROR_OCCURRED()        (!Global().get_ResponseHeader(this->sock, "status").empty())
-#define POST()                  (Global().get_RequestHeader(this->sock, "Method") == "POST")
-#define GET()                   (Global().get_RequestHeader(this->sock, "Method") == "GET")
-#define DELETE()                (Global().get_RequestHeader(this->sock, "Method") == "DELETE")
+#define ERROR_OCCURRED()        (!Global().ResponseHeader[this->sock]["status"].empty())
+#define POST()                  (Global().RequestHeader[this->sock]["Method"] == "POST")
+#define GET()                   (Global().RequestHeader[this->sock]["Method"] == "GET")
+#define DELETE()                (Global().RequestHeader[this->sock]["Method"] == "DELETE")
 #define HEADER_SENDING()        (this->in_header)
 #define BODY_SENDING()          (this->in_body)
-#define RESPONSE_ENDS()        (!this->in_body)
+#define RESPONSE_ENDS()         (!this->in_body)
 #define ERROR_OVERRIDEN()       (!this->errors[err].empty())
 #define DEF_ERROR()             (!this->def_errors[err].empty())
 
@@ -166,16 +166,16 @@
                                             this->infile.open(this->path.c_str());\
                                     }
 
-#define GET_RESP_STATUS()                 Global().get_ResponseHeader(this->sock, "status")
-#define GET_RESP_CONTENT_LENT()           Global().get_ResponseHeader(this->sock, "Content-Length")
-#define GET_RESP_CONTENT_TYPE()           Global().get_ResponseHeader(this->sock, "Content-Type")
-#define GET_RESP_METHOD()                 Global().get_ResponseHeader(this->sock, "Method")
-#define GET_RESP_SERVER_NAME()            Global().get_ResponseHeader(this->sock, "host")
+#define GET_RESP_STATUS()                 Global().ResponseHeader[this->sock]["status"]
+#define GET_RESP_CONTENT_LENT()           Global().ResponseHeader[this->sock]["Content-Length"]
+#define GET_RESP_CONTENT_TYPE()           Global().ResponseHeader[this->sock]["Content-Type"]
+#define GET_RESP_METHOD()                 Global().ResponseHeader[this->sock]["Method"]
+#define GET_RESP_SERVER_NAME()            Global().ResponseHeader[this->sock]["host"]
 
 #define CHECK_READ_ENDS()   {                                                                           \
                                 int content;                                                             \
                                 TO_INT(GET_RESP_CONTENT_LENT(), content)                                  \
-                                if (rd == -1 || content == this->content_lent)                             \
+                                if (rd <= 0 || content == this->content_lent)                             \
                                     this->in_body = false;                                                  \
                                 rd = (rd == -1) ? 0 : rd;                                                    \
                             }
@@ -184,20 +184,19 @@
 #define SEP_END_RESPONSE            "/r/n/r/n"
 
 #define COUNT_CONTENT_LENT(PATH, LENT)      {                                      \
-                                                FILE *f = fopen(PATH.c_str(), "r"); \
-                                                if (f != NULL) {                     \
-                                                    fseek(f, 0, SEEK_END);            \
-                                                    LENT = ftell(f);                   \
-                                                    fclose(f);                          \
-                                                }                                        \
+                                                int f = open(PATH.c_str(), O_RDONLY); \
+                                                if (f != -1) {                     \
+                                                    LENT = lseek(f, 0, SEEK_END);            \
+                                                }                                       \
+                                                close(f);                               \
                                             }
 
 #define AUTO_INDEXING()                 (path[path.length() - 1] == '/')
 
 #define FILE_OPENED(FILE_NAME, STATUS)          {               \
-                                                    FILE *f = fopen(FILE_NAME.c_str(), "r"); \
-                                                    STATUS = (f != NULL);\
-                                                    STATUS && fclose(f);\
+                                                    int f = open(FILE_NAME.c_str(), O_WRONLY); \
+                                                    STATUS = (f != -1);\
+                                                    close(f);\
                                                 }
 
 ////////////////////////// http status ==============?

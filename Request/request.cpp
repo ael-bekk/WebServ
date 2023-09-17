@@ -21,7 +21,7 @@ void    __request::InsertFirst(std::stringstream inp) {
             i+=2;
         } else
             uri += path[i];
-    std::cout << uri << std::endl;
+    // std::cout << uri << std::endl;
     Global().add_RequestHeader(this->sock, "Method", method);
     Global().add_RequestHeader(this->sock, "Path", uri);
     Global().add_RequestHeader(this->sock, "Query", Query);

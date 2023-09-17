@@ -13,7 +13,6 @@ std::string __check_err::insert_html_document(struct dirent* list, std::string p
         href += "/";
         while (readdir(test) && ++count < 3);
         type = ICONS_HOST + ((count == 3) ? "folder.png" : "empty_folder.png");
-        closedir(test);
     } else {
 
         if (new_path.rfind('.') != std::string::npos)
@@ -26,6 +25,7 @@ std::string __check_err::insert_html_document(struct dirent* list, std::string p
             type = ICONS_HOST + (count ? "file.png" : "empty_file.png");
         }
     }
+    closedir(test);
     return HTML_DOCUMENT(type, href, list->d_name);
 }
 
@@ -53,7 +53,6 @@ std::string __check_err::autoindex(std::string path) {
     outfile << HTML_DOWN_BODY;
 
     closedir(dir);
-    outfile.close();
     return tmp;
 }
 
@@ -116,14 +115,14 @@ void __check_err::check_delete(std::string FolderPath) {
 }
 
 bool __check_err::header_err() {
-    if (!IS_METHOD(Global().get_RequestHeader(this->sock, "Method"))) {
-        if IS_OTHER_METHOD(Global().get_RequestHeader(this->sock, "Method"))
+    if (!IS_METHOD(Global().RequestHeader[this->sock]["Method"])) {
+        if IS_OTHER_METHOD(Global().RequestHeader[this->sock]["Method"])
             Global().add_ResponseHeader(this->sock, "status", HTTP_501_NOT_IMPLEMENTED);
         else
             Global().add_ResponseHeader(this->sock, "status", HTTP_400_BAD_REQUEST);
-    } else if (Global().get_RequestHeader(this->sock, "Path").empty())
+    } else if (Global().RequestHeader[this->sock]["Path"].empty())
         Global().add_ResponseHeader(this->sock, "status", HTTP_400_BAD_REQUEST);
-    else if (Global().get_RequestHeader(this->sock, "Http") != "HTTP/1.1")
+    else if (Global().RequestHeader[this->sock]["Http"] != "HTTP/1.1")
         Global().add_ResponseHeader(this->sock, "status", HTTP_505_HTTP_VERSION_NOT_SUPPORTED);
     else
         return false;

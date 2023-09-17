@@ -36,7 +36,7 @@ void __response::cgi(std::string extension, std::string absolute_path) // trow a
     stored_exec_file += file + extension;
 
     Global().tmp_file[this->sock] = stored_exec_file;
-    std::cout << Global().get_RequestHeader(this->sock, "Cookie") << std::endl;
+    std::cout << Global().RequestHeader[this->sock]["Cookie"] << std::endl;
 
     int fd = open(stored_exec_file.c_str(), O_CREAT | O_RDWR, 0755);
     if (fd ==- 1)
@@ -95,7 +95,7 @@ void __response::cgi_exec(std::string &status) {
 
 std::string __response::generate_header(std::string status, bool redirected) {
     std::string     _time;
-    int             lent(0);
+    off_t           lent(0);
     std::string     type;
     std::string     header;
     std::string     int_tostr;
@@ -119,7 +119,7 @@ std::string __response::generate_header(std::string status, bool redirected) {
         header += "Server: " + Global().client(this->sock).get_server()->get_server_name() + delimeter;
     if (!cgi_enter && (int_tostr != "0" || status != HTTP_301_MULTIPLE_CHOICE)) {
         header += "Content-Length: " + int_tostr + delimeter;
-        header += "Content-Type: " + Global().get_ClientMimeTypes(type) + delimeter;
+        header += "Content-Type: " + Global().ClientMimeTypes[type] + delimeter;
     }
     header += "Connection: close" + delimeter;
     if (redirected) header += "Location: " + this->path + delimeter;
@@ -170,7 +170,7 @@ std::string __response::body() {
     content_lent += rd;
 
     CHECK_READ_ENDS()
-
+    // std::cout << rd << std:: endl;
     return std::string(buffer, rd);
 }
 
@@ -203,11 +203,11 @@ short    __response::Rspns() {
         for (int snd = 0; snd != block.length();) {
             block = block.substr(snd);
             snd = send(this->sock, block.c_str(), block.length(), 0);
-            if (snd == -1) return (infile.close(), SOCK_CLOSE);
+            if (snd == -1) return SOCK_CLOSE;
         }
     } catch (...) { return SOCK_INIT_STATUS; }
 
-    return RESPONSE_ENDS() ? (infile.close(), SOCK_END_RESPONSE) : SOCK_INIT_STATUS;
+    return RESPONSE_ENDS() ? SOCK_END_RESPONSE : SOCK_INIT_STATUS;
 }
 
 int                                 __response::get_sock()          { return this->sock; }
