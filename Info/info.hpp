@@ -40,6 +40,7 @@ class __info
 
     public:
         std::map<int, _cgi_info>    exec_cgi;
+        std::map<int, std::string>  tmp_file;
 
         void            update_sock(int fd);
         void            add_server_sock(int fd);

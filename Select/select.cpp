@@ -18,6 +18,11 @@ short   _select::CloseClient(int sock) {
         std::cerr << "close() error!\n";
         exit(1);
     }
+    if (!Global().tmp_file[sock].empty()) {
+        std::cout << Global().tmp_file[sock] << std::endl;
+        remove(Global().tmp_file[sock].c_str());
+        Global().tmp_file[sock] = "";
+    }
     Global().exec_cgi.erase(sock);
     std::cout << "C : " << sock << std::endl;
     return SUCCESS;

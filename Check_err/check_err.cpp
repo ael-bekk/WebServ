@@ -38,6 +38,7 @@ std::string __check_err::autoindex(std::string path) {
     NEW_NAME(path_autoindex);
     mkdir("./Tmp", S_IRWXU | S_IRWXG);
     std::string tmp = "./Tmp/" + path_autoindex + ".html";
+    Global().tmp_file[this->sock] = tmp;
     // std::cout << tmp << std::endl;
     outfile.open(tmp.c_str());
     if (!outfile.is_open() || dir == NULL) {
@@ -132,7 +133,6 @@ bool __check_err::header_err() {
 void __check_err::check_errors() {
     if ERROR_OCCURRED() return;
     this->sock = this->response->get_sock();
-    std::cout << this->sock << std::endl;
     std::map<std::string, bool> allowed;
 
     if (this->response && this->response->get_location())

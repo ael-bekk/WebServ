@@ -35,6 +35,7 @@ void __response::cgi(std::string extension, std::string absolute_path) // trow a
 
     stored_exec_file += file + extension;
 
+    Global().tmp_file[this->sock] = stored_exec_file;
     std::cout << Global().get_RequestHeader(this->sock, "Cookie") << std::endl;
 
     int fd = open(stored_exec_file.c_str(), O_CREAT | O_RDWR, 0755);
@@ -82,10 +83,10 @@ void __response::cgi_exec(std::string &status) {
                 cgi_enter = false,
                 status = HTTP_500_INTERNAL_SERVER_ERROR,
                 kill(Global().exec_cgi<:this->sock:>.pid, SIGQUIT);
-            
+
             if (this->location->get_cgi_extension()["." + type].find("php-cgi") == std::string::npos)
                 cgi_enter = false;
-            
+
             Global().exec_cgi.erase(this->sock);
         }
     }
