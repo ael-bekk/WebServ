@@ -18,7 +18,7 @@ short   _select::CloseClient(int sock) {
         std::cerr << "close() error!\n";
         exit(1);
     }
-    
+    Global().exec_cgi.erase(sock);
     std::cout << "C : " << sock << std::endl;
     return SUCCESS;
 }
@@ -71,7 +71,7 @@ void _select::multiplexing() {
             } else if (Global().is_client_sock(socket)) {
                 __client & client = Global().client(socket);
                 int status = 0;
-
+                
                 FD_ISSET(socket, &this->r) && (status = client.Receive());
                 FD_ISSET(socket, &this->w) && (status = client.Send());
 

@@ -9,6 +9,14 @@ class __network;
 class __client;
 class __server;
 
+typedef struct _cgi_info {
+    std::string path;
+    time_t      tm;
+    int         status;
+    int         pid;
+    _cgi_info() : status(-1) { time(&this->tm); }
+} _cgi_info;
+
 class __info
 {
     private:
@@ -31,6 +39,8 @@ class __info
 
 
     public:
+        std::map<int, _cgi_info>    exec_cgi;
+
         void            update_sock(int fd);
         void            add_server_sock(int fd);
         void            add_network(int fd, __network & net);

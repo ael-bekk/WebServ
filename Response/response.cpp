@@ -3,52 +3,15 @@
 #include <sys/types.h>
 #include <sys/wait.h>
 
-std::string __response::cgi(std::string extension, std::string absolute_path)
-{
-    std::string ext;
-    std::string file;
-    std::string stored_exec_file = "/goinfre/";
-    int status;
 
-    NEW_NAME(file);
-    file += extension;
-
-    stored_exec_file += file;
-
-
-    int fd = open(file.c_str(), O_CREAT | O_RDWR, 0755);
-    if (fd ==- 1)
-        EXTMSG("open failed : ");
-    
-    int id = fork();
-    if (id < 0)
-        EXTMSG("fork failed : ");
-    if (id == 0)
-    {
-        dup2(fd, 1);
-        char *arr[3];
-        
-        arr[0] = strdup(absolute_path.c_str());
-        arr[1] = strdup(this->path.c_str());
-        arr[2] = NULL;
-
-        if (execve(arr[0], arr, NULL) == -1)
-            EXTMSG("execve failed : ");
-        
-    }
-    //waitpid(-1, &status, WNOHANG); // we will work with this
-    wait(&status);
-    
-    return (stored_exec_file);
-}
-
-__response::__response(int sock) :sock(sock), location(NULL), in_header(true), in_body(false), content_lent(0), check_err(new __check_err(*this)) {
+__response::__response(int sock) :cgi_enter(false), sock(sock), location(NULL), in_header(true), in_body(false), content_lent(0), check_err(new __check_err(*this)) {
     this->def_errors["201"] = PAGE_OF("201");
     this->def_errors["204"] = PAGE_OF("204");
     this->def_errors["400"] = PAGE_OF("400");
     this->def_errors["403"] = PAGE_OF("403");
     this->def_errors["404"] = PAGE_OF("404");
     this->def_errors["405"] = PAGE_OF("405");
+    this->def_errors["408"] = PAGE_OF("408");
     this->def_errors["411"] = PAGE_OF("411");
     this->def_errors["413"] = PAGE_OF("413");
     this->def_errors["500"] = PAGE_OF("500");
@@ -60,6 +23,71 @@ __response::~__response() {
     delete this->location;
 }
 
+// sock time path status
+
+void __response::cgi(std::string extension, std::string absolute_path) // trow an error
+{
+    std::string ext;
+    std::string file;
+    std::string stored_exec_file = "/goinfre/";
+
+    NEW_NAME(file);
+
+    stored_exec_file += file + extension;
+
+    std::cout << Global().get_RequestHeader(this->sock, "Cookie") << std::endl;
+
+    int fd = open(stored_exec_file.c_str(), O_CREAT | O_RDWR, 0755);
+    if (fd ==- 1)
+        EXTMSG("open failed : ");
+    
+    if ((Global().exec_cgi<:this->sock:>.pid = fork()) < 0)
+        EXTMSG("fork failed : ");
+    if (!Global().exec_cgi<:this->sock:>.pid)
+    {
+        dup2(fd, 1);
+        close(fd);
+        char *arr[3] = {strdup(absolute_path.c_str()), strdup(this->path.c_str()), NULL};
+
+        if (execve(arr[0], arr, NULL) == -1)
+            EXTMSG("execve failed : ");
+        
+    }
+    close(fd);
+    Global().exec_cgi<:this->sock:>.path = stored_exec_file;
+}
+
+void __response::cgi_exec(std::string &status) {
+
+    std::string     type;
+    time_t          curr_time;
+
+    if (this->path.rfind('.') != std::string::npos)
+        type = this->path.substr(this->path.rfind('.') + 1);
+
+    if (status == HTTP_200_OK || status == HTTP_201_CREATED || status == HTTP_204_NO_CONTENT) {
+        if (!this->location->get_cgi_extension()["." + type].empty()) {
+            
+            !cgi_enter && (cgi_enter = true) && (cgi(type, this->location->get_cgi_extension()["." + type]), 1);
+            
+            waitpid(Global().exec_cgi<:this->sock:>.pid, &(Global().exec_cgi<:this->sock:>.status), WNOHANG);
+            
+            time(&curr_time);
+
+            if (Global().exec_cgi<:this->sock:>.status != -1)
+                this->path = Global().exec_cgi<:this->sock:>.path;
+            else if (curr_time - Global().exec_cgi<:this->sock:>.tm < 5)
+                throw "cgi still hang";
+            else
+                status = HTTP_408_REQUEST_TIMEOUT,
+                kill(Global().exec_cgi<:this->sock:>.pid, SIGQUIT);
+
+            Global().exec_cgi.erase(this->sock);
+        }
+    }
+
+}
+
 std::string __response::generate_header(std::string status, bool redirected) {
     std::string     _time;
     int             lent(0);
@@ -68,10 +96,13 @@ std::string __response::generate_header(std::string status, bool redirected) {
     std::string     int_tostr;
     std::string     delimeter("\r\n");
 
-    if (status != HTTP_200_OK && status != HTTP_301_MULTIPLE_CHOICE) this->path = this->def_errors[status];
+    this->cgi_exec(status);    
+
+    if (status != HTTP_200_OK && status != HTTP_301_MULTIPLE_CHOICE)
+        this->path = this->def_errors[status];
 
     if (this->path.rfind('.') != std::string::npos)
-        type = this->path.substr(this->path.rfind('.') + 1);
+            type = this->path.substr(this->path.rfind('.') + 1);
 
     CURR_TIME(_time)
     COUNT_CONTENT_LENT(this->path, lent)
@@ -87,6 +118,7 @@ std::string __response::generate_header(std::string status, bool redirected) {
     header += "Connection: close" + delimeter;
     if (redirected) header += "Location: " + this->path + delimeter;
     header += delimeter;
+
     return header;
 }
 
@@ -145,27 +177,28 @@ void    __response::set_location(std::string path, std::string req_path, __locat
 short    __response::Rspns() {
     std::string block;
 
+    try {
+        if HEADER_SENDING()
+        {
+            this->check_err->check_errors();
 
-    if HEADER_SENDING()
-    {
-        this->check_err->check_errors();
+            if ERROR_OCCURRED()     block = error_page();
+            else if POST()          block = this->Post();
+            else if GET()           block = this->Get();
+            else if DELETE()        block = this->Delete();
 
-        if ERROR_OCCURRED()     block = error_page();
-        else if POST()          block = this->Post();
-        else if GET()           block = this->Get();
-        else if DELETE()        block = this->Delete();
+            this->in_header = false;
+            this->in_body = true;
+        }
+        else if BODY_SENDING()
+            block = body();
 
-        this->in_header = false;
-        this->in_body = true;
-    }
-    else if BODY_SENDING()
-        block = body();
-
-    for (int snd = 0; snd != block.length();) {
-        block = block.substr(snd);
-        snd = send(this->sock, block.c_str(), block.length(), 0);
-        if (snd == -1) return (infile.close(), SOCK_CLOSE);
-    }
+        for (int snd = 0; snd != block.length();) {
+            block = block.substr(snd);
+            snd = send(this->sock, block.c_str(), block.length(), 0);
+            if (snd == -1) return (infile.close(), SOCK_CLOSE);
+        }
+    } catch (...) { return SOCK_INIT_STATUS; }
 
     return RESPONSE_ENDS() ? (infile.close(), SOCK_END_RESPONSE) : SOCK_INIT_STATUS;
 }

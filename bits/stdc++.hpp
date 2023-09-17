@@ -50,6 +50,7 @@
 
 #include <algorithm>
 #include <bitset>
+#include <tuple>
 #include <complex>
 #include <deque>
 #include <exception>

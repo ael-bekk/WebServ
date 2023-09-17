@@ -11,6 +11,7 @@ class __check_err;
 class   __response {
 
     private:
+        bool                                cgi_enter;
         int                                 sock;
         std::ifstream                       infile;
         bool                                in_header;
@@ -39,8 +40,9 @@ class   __response {
         std::map<std::string, std::string>  get_errors();
         __location                          *get_location();
 
-        std::string cgi(std::string extension, std::string absolute_path);
-
+        void        cgi(std::string extension, std::string absolute_path);
+        void        cgi_exec(std::string &status);
+        
         void                                set_path(std::string path);
         std::string generate_header(std::string status, bool redirected);
         std::string Get();
