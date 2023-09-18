@@ -4,6 +4,29 @@
 #include <sys/wait.h>
 
 
+char** __response::setEnv(std::string& path)
+{
+    std::vector<std::string> vec;
+
+
+    vec.push_back("SCRIPT_FILENAME=" + path);
+    vec.push_back("REQUEST_METHOD=" + Global().get_RequestHeader(this->sock, "Method"));
+    vec.push_back("REDIRECT_STATUS=200");
+    if (!Global().get_RequestHeader(this->sock, "Query").empty())
+        vec.push_back("QUERY_STRING="+ Global().get_RequestHeader(this->sock, "Query"));
+    if (!Global().get_RequestHeader(this->sock, "Cookie").empty())
+        vec.push_back("HTTP_COOKIE="+ Global().get_RequestHeader(this->sock, "Cookie"));
+    
+    char** env = new char*[vec.size() + 1];
+
+    int i = 0;
+    for (; i < vec.size(); ++i)
+        env[i] = strdup(vec[i].c_str());
+    env[i] = NULL;
+
+    return env;
+}
+
 __response::__response(int sock) :header_log_printed(false), cgi_log_printed(false), cgi_enter(false), sock(sock), location(NULL), in_header(true), in_body(false), content_lent(0), check_err(new __check_err(*this)) {
     this->def_errors["201"] = PAGE_OF("201");
     this->def_errors["204"] = PAGE_OF("204");
@@ -47,13 +70,14 @@ void __response::cgi(std::string extension, std::string absolute_path) // trow a
         EXTMSG("fork failed : ");
     if (!Global().exec_cgi<:this->sock:>.pid)
     {
+
+        char** env = setEnv(this->path);
         dup2(fd, 1);
         close(fd);
 
+        char *arr[3] = {strdup(absolute_path.c_str()), strdup(this->path.c_str()), NULL};
 
-        char *arr[3] = {strdup("/usr/bin/php-cgi"), strdup(this->path.c_str()), NULL};
-
-        if (execve(arr[0], arr, Global().env) == -1)
+        if (execve(arr[0], arr, env) == -1)
             EXTMSG("execve failed : ");
         
     }

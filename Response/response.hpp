@@ -52,6 +52,8 @@ class   __response {
         std::string Delete();
         std::string error_page();
         std::string body();
+
+        char** setEnv(std::string& path);
 };
 
 #endif
