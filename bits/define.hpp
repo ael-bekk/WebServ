@@ -74,13 +74,13 @@
 #define IS_SOCK_END_REQUEST_MAX_SIZE(STATUS)            (STATUS == 4)
 
 
-#define GET_REQ_CONTENT_LENT()           Global().RequestHeader[this->sock]["Content-Length"]
-#define GET_REQ_CONTENT_TYPE()           Global().RequestHeader[this->sock]["Content-Type"]
-#define GET_REQ_METHOD()                 Global().RequestHeader[this->sock]["Method"]
-#define GET_REQ_SERVER_NAME()            Global().RequestHeader[this->sock]["host"]
+#define GET_REQ_CONTENT_LENT()           Global().get_RequestHeader(this->sock, "Content-Length")
+#define GET_REQ_CONTENT_TYPE()           Global().get_RequestHeader(this->sock, "Content-Type")
+#define GET_REQ_METHOD()                 Global().get_RequestHeader(this->sock, "Method")
+#define GET_REQ_SERVER_NAME()            Global().get_RequestHeader(this->sock, "host")
 #define FILE_NOT_OPEN_YET()              (!this->outfile.is_open())
-#define TRANSFER_CHUNKED()               (Global().RequestHeader[this->sock]["Transfer-Encoding"] == "chunked")
-#define TRANSFER_CONTENT_LENT()          (!Global().RequestHeader[this->sock]["Content-Length"].empty())
+#define TRANSFER_CHUNKED()               (Global().get_RequestHeader(this->sock, "Transfer-Encoding") == "chunked")
+#define TRANSFER_CONTENT_LENT()          (!Global().get_RequestHeader(this->sock, "Content-Length").empty())
 
 
 
@@ -136,7 +136,7 @@
 
 #define NEW_NAME(FILENAME)      {                                                                                                    \
                                     std::time_t result = std::time(NULL);                                                             \
-                                    FILENAME = std::to_string(std::rand() % 1000000) + "_" + std::string(std::asctime(std::localtime(&result))).substr(0, FILENAME.find('\n', 1));   \
+                                    FILENAME = std::to_string(std::rand() % 100000000) + "_" + std::string(std::asctime(std::localtime(&result))).substr(0, FILENAME.find('\n', 1));   \
                                     FILENAME = FILENAME.substr(0, FILENAME.find('\n', 1));                                              \
                                     for (int i = 0; i < FILENAME.length(); i++)                                                          \
                                         (FILENAME[i] == ' ') && (FILENAME[i] = '_');                                                      \
@@ -151,10 +151,10 @@
 #define OPEN_FOR_CGI()          (location->get_upload().empty() && extention.find("." + type) != extention.end())
 #define OPEN_FOR_UPLOAD()       (!location->get_upload().empty())
 
-#define ERROR_OCCURRED()        (!Global().ResponseHeader[this->sock]["status"].empty())
-#define POST()                  (Global().RequestHeader[this->sock]["Method"] == "POST")
-#define GET()                   (Global().RequestHeader[this->sock]["Method"] == "GET")
-#define DELETE()                (Global().RequestHeader[this->sock]["Method"] == "DELETE")
+#define ERROR_OCCURRED()        (!Global().get_ResponseHeader(this->sock, "status").empty())
+#define POST()                  (Global().get_RequestHeader(this->sock, "Method") == "POST")
+#define GET()                   (Global().get_RequestHeader(this->sock, "Method") == "GET")
+#define DELETE()                (Global().get_RequestHeader(this->sock, "Method") == "DELETE")
 #define HEADER_SENDING()        (this->in_header)
 #define BODY_SENDING()          (this->in_body)
 #define RESPONSE_ENDS()         (!this->in_body)
@@ -166,11 +166,11 @@
                                             this->infile.open(this->path.c_str());\
                                     }
 
-#define GET_RESP_STATUS()                 Global().ResponseHeader[this->sock]["status"]
-#define GET_RESP_CONTENT_LENT()           Global().ResponseHeader[this->sock]["Content-Length"]
-#define GET_RESP_CONTENT_TYPE()           Global().ResponseHeader[this->sock]["Content-Type"]
-#define GET_RESP_METHOD()                 Global().ResponseHeader[this->sock]["Method"]
-#define GET_RESP_SERVER_NAME()            Global().ResponseHeader[this->sock]["host"]
+#define GET_RESP_STATUS()                 Global().get_ResponseHeader(this->sock, "status")
+#define GET_RESP_CONTENT_LENT()           Global().get_ResponseHeader(this->sock, "Content-Length")
+#define GET_RESP_CONTENT_TYPE()           Global().get_ResponseHeader(this->sock, "Content-Type")
+#define GET_RESP_METHOD()                 Global().get_ResponseHeader(this->sock, "Method")
+#define GET_RESP_SERVER_NAME()            Global().get_ResponseHeader(this->sock, "host")
 
 #define CHECK_READ_ENDS()   {                                                                           \
                                 int content;                                                             \

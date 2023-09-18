@@ -19,7 +19,7 @@ typedef struct _cgi_info {
 
 class __info
 {
-    public:
+    private:
         int                                                         _max;
         std::map<int, bool>                                         server_sockets;
         std::map<int, bool>                                         client_sockets;

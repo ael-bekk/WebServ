@@ -36,7 +36,7 @@ void __response::cgi(std::string extension, std::string absolute_path) // trow a
     stored_exec_file += file + extension;
 
     Global().tmp_file[this->sock] = stored_exec_file;
-    std::cout << Global().RequestHeader[this->sock]["Cookie"] << std::endl;
+    std::cout << Global().get_RequestHeader(this->sock, "Cookie") << std::endl;
 
     int fd = open(stored_exec_file.c_str(), O_CREAT | O_RDWR, 0755);
     if (fd ==- 1)
@@ -119,7 +119,7 @@ std::string __response::generate_header(std::string status, bool redirected) {
         header += "Server: " + Global().client(this->sock).get_server()->get_server_name() + delimeter;
     if (!cgi_enter && (int_tostr != "0" || status != HTTP_301_MULTIPLE_CHOICE)) {
         header += "Content-Length: " + int_tostr + delimeter;
-        header += "Content-Type: " + Global().ClientMimeTypes[type] + delimeter;
+        header += "Content-Type: " + Global().get_ClientMimeTypes(type) + delimeter;
     }
     header += "Connection: close" + delimeter;
     if (redirected) header += "Location: " + this->path + delimeter;

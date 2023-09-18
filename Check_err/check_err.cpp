@@ -115,14 +115,14 @@ void __check_err::check_delete(std::string FolderPath) {
 }
 
 bool __check_err::header_err() {
-    if (!IS_METHOD(Global().RequestHeader[this->sock]["Method"])) {
-        if IS_OTHER_METHOD(Global().RequestHeader[this->sock]["Method"])
+    if (!IS_METHOD(Global().get_RequestHeader(this->sock, "Method"))) {
+        if IS_OTHER_METHOD(Global().get_RequestHeader(this->sock, "Method"))
             Global().add_ResponseHeader(this->sock, "status", HTTP_501_NOT_IMPLEMENTED);
         else
             Global().add_ResponseHeader(this->sock, "status", HTTP_400_BAD_REQUEST);
-    } else if (Global().RequestHeader[this->sock]["Path"].empty())
+    } else if (Global().get_RequestHeader(this->sock, "Path").empty())
         Global().add_ResponseHeader(this->sock, "status", HTTP_400_BAD_REQUEST);
-    else if (Global().RequestHeader[this->sock]["Http"] != "HTTP/1.1")
+    else if (Global().get_RequestHeader(this->sock, "Http") != "HTTP/1.1")
         Global().add_ResponseHeader(this->sock, "status", HTTP_505_HTTP_VERSION_NOT_SUPPORTED);
     else
         return false;

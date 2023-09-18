@@ -20,7 +20,7 @@ std::string __client::get_port()    { return this->port; }
 void    __client::MatchLocation() {
     std::string actual_path, tmp_path, path, req_path;
 
-    tmp_path = Global().RequestHeader[this->socket]["Path"];
+    tmp_path = Global().get_RequestHeader(this->socket, "Path");
     CLEAR_REQUEST_PATH()
     req_path = path;
 
