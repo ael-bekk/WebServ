@@ -16,7 +16,15 @@ char** __response::setEnv(std::string& path)
         vec.push_back("QUERY_STRING="+ Global().get_RequestHeader(this->sock, "Query"));
     if (!Global().get_RequestHeader(this->sock, "Cookie").empty())
         vec.push_back("HTTP_COOKIE="+ Global().get_RequestHeader(this->sock, "Cookie"));
+    std::string s1, s2;
     
+    TO_STRING(s1, GET_REQ_CONTENT_LENT())
+    TO_STRING(s2, GET_REQ_CONTENT_TYPE())
+
+    if POST()
+        vec.push_back("CONTENT_TYPE=" + s2),
+        vec.push_back("CONTENT_LENGTH=" + s1);
+
     char** env = new char*[vec.size() + 1];
 
     int i = 0;
@@ -58,30 +66,40 @@ void __response::cgi(std::string extension, std::string absolute_path) // trow a
 
     stored_exec_file += file + extension;
 
-    int fd = open(stored_exec_file.c_str(), O_CREAT | O_RDWR, 0755);
-    if (fd ==- 1)
-        EXTMSG("open failed : ");
     
     if (!this->cgi_log_printed)
         cgi_log_printed = true,
-        std::cout   << IYellow << this->sock << " : Enter cgi for this path ➔ {" << this->path << "}" << Color_Off << std::endl;
+        std::cout   << IYellow << this->sock << " : Enter cgi for this path ➔ { " << this->path << " }" << Color_Off << std::endl;
     
     if ((Global().exec_cgi<:this->sock:>.pid = fork()) < 0)
         EXTMSG("fork failed : ");
     if (!Global().exec_cgi<:this->sock:>.pid)
     {
 
-        char** env = setEnv(this->path);
+        int fd = open(stored_exec_file.c_str(), O_CREAT | O_RDWR, 0755);
+        if (fd == -1)
+            EXTMSG("open failed : ");
         dup2(fd, 1);
         close(fd);
 
+        if (!Global().tmp_file[-this->sock].empty()) {
+            fd = open(Global().tmp_file[-this->sock].c_str(), O_RDWR);
+            std::cerr   << IYellow << this->sock << " : Enter cgi for this path ➔ { " << Global().tmp_file[-this->sock] << " }" << Color_Off << std::endl;
+            if (fd == -1)
+                EXTMSG("open failed : ");
+            dup2(fd, 0);
+            close(fd);
+        }
+        
+        std::cerr << Global().tmp_file[-this->sock] << " == " << this->path << std::endl;
+
+        char** env = setEnv(this->path);
         char *arr[3] = {strdup(absolute_path.c_str()), strdup(this->path.c_str()), NULL};
 
         if (execve(arr[0], arr, env) == -1)
             EXTMSG("execve failed : ");
         
     }
-    close(fd);
         
     Global().tmp_file[this->sock] = Global().exec_cgi<:this->sock:>.path = stored_exec_file;
 }
@@ -91,12 +109,16 @@ void __response::cgi_exec(std::string &status) {
     std::string     type;
     time_t          curr_time;
 
+    // std::cout << ";;;;;;;;;;;;;;;;;;;;;;" << std::endl;
+
+    // std::cout << Global().tmp_file[-this->sock] << " == " << this->path << std::endl;
     if (POST() && Global().tmp_file[-this->sock].empty())    return;
-    if (POST() && !cgi_enter) path = Global().tmp_file[-this->sock];
+    // if (POST() && !cgi_enter) std::cout << path << std::endl, path = Global().tmp_file[-this->sock], std::cout << path << std::endl;
 
 
     if (this->path.rfind('.') != std::string::npos)
         type = this->path.substr(this->path.rfind('.') + 1);
+    // std::cout << type << std::endl;
 
     if (status == HTTP_200_OK || status == HTTP_201_CREATED || status == HTTP_204_NO_CONTENT) {
         if (!this->location->get_cgi_extension()["." + type].empty()) {

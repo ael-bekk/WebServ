@@ -150,7 +150,7 @@
                                 }
 #define CORRECT_PATH()          filename = location->get_root() + p_loc + "/" + location->get_upload() + "/" + filename + "." + type;
 
-#define OPEN_FOR_CGI()          (location->get_upload().empty() && extention.find("." + type) != extention.end())
+#define OPEN_FOR_CGI()          (extention.find("." + type) != extention.end())
 #define OPEN_FOR_UPLOAD()       (!location->get_upload().empty())
 
 #define ERROR_OCCURRED()        (!Global().get_ResponseHeader(this->sock, "status").empty())

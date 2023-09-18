@@ -84,7 +84,12 @@ void __check_err::check_get() {
 void __check_err::check_post() {
     __location  *location = this->response->get_location();
     std::map<std::string, std::string> extention = location->get_cgi_extension();
-    std::string type = Global().get_ServerMimeTypes(GET_REQ_CONTENT_TYPE());
+    std::string type;
+
+    if (!Global().tmp_file[-this->sock].empty())
+        type = Global().tmp_file[-this->sock].substr(Global().tmp_file[-this->sock].rfind('.') + 1);
+    else
+        type = Global().get_ServerMimeTypes(GET_REQ_CONTENT_TYPE());
 
     if (!TRANSFER_CHUNKED() && !TRANSFER_CONTENT_LENT())
         Global().add_ResponseHeader(this->sock, "status", HTTP_411_LENGTH_REQUIRE);

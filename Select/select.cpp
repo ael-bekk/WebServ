@@ -18,14 +18,14 @@ short   _select::CloseClient(int sock) {
         std::cerr << "close() error!\n";
         exit(1);
     }
-    if (!Global().tmp_file[sock].empty()) {
-        remove(Global().tmp_file[sock].c_str());
-        Global().tmp_file.erase(sock);
-    }
-    if (!Global().tmp_file[-sock].empty()) {
-        remove(Global().tmp_file[-sock].c_str());
-        Global().tmp_file.erase(-sock);
-    }
+    // if (!Global().tmp_file[sock].empty()) {
+    //     remove(Global().tmp_file[sock].c_str());
+    //     Global().tmp_file.erase(sock);
+    // }
+    // if (!Global().tmp_file[-sock].empty()) {
+    //     remove(Global().tmp_file[-sock].c_str());
+    //     Global().tmp_file.erase(-sock);
+    // }
     Global().exec_cgi.erase(sock);
     std::cout << URed << sock << " : " << "↪️ Exit" << Color_Off << std::endl;
     return SUCCESS;

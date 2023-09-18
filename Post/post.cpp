@@ -2,24 +2,37 @@
 
 __post::__post(int sock) : sock(sock), count_content_lent(0), content_length(0), cgi(false) {}
 
-short    __post::open_file_if_not(std::string type, std::string p_loc, std::string path, __location  *location) {
+short    __post::open_file_if_not(std::string tp, std::string p_loc, std::string path, __location  *location) {
     std::map<std::string, std::string> extention = location->get_cgi_extension();
     
-    if (!OPEN_FOR_UPLOAD() && !OPEN_FOR_CGI())
-        return SOCK_END_REQUEST;
+    // if (!OPEN_FOR_UPLOAD() && !OPEN_FOR_CGI())
+    //     return SOCK_END_REQUEST;
+    std::string type = tp;
     if FILE_NOT_OPEN_YET() {
 
         NEW_NAME(this->filename)
 
+        std::cout << type << " " << path << std::endl;
 
         CORRECT_PATH()
 
-        this->outfile.open(this->filename.c_str(), std::ios::out);
-        // system(std::string("chmod 777 " + filename).c_str());
-        if (!this->outfile.is_open()) {
-            return SOCK_END_REQUEST;
+        if (path.rfind('.') != std::string::npos) {
+            type = path.substr(path.rfind('.') + 1);
+            if OPEN_FOR_CGI() this->filename += '.' + type;
+            // else type = tp;
         }
-        if OPEN_FOR_CGI()
+        std::cout << type << " " << path << std::endl;
+        if (OPEN_FOR_UPLOAD() || OPEN_FOR_CGI())
+            this->outfile.open(this->filename.c_str(), std::ios::out);
+        else
+            return SOCK_END_REQUEST;
+
+        if (!this->outfile.is_open())
+            return SOCK_END_REQUEST;
+
+        std::cout << type << " " << path << std::endl;
+        
+        if (OPEN_FOR_CGI())
             Global().tmp_file[-this->sock] = this->filename;
     }
     return SOCK_INIT_STATUS;
