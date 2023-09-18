@@ -1,6 +1,8 @@
 #ifndef __DEFINE_HPP__
 #define __DEFINE_HPP__
 
+#include "ansi_colores.hpp"
+
 #define EXTMSG(str) {                                                            \
                         std::cerr << str << " " << strerror(errno) << std::endl;  \
                         exit(errno);                                               \

@@ -16,6 +16,8 @@ class   __response {
         std::ifstream                       infile;
         bool                                in_header;
         bool                                in_body;
+        bool                                header_log_printed;
+        bool                                cgi_log_printed;
         int                                 content_lent;
         std::string                         req_path;
         std::string                         path;

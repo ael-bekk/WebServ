@@ -3,10 +3,12 @@
 
 #include "../bits/stdc++.hpp"
 #include "../Location/location.hpp"
+#include "../Info/info.hpp"
 
 class __post {
 
     private:
+        int sock;
         std::string     filename;
         std::fstream    outfile;
         unsigned long long             content_length;
@@ -14,7 +16,7 @@ class __post {
         bool            cgi;
 
     public:
-        __post();
+        __post(int sock);
 
         void    rm_file();
         short   open_file_if_not(std::string type, std::string p_loc, std::string path, __location  *location);

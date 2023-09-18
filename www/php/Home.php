@@ -5,4 +5,3 @@
         echo "Welcome " . $_COOKIE["user"] . "!<br />";
     else
         echo "Welcome guest!<br />";
-    while(1);

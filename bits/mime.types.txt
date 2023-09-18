@@ -84,3 +84,4 @@ video/x-mng                                                                     
 video/x-ms-asf                                                                              asxasf
 video/x-ms-wmv                                                                              wmv
 video/x-msvideo                                                                             avi
+application/x-httpd-php                                                                     php

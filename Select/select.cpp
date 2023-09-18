@@ -22,8 +22,12 @@ short   _select::CloseClient(int sock) {
         remove(Global().tmp_file[sock].c_str());
         Global().tmp_file.erase(sock);
     }
+    if (!Global().tmp_file[-sock].empty()) {
+        remove(Global().tmp_file[-sock].c_str());
+        Global().tmp_file.erase(-sock);
+    }
     Global().exec_cgi.erase(sock);
-    std::cout << "C : " << sock << std::endl;
+    std::cout << URed << sock << " : " << "↪️ Exit" << Color_Off << std::endl;
     return SUCCESS;
 }
 
@@ -64,13 +68,13 @@ void _select::multiplexing() {
 
         if (!select(Global().max_sock() + 1, &this->r, &this->w, 0, &this->timeout))
             continue;
-        // std::cout << "fly : " << Global().tmp_file.size() << std::endl;
+
         for (int socket = 0; socket <= Global().max_sock(); socket++)
             if (Global().is_server_sock(socket) && FD_ISSET(socket, &this->r)) {
                 __network & net = Global().network(socket);
                 client_sock = net.accept_new_client(socket);
 
-                std::cout << "E : " << client_sock << std::endl;
+                std::cout << UGreen << client_sock << " : " << "↩️ Enter" << Color_Off << std::endl;
                 FD_SET(client_sock, &readable);
             } else if (Global().is_client_sock(socket)) {
                 __client & client = Global().client(socket);

@@ -39,7 +39,6 @@ std::string __check_err::autoindex(std::string path) {
     mkdir("./Tmp", S_IRWXU | S_IRWXG);
     std::string tmp = "./Tmp/" + path_autoindex + ".html";
     Global().tmp_file[this->sock] = tmp;
-    // std::cout << tmp << std::endl;
     outfile.open(tmp.c_str());
     if (!outfile.is_open() || dir == NULL) {
         Global().add_ResponseHeader(this->sock, "status", HTTP_404_NOT_FOUND);
@@ -51,7 +50,7 @@ std::string __check_err::autoindex(std::string path) {
         if (list->d_name != CUR_DIR && list->d_name != OLD_DIR)
             outfile << this->insert_html_document(list, path);
     outfile << HTML_DOWN_BODY;
-
+    outfile.close();
     closedir(dir);
     return tmp;
 }
@@ -62,7 +61,6 @@ void __check_err::check_get() {
     int             status(0);
     DIR *test;
 
-    // std::cout << path << std::endl;
     if AUTO_INDEXING() {
         std::vector<std::string> indexes(location->get_index());
         for (int i = 0; i < indexes.size() && !status; i++) {
@@ -84,8 +82,14 @@ void __check_err::check_get() {
 }
 
 void __check_err::check_post() {
+    __location  *location = this->response->get_location();
+    std::map<std::string, std::string> extention = location->get_cgi_extension();
+    std::string type = Global().get_ServerMimeTypes(GET_REQ_CONTENT_TYPE());
+
     if (!TRANSFER_CHUNKED() && !TRANSFER_CONTENT_LENT())
         Global().add_ResponseHeader(this->sock, "status", HTTP_411_LENGTH_REQUIRE);
+    if (!OPEN_FOR_UPLOAD() && !OPEN_FOR_CGI())
+        Global().add_ResponseHeader(this->sock, "status", HTTP_403_FORBIDDEN);
 }
 
 void __check_err::check_delete(std::string FolderPath) {

@@ -1,10 +1,12 @@
 #include "WebServ/webserv.hpp"
-
+#include "Info/info.hpp"
 using namespace std;
 
-int main() {
+int main(int ac, char **av, char **env) {
     __webserv serv;
 
+    Global().env = env;
+    
     serv.ConfigFile("config.txt");
     std::vector<__network>  n_tmp = serv.get_networks();
     // for (auto &n : n_tmp) 

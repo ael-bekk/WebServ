@@ -19,7 +19,7 @@ void    __webserv::ConfigFile(std::string filename) {
 
     if (configfile.fail())
         EXTMSG("Error opening file: " + filename)
-    
+
     while (std::getline(configfile, line) && ++line_count)
         if NOT_EMPTY()
         {

@@ -4,7 +4,7 @@
 #include <sys/wait.h>
 
 
-__response::__response(int sock) :cgi_enter(false), sock(sock), location(NULL), in_header(true), in_body(false), content_lent(0), check_err(new __check_err(*this)) {
+__response::__response(int sock) :header_log_printed(false), cgi_log_printed(false), cgi_enter(false), sock(sock), location(NULL), in_header(true), in_body(false), content_lent(0), check_err(new __check_err(*this)) {
     this->def_errors["201"] = PAGE_OF("201");
     this->def_errors["204"] = PAGE_OF("204");
     this->def_errors["400"] = PAGE_OF("400");
@@ -35,12 +35,13 @@ void __response::cgi(std::string extension, std::string absolute_path) // trow a
 
     stored_exec_file += file + extension;
 
-    Global().tmp_file[this->sock] = stored_exec_file;
-    std::cout << Global().get_RequestHeader(this->sock, "Cookie") << std::endl;
-
     int fd = open(stored_exec_file.c_str(), O_CREAT | O_RDWR, 0755);
     if (fd ==- 1)
         EXTMSG("open failed : ");
+    
+    if (!this->cgi_log_printed)
+        cgi_log_printed = true,
+        std::cout   << IYellow << this->sock << " : Enter cgi for this path ➔ {" << this->path << "}" << Color_Off << std::endl;
     
     if ((Global().exec_cgi<:this->sock:>.pid = fork()) < 0)
         EXTMSG("fork failed : ");
@@ -48,14 +49,17 @@ void __response::cgi(std::string extension, std::string absolute_path) // trow a
     {
         dup2(fd, 1);
         close(fd);
-        char *arr[3] = {strdup(absolute_path.c_str()), strdup(this->path.c_str()), NULL};
 
-        if (execve(arr[0], arr, NULL) == -1)
+
+        char *arr[3] = {strdup("/usr/bin/php-cgi"), strdup(this->path.c_str()), NULL};
+
+        if (execve(arr[0], arr, Global().env) == -1)
             EXTMSG("execve failed : ");
         
     }
     close(fd);
-    Global().exec_cgi<:this->sock:>.path = stored_exec_file;
+        
+    Global().tmp_file[this->sock] = Global().exec_cgi<:this->sock:>.path = stored_exec_file;
 }
 
 void __response::cgi_exec(std::string &status) {
@@ -63,16 +67,19 @@ void __response::cgi_exec(std::string &status) {
     std::string     type;
     time_t          curr_time;
 
+    if (POST() && Global().tmp_file[-this->sock].empty())    return;
+    if (POST() && !cgi_enter) path = Global().tmp_file[-this->sock];
+
+
     if (this->path.rfind('.') != std::string::npos)
         type = this->path.substr(this->path.rfind('.') + 1);
 
     if (status == HTTP_200_OK || status == HTTP_201_CREATED || status == HTTP_204_NO_CONTENT) {
         if (!this->location->get_cgi_extension()["." + type].empty()) {
-            
             !cgi_enter && (cgi_enter = true) && (cgi(type, this->location->get_cgi_extension()["." + type]), 1);
-            
+
             waitpid(Global().exec_cgi<:this->sock:>.pid, &(Global().exec_cgi<:this->sock:>.status), WNOHANG);
-            
+
             time(&curr_time);
 
             if (Global().exec_cgi<:this->sock:>.status != -1)
@@ -90,7 +97,6 @@ void __response::cgi_exec(std::string &status) {
             Global().exec_cgi.erase(this->sock);
         }
     }
-
 }
 
 std::string __response::generate_header(std::string status, bool redirected) {
@@ -103,7 +109,7 @@ std::string __response::generate_header(std::string status, bool redirected) {
 
     this->cgi_exec(status);    
 
-    if (status != HTTP_200_OK && status != HTTP_301_MULTIPLE_CHOICE)
+    if (status != HTTP_200_OK && (status != HTTP_201_CREATED || !this->cgi_enter) && status != HTTP_301_MULTIPLE_CHOICE)
         this->path = this->def_errors[status];
 
     if (this->path.rfind('.') != std::string::npos)
@@ -125,6 +131,13 @@ std::string __response::generate_header(std::string status, bool redirected) {
     if (redirected) header += "Location: " + this->path + delimeter;
     
     if (!cgi_enter) header += delimeter;
+
+    if (!this->header_log_printed)
+        header_log_printed = true,
+        std::cout   << IBlue << this->sock << " : Header ==> [ \""
+                    << status << "\",  \""
+                    << this->path << "\",  \""
+                    << _time << " GMT" << "\" ]" << Color_Off << std::endl;
 
     return header;
 }
@@ -170,7 +183,6 @@ std::string __response::body() {
     content_lent += rd;
 
     CHECK_READ_ENDS()
-    // std::cout << rd << std:: endl;
     return std::string(buffer, rd);
 }
 
@@ -188,7 +200,6 @@ short    __response::Rspns() {
         if HEADER_SENDING()
         {
             this->check_err->check_errors();
-
             if ERROR_OCCURRED()     block = error_page();
             else if POST()          block = this->Post();
             else if GET()           block = this->Get();

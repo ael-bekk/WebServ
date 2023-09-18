@@ -1,10 +1,11 @@
 #include "request.hpp"
 #include "../Info/info.hpp"
 
-__request::__request(int sock) :sock(sock), header(1), body(0), location(NULL) {}
+__request::__request(int sock) :sock(sock), log_printed(false), header(1), body(0), location(NULL) { this->post = new __post(sock); }
 
 __request::~__request() {
     delete this->location;
+    delete this->post;
 }
 
 void    __request::InsertFirst(std::stringstream inp) {
@@ -21,7 +22,6 @@ void    __request::InsertFirst(std::stringstream inp) {
             i+=2;
         } else
             uri += path[i];
-    // std::cout << uri << std::endl;
     Global().add_RequestHeader(this->sock, "Method", method);
     Global().add_RequestHeader(this->sock, "Path", uri);
     Global().add_RequestHeader(this->sock, "Query", Query);
@@ -61,6 +61,8 @@ void    __request::InsertData(std::string & buff_rest) {
 
 void    __request::set_location(std::string p_loc, std::string path, std::string req_path, __location *location) { this->p_loc = p_loc; this->path = path; this->req_path = req_path; this->location = location; }
 
+__location  *__request::get_location() { return location; }
+
 void    __request::MatchServer() {
     std::string host        = Global().client(this->sock).get_host();
     std::string port        = Global().client(this->sock).get_port();
@@ -84,13 +86,14 @@ short    __request::HeaderPars() {
 
 
 short    __request::BodyPars() {
+
     unsigned long long max_body_size = Global().client(this->sock).get_server()->get_client_max_body_size();
-    if (this->post.open_file_if_not(Global().get_ServerMimeTypes(GET_REQ_CONTENT_TYPE()), p_loc, path, location) != SOCK_INIT_STATUS)
+    if (this->post->open_file_if_not(Global().get_ServerMimeTypes(GET_REQ_CONTENT_TYPE()), p_loc, path, location) != SOCK_INIT_STATUS)
         return SOCK_END_REQUEST;
     if TRANSFER_CHUNKED()
-        return  this->post.transfer_encoding_chunked(max_body_size, this->buff_rest);
+        return  this->post->transfer_encoding_chunked(max_body_size, this->buff_rest);
     if TRANSFER_CONTENT_LENT()
-        return  this->post.transfer_content_length(max_body_size, std::atoi(GET_REQ_CONTENT_LENT().c_str()), this->buff_rest);
+        return  this->post->transfer_content_length(max_body_size, std::atoi(GET_REQ_CONTENT_LENT().c_str()), this->buff_rest);
     return SOCK_END_REQUEST;
 }
 
@@ -98,7 +101,7 @@ short    __request::ReadBlock() {
     int r = recv(this->sock, this->buff, BUFFER_SIZE, 0);
  
     if CLIENT_CLOSE(r) {
-        this->post.rm_file();
+        this->post->rm_file();
         return SOCK_END_REQUEST_MAX_SIZE;
     }
     this->buff_rest += std::string(this->buff, r);
@@ -115,8 +118,12 @@ short    __request::Rqst() {
 
     this->body && (res = this->BodyPars());
 
-    // if (!this->header)
-    //     Global().print_header(this->sock);
+    if (!this->header && !this->log_printed)
+        log_printed = true,
+        std::cout   << ICyan << this->sock << " : "
+                    << Global().get_RequestHeader(this->sock, "Method") << " ➔ "
+                    << Global().get_RequestHeader(this->sock, "Path")
+                    << Global().get_RequestHeader(this->sock, "Query") << Color_Off << std::endl;
 
     if (!this->header && !this->body)
         return SOCK_END_REQUEST;

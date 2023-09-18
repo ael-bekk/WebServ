@@ -1,20 +1,26 @@
 #include "post.hpp"
 
-__post::__post() : count_content_lent(0), content_length(0), cgi(false) {}
+__post::__post(int sock) : sock(sock), count_content_lent(0), content_length(0), cgi(false) {}
 
 short    __post::open_file_if_not(std::string type, std::string p_loc, std::string path, __location  *location) {
+    std::map<std::string, std::string> extention = location->get_cgi_extension();
+    
+    if (!OPEN_FOR_UPLOAD() && !OPEN_FOR_CGI())
+        return SOCK_END_REQUEST;
     if FILE_NOT_OPEN_YET() {
 
         NEW_NAME(this->filename)
 
-        std::map<std::string, std::string> extention = location->get_cgi_extension();
 
         CORRECT_PATH()
 
-        this->outfile.open(std::string(this->filename), std::ios::out);
+        this->outfile.open(this->filename.c_str(), std::ios::out);
+        // system(std::string("chmod 777 " + filename).c_str());
         if (!this->outfile.is_open()) {
             return SOCK_END_REQUEST;
         }
+        if OPEN_FOR_CGI()
+            Global().tmp_file[-this->sock] = this->filename;
     }
     return SOCK_INIT_STATUS;
 }
@@ -33,18 +39,16 @@ short   __post::transfer_encoding_chunked(unsigned long long max_body_size, std:
         if NEED_FOR_NEW_CHUNK()
         {
             if BODY_ENDS()
-            {
-                return SOCK_END_REQUEST;
-            }
+                return (this->outfile.close(), SOCK_END_REQUEST);
+    
             if THERE_IS_NEW_CHUNK()
             {
                 STR_HEX_TO_INT(buff_rest.substr(0, pos), this->count_content_lent)
                 this->content_length += this->count_content_lent;
-                // std::cout << max_body_size << std::endl;
-                if (this->content_length > max_body_size) {
-                    this->rm_file();
-                    return  SOCK_END_REQUEST_MAX_SIZE;
-                }
+
+                if (this->content_length > max_body_size)
+                    return  (this->rm_file(), SOCK_END_REQUEST_MAX_SIZE);
+        
                 buff_rest = buff_rest.substr(pos + 2);
             }
         }
@@ -66,10 +70,9 @@ short   __post::transfer_content_length(unsigned long long max_body_size, int co
 
     int pos;
     
-    // std::cout << content_lent << " " << max_body_size << std::endl;
     if (content_lent > max_body_size) {
         this->rm_file();
-        return  SOCK_END_REQUEST_MAX_SIZE;
+        return  (this->outfile.close(), SOCK_END_REQUEST_MAX_SIZE);
     }
 
     pos = std::min(content_lent - this->count_content_lent, static_cast<unsigned long long>(buff_rest.length()));
@@ -80,7 +83,7 @@ short   __post::transfer_content_length(unsigned long long max_body_size, int co
 
     if REACH_CONTENT_LENT() {
         this->content_length = this->count_content_lent;
-        return SOCK_END_REQUEST;
+        return (this->outfile.close(), SOCK_END_REQUEST);
     }
 
     return SOCK_INIT_STATUS;

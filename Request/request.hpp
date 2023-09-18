@@ -6,6 +6,7 @@
 #include "../Post/post.hpp"
 
 class __location;
+class __post;
 
 class __request {
 
@@ -15,17 +16,19 @@ class __request {
         std::string buff_rest;
         bool        header;
         bool        body;
+        bool        log_printed;
         std::string req_path;
         std::string path;
         std::string p_loc;
         __location  *location;
-        __post      post;
+        __post      *post;
 
     public:
         __request(int sock);
         ~__request();
 
         void    set_location(std::string p_loc, std::string path, std::string req_path, __location *location);
+        __location  *get_location();
         short   Rqst();
 
         short   HeaderPars();
