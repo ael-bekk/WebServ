@@ -66,7 +66,7 @@ class __info
         std::string     get_ClientMimeTypes(std::string key);
         std::string     get_ServerMimeTypes(std::string key);
         bool            check_icon(std::string key);
-
+        ~__info();
 };
 
 __info& Global();

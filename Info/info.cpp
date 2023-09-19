@@ -47,6 +47,8 @@ void __info::add_ResponseHeader(int fd, std::string key, std::string value) {
 void __info::add_server(std::string host, std::string port, std::string server_name, __server * serv) {
     if (this->servers[host + ":" + port + ":" + server_name] == NULL)
         this->servers[host + ":" + port + ":" + server_name] = serv;
+    else
+        EXTMSG("Detected duplicate servers : host;port;server_name")
     if (this->servers[host + ":" + port] == NULL)
         this->servers[host + ":" + port] = serv;
 }
@@ -73,10 +75,10 @@ void __info::set_MimeTypes() {
 }
 
 void __info::set_all_icons() {
-    this->icons["c++"]  = this->icons["cpp"]  = this->icons["css"] = \
-    this->icons["html"] = this->icons["jpeg"] = this->icons["jpg"] = \
-    this->icons["js"]   = this->icons["mp4"]  = this->icons["pdf"] = \
-    this->icons["php"]  = this->icons["png"]  = this->icons["py"]  = \
+    this->icons["c++"]  = this->icons["cpp"]  = this->icons["css"] = true;
+    this->icons["html"] = this->icons["jpeg"] = this->icons["jpg"] = true;
+    this->icons["js"]   = this->icons["mp4"]  = this->icons["pdf"] = true;
+    this->icons["php"]  = this->icons["png"]  = this->icons["py"]  = true;
     this->icons["scss"] = this->icons["ico"]  = true;
 }
 
@@ -132,4 +134,14 @@ std::string __info::get_ClientMimeTypes(std::string key) {
 
 std::string __info::get_ServerMimeTypes(std::string key) {
     return this->ServerMimeTypes[key];
+}
+
+
+__info::~__info() {
+    // for (std::map<__network *, int>::iterator i = this->networks.begin(); i != this->networks.end(); i++)
+    //     delete i->first;
+    for (std::map<int, __client *>::iterator i = this->clients.begin(); i != this->clients.end(); i++)
+        delete i->second;
+    for (std::map<std::string, __server * >::iterator i = this->servers.begin(); i != this->servers.end(); i++)
+        delete i->second;
 }

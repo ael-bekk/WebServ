@@ -7,12 +7,12 @@
 
 class __server {
     private:
-        std::string                 host;
-        std::string                 port;
-        std::string                 server_name;
-        std::map<std::string, std::string>  error_page;
-        unsigned long long          client_max_body_size;
-        std::map <std::string, __location>    location;
+        std::string                             host;
+        std::string                             port;
+        std::string                             server_name;
+        std::map<std::string, std::string>      error_page;
+        unsigned long long                      client_max_body_size;
+        std::map <std::string, __location>      location;
 
     public:
         __server(int &line_count, std::ifstream &configfile);

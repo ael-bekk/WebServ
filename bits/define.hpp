@@ -3,10 +3,7 @@
 
 #include "ansi_colores.hpp"
 
-#define EXTMSG(str) {                                                            \
-                        std::cerr << str << " " << strerror(errno) << std::endl;  \
-                        exit(errno);                                               \
-                    }
+#define EXTMSG(str) { throw(str + std::string(" ") + strerror(errno)); }
 
 #define ENTER_SERVER(TOKEN) (TOKEN == "server {")
 

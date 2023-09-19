@@ -67,7 +67,7 @@ void __check_err::check_get() {
             FILE_OPENED(std::string(path + indexes[i]), status)
             if (status) path += indexes[i];
         }
-        if (!status) path = this->autoindex(path);
+        if (!status && location->get_autoindex()) path = this->autoindex(path);
     } else if ((test = opendir((path).c_str()))) {
         Global().add_ResponseHeader(this->sock, "status", HTTP_301_MULTIPLE_CHOICE);
         this->response->set_path(this->response->get_req_path() + "/");

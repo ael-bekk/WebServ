@@ -36,6 +36,7 @@ void    __network::CreateSocket(void)
         Global().update_sock(this->sock);
         Global().sock_created[this->get_server().get_host()+"_"+this->get_server().get_port()] = this->sock;
     }
+
     this->set_Socket(Global().sock_created[this->get_server().get_host()+"_"+this->get_server().get_port()]);
     Global().add_network(this->sock, *this);
 }
