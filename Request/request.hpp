@@ -19,7 +19,6 @@ class __request {
         bool        log_printed;
         std::string req_path;
         std::string path;
-        std::string p_loc;
         __location  *location;
         __post      *post;
 
@@ -27,7 +26,7 @@ class __request {
         __request(int sock);
         ~__request();
 
-        void    set_location(std::string p_loc, std::string path, std::string req_path, __location *location);
+        void    set_location(std::string path, std::string req_path, __location *location);
         __location  *get_location();
         short   Rqst();
 

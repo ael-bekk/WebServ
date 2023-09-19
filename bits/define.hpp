@@ -117,7 +117,7 @@
 
 #define LOCATION_FOUND()            {                                                                         \
                                         actual_path = it->second.get_root() + req_path.substr(path.length() - (path.length() == 1));                        \
-                                        this->request->set_location(path, actual_path, req_path, new __location(it->second));   \
+                                        this->request->set_location(actual_path, req_path, new __location(it->second));   \
                                         this->response->set_location(actual_path, req_path, new __location(it->second), this->server->get_error_pages());   \
                                     }
 

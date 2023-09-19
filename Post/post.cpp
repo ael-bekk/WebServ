@@ -2,7 +2,7 @@
 
 __post::__post(int sock) : sock(sock), count_content_lent(0), content_length(0), cgi(false) {}
 
-short    __post::open_file_if_not(std::string tp, std::string p_loc, std::string path, __location  *location) {
+short    __post::open_file_if_not(std::string tp, std::string path, __location  *location) {
     std::map<std::string, std::string> extention = location->get_cgi_extension();
     
     // if (!OPEN_FOR_UPLOAD() && !OPEN_FOR_CGI())
