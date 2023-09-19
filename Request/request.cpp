@@ -67,7 +67,7 @@ void    __request::MatchServer() {
     std::string host        = Global().client(this->sock).get_host();
     std::string port        = Global().client(this->sock).get_port();
     std::string server_name = GET_REQ_SERVER_NAME();
-    
+
     Global().client(this->sock).set_server(new __server(*Global().get_server(host, port, server_name)));
 }
 
@@ -122,8 +122,8 @@ short    __request::Rqst() {
         log_printed = true,
         std::cout   << ICyan << this->sock << " : "
                     << Global().get_RequestHeader(this->sock, "Method") << " ➔ "
-                    << Global().get_RequestHeader(this->sock, "Path")
-                    << Global().get_RequestHeader(this->sock, "Query") << Color_Off << std::endl;
+                    << Global().get_RequestHeader(this->sock, "Path")   << " ➔ "
+                    << Global().get_RequestHeader(this->sock, "Query")  << Color_Off << std::endl;
 
     if (!this->header && !this->body)
         return SOCK_END_REQUEST;

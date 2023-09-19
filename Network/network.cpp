@@ -15,27 +15,29 @@ void    __network::CreateSocket(void)
     int k = 1;
     struct sockaddr_in serv_addr;
 
-    memset(&serv_addr, 0, sizeof(serv_addr));
-    serv_addr.sin_family = AF_INET;
-    serv_addr.sin_addr.s_addr = inet_addr(this->get_server().get_host().c_str());
-    serv_addr.sin_port = htons(atoi(this->get_server().get_port().c_str()));
+    if (!Global().sock_created[this->get_server().get_host()+"_"+this->get_server().get_port()]) {
+        memset(&serv_addr, 0, sizeof(serv_addr));
+        serv_addr.sin_family = AF_INET;
+        serv_addr.sin_addr.s_addr = inet_addr(this->get_server().get_host().c_str());
+        serv_addr.sin_port = htons(atoi(this->get_server().get_port().c_str()));
 
-    if ((this->sock=socket(PF_INET, SOCK_STREAM, 0)) == -1)
-        EXTMSG("socket() error!")
+        if ((this->sock=socket(PF_INET, SOCK_STREAM, 0)) == -1)
+            EXTMSG("socket() error!")
 
-    if (setsockopt(this->sock, SOL_SOCKET, SO_REUSEADDR, &k, sizeof(int)) < 0)
-        EXTMSG("setsockopt() error!")
+        if (setsockopt(this->sock, SOL_SOCKET, SO_REUSEADDR, &k, sizeof(int)) < 0)
+            EXTMSG("setsockopt() error!")
 
-    if (bind(this->sock, (struct sockaddr*)&serv_addr, sizeof(serv_addr)) == -1)
-        EXTMSG("bind() error!")
+        if (bind(this->sock, (struct sockaddr*)&serv_addr, sizeof(serv_addr)) == -1)
+            EXTMSG("bind() error!")
 
-    if (listen(this->sock, 5) == -1)
-        EXTMSG("listen() error!")
-    
-    this->set_Socket(this->sock);
-    Global().update_sock(this->sock);
+        if (listen(this->sock, 5) == -1)
+            EXTMSG("listen() error!")
+        this->set_Socket(this->sock);
+        Global().update_sock(this->sock);
+        Global().sock_created[this->get_server().get_host()+"_"+this->get_server().get_port()] = this->sock;
+    }
+    this->set_Socket(Global().sock_created[this->get_server().get_host()+"_"+this->get_server().get_port()]);
     Global().add_network(this->sock, *this);
-
 }
 
 int __network::accept_new_client(int serv_sock) {

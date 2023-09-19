@@ -12,7 +12,6 @@ short    __post::open_file_if_not(std::string tp, std::string p_loc, std::string
 
         NEW_NAME(this->filename)
 
-        // std::cout << type << " " << path << std::endl;
 
         CORRECT_PATH()
 
@@ -21,18 +20,21 @@ short    __post::open_file_if_not(std::string tp, std::string p_loc, std::string
             if OPEN_FOR_CGI() this->filename += '.' + type;
             // else type = tp;
         }
+        // std::cout << "==========>" << type << " - " << path << std::endl;
         // std::cout << type << " " << path << std::endl;
         if (OPEN_FOR_UPLOAD() || OPEN_FOR_CGI())
+            // std::cout << "hhhhhhhhhhhhhhhhhhhhhhh " << this->filename << std::endl,
             this->outfile.open(this->filename.c_str(), std::ios::out);
         else
             return SOCK_END_REQUEST;
 
+        // std::cout << type << " " << path << " " << OPEN_FOR_CGI() << std::endl;
         if (!this->outfile.is_open())
             return SOCK_END_REQUEST;
 
-        // std::cout << type << " " << path << std::endl;
+        // std::cout << type << " " << path << " " << OPEN_FOR_CGI() << std::endl;
         
-        if (OPEN_FOR_CGI())
+        if OPEN_FOR_CGI()
             Global().tmp_file[-this->sock] = this->filename;
     }
     return SOCK_INIT_STATUS;

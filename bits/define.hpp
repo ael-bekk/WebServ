@@ -79,7 +79,7 @@
 #define GET_REQ_CONTENT_LENT()           Global().get_RequestHeader(this->sock, "Content-Length")
 #define GET_REQ_CONTENT_TYPE()           Global().get_RequestHeader(this->sock, "Content-Type")
 #define GET_REQ_METHOD()                 Global().get_RequestHeader(this->sock, "Method")
-#define GET_REQ_SERVER_NAME()            Global().get_RequestHeader(this->sock, "host")
+#define GET_REQ_SERVER_NAME()            Global().get_RequestHeader(this->sock, "Host")
 #define FILE_NOT_OPEN_YET()              (!this->outfile.is_open())
 #define TRANSFER_CHUNKED()               (Global().get_RequestHeader(this->sock, "Transfer-Encoding") == "chunked")
 #define TRANSFER_CONTENT_LENT()          (!Global().get_RequestHeader(this->sock, "Content-Length").empty())
@@ -99,16 +99,28 @@
                                         for (path += tmp_path[i]; i + 1 < tmp_path.length() && tmp_path[i] == '/' && tmp_path[i + 1] == '/'; i++);  \
                                     }
 
-#define FIND_LOCATION_FROM_PATH()   {                                                                                 \
-                                        for(;loc.find(path) == loc.end() && !path.empty();)                            \
-                                            path.erase(path.length() - 1);                                              \
+#define FIND_LOCATION_FROM_PATH()   {                                                                                     \
+                                        for(;loc.find(path) == loc.end() && path.find_last_of('/') != std::string::npos;)  \
+                                        path = path.substr(0, path.find_last_of('/'));                                      \
                                     }
 
+// #define FIND_LOCATION_FROM_PATH()   {                                                                                 \
+//                                         for(;loc.find(path) == loc.end() && !path.empty();)                            \
+//                                             path.erase(path.length() - 1);                                              \
+//                                     }
+
+// #define LOCATION_FOUND()            {                                                                         \
+//                                         actual_path = it->second.get_root() + req_path;                        \
+//                                         this->request->set_location(path, actual_path, req_path, new __location(it->second));   \
+//                                         this->response->set_location(actual_path, req_path, new __location(it->second), this->server->get_error_pages());   \
+//                                     }
+
 #define LOCATION_FOUND()            {                                                                         \
-                                        actual_path = it->second.get_root() + req_path;                        \
+                                        actual_path = it->second.get_root() + req_path.substr(path.length() - (path.length() == 1));                        \
                                         this->request->set_location(path, actual_path, req_path, new __location(it->second));   \
                                         this->response->set_location(actual_path, req_path, new __location(it->second), this->server->get_error_pages());   \
                                     }
+
 
 #define TO_STRING(NUM, STR)                 {                                \
                                                 std::stringstream ss;         \
@@ -149,7 +161,7 @@
                                     TIME = std::string(std::asctime(std::localtime(&result))).substr(0, TIME.find('\n', 1));   \
                                     TIME = TIME.substr(0, TIME.find('\n', 1));                                                  \
                                 }
-#define CORRECT_PATH()          filename = location->get_root() + p_loc + "/" + location->get_upload() + "/" + filename + "." + type;
+#define CORRECT_PATH()          filename = location->get_root() + "/" + location->get_upload() + "/" + filename + "." + type;
 
 #define OPEN_FOR_CGI()          (extention.find("." + type) != extention.end())
 #define OPEN_FOR_UPLOAD()       (!location->get_upload().empty())

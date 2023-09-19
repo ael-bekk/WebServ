@@ -20,7 +20,7 @@ void __info::add_server_sock(int fd) {
 
 void __info::add_network(int fd, __network & net) {
     this->server_sockets[fd] = true;
-    this->networks.insert(std::pair<int, __network*>(fd, &net));
+    this->networks.insert(std::pair<__network*, int>(&net, fd));
 }
 
 void __info::add_client(int fd, std::string host, std::string port, __server *serv) {
@@ -94,7 +94,11 @@ bool __info::is_server_sock(int fd) {
 }
 
 __network&  __info::network(int fd) {
-    return *this->networks[fd];
+    
+    for (std::map<__network *, int>::iterator i = this->networks.begin(); i != this->networks.end(); i++)
+        if (i->second == fd)
+            return *i->first;
+    return *this->networks.begin()->first;
 }
 
 

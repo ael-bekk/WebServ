@@ -23,10 +23,10 @@ void    __client::MatchLocation() {
     tmp_path = Global().get_RequestHeader(this->socket, "Path");
     CLEAR_REQUEST_PATH()
     req_path = path;
-
     std::map<std::string, __location> loc = this->server->get_locations();
     FIND_LOCATION_FROM_PATH()
-    std::map<std::string, __location>::iterator it = loc.find((path.empty() ? "/" : path));
+    // std::cout << "------>" << path << " " << (loc.find("/") != loc.end()) << std::endl;
+    std::map<std::string, __location>::iterator it = loc.find(path.empty() ? "/" : path);
 
     if (it != loc.end())
         LOCATION_FOUND()

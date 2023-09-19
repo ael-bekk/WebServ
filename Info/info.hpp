@@ -23,7 +23,7 @@ class __info
         int                                                         _max;
         std::map<int, bool>                                         server_sockets;
         std::map<int, bool>                                         client_sockets;
-        std::map<int, __network *>                                  networks;
+        std::map<__network *, int>                                  networks;
 
         std::map<std::string, __server * >                          servers;       // 127.0.0.1:8080:server_name = {server1, server2 ...}
 
@@ -39,9 +39,10 @@ class __info
 
 
     public:
-        std::map<int, _cgi_info>    exec_cgi;
-        std::map<int, std::string>  tmp_file;
-        char                        **env;
+        std::map<std::string, int>   sock_created;
+        std::map<int, _cgi_info>        exec_cgi;
+        std::map<int, std::string>      tmp_file;
+        char                            **env;
 
         void            update_sock(int fd);
         void            add_server_sock(int fd);
