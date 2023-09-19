@@ -66,7 +66,6 @@ class __info
         std::string     get_ServerMimeTypes(std::string key);
         bool            check_icon(std::string key);
 
-        void            print_header(int fd);
 };
 
 __info& Global();

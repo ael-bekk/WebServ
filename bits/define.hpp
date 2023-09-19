@@ -137,8 +137,9 @@
 #define CHUNK_FILLED()          (this->count_content_lent)
 
 #define NEW_NAME(FILENAME)      {                                                                                                    \
+                                    std::string s; TO_STRING(std::rand() % 100000000, s)                                                        \
                                     std::time_t result = std::time(NULL);                                                             \
-                                    FILENAME = std::to_string(std::rand() % 100000000) + "_" + std::string(std::asctime(std::localtime(&result))).substr(0, FILENAME.find('\n', 1));   \
+                                    FILENAME = s + "_" + std::string(std::asctime(std::localtime(&result))).substr(0, FILENAME.find('\n', 1));   \
                                     FILENAME = FILENAME.substr(0, FILENAME.find('\n', 1));                                              \
                                     for (int i = 0; i < FILENAME.length(); i++)                                                          \
                                         (FILENAME[i] == ' ') && (FILENAME[i] = '_');                                                      \

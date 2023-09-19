@@ -129,9 +129,3 @@ std::string __info::get_ClientMimeTypes(std::string key) {
 std::string __info::get_ServerMimeTypes(std::string key) {
     return this->ServerMimeTypes[key];
 }
-
-
-void    __info::print_header(int fd) {
-    for (auto &it : this->RequestHeader[fd])
-        std::cout << it.first << "  ==>  " << it.second << std::endl;
-}

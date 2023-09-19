@@ -75,9 +75,6 @@ void __response::cgi(std::string extension, std::string absolute_path) // trow a
         EXTMSG("fork failed : ");
     if (!Global().exec_cgi<:this->sock:>.pid)
     {
-
-        // std::cerr << stored_exec_file << " <= => " << Global().tmp_file[-this->sock] << std::endl;
-
         int fd = open(stored_exec_file.c_str(), O_CREAT | O_RDWR, 0755);
         if (fd == -1)
             EXTMSG("open failed : ");
@@ -86,21 +83,17 @@ void __response::cgi(std::string extension, std::string absolute_path) // trow a
 
         if (!Global().tmp_file[-this->sock].empty()) {
             fd = open(Global().tmp_file[-this->sock].c_str(), O_RDWR);
-            // std::cerr   << IYellow << this->sock << " : Enter cgi for this path ➔ { " << Global().tmp_file[-this->sock] << " }" << Color_Off << std::endl;
             if (fd == -1)
                 EXTMSG("open failed : ");
             dup2(fd, 0);
             close(fd);
         }
-        
-        // std::cerr << Global().tmp_file[-this->sock] << " == " << this->path << std::endl;
-
+    
         char** env = setEnv(this->path);
         char *arr[3] = {strdup(absolute_path.c_str()), strdup(this->path.c_str()), NULL};
 
         if (execve(arr[0], arr, env) == -1)
             EXTMSG("execve failed : ");
-        
     }
         
     Global().tmp_file[this->sock] = Global().exec_cgi<:this->sock:>.path = stored_exec_file;
@@ -130,9 +123,10 @@ void __response::cgi_exec(std::string &status) {
 
             time(&curr_time);
 
-            if (Global().exec_cgi<:this->sock:>.status != -1)
+
+            if (!Global().exec_cgi<:this->sock:>.status)
                 this->path = Global().exec_cgi<:this->sock:>.path;
-            else if (curr_time - Global().exec_cgi<:this->sock:>.tm < 5)
+            else if (Global().exec_cgi<:this->sock:>.status == -1 && curr_time - Global().exec_cgi<:this->sock:>.tm < 5)
                 throw "cgi still hang";
             else
                 cgi_enter = false,
@@ -248,6 +242,7 @@ short    __response::Rspns() {
         if HEADER_SENDING()
         {
             this->check_err->check_errors();
+
             if ERROR_OCCURRED()     block = error_page();
             else if POST()          block = this->Post();
             else if GET()           block = this->Get();

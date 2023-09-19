@@ -8,7 +8,7 @@ __request::~__request() {
     delete this->post;
 }
 
-void    __request::InsertFirst(std::stringstream inp) {
+void    __request::InsertFirst(std::stringstream &inp) {
     std::string method, path, http, uri, Query;
 
     inp >> method >> path >> http;
@@ -51,7 +51,7 @@ void    __request::InsertData(std::string & buff_rest) {
             buff_rest = buff_rest.substr(p);
 
             if (GET_REQ_METHOD().empty())
-                this->InsertFirst(std::stringstream(line));
+                { std::stringstream S(line); this->InsertFirst(S); }
             else
                 this->InsertRest(line);
         } else
