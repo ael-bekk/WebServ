@@ -8,7 +8,6 @@ char** __response::setEnv(std::string& path)
 {
     std::vector<std::string> vec;
 
-
     vec.push_back("SCRIPT_FILENAME=" + path);
     vec.push_back("REQUEST_METHOD=" + Global().get_RequestHeader(this->sock, "Method"));
     vec.push_back("REDIRECT_STATUS=200");
@@ -17,9 +16,9 @@ char** __response::setEnv(std::string& path)
     if (!Global().get_RequestHeader(this->sock, "Cookie").empty())
         vec.push_back("HTTP_COOKIE="+ Global().get_RequestHeader(this->sock, "Cookie"));
     std::string s1, s2;
-    
-    TO_STRING(s1, GET_REQ_CONTENT_LENT())
-    TO_STRING(s2, GET_REQ_CONTENT_TYPE())
+
+    TO_STRING(GET_REQ_CONTENT_LENT(), s1)
+    TO_STRING(GET_REQ_CONTENT_TYPE(), s2)
 
     if POST()
         vec.push_back("CONTENT_TYPE=" + s2),
@@ -29,6 +28,7 @@ char** __response::setEnv(std::string& path)
 
     int i = 0;
     for (; i < vec.size(); ++i)
+        // std::cerr << "==========" << vec[i] << std::endl,
         env[i] = strdup(vec[i].c_str());
     env[i] = NULL;
 
@@ -76,6 +76,8 @@ void __response::cgi(std::string extension, std::string absolute_path) // trow a
     if (!Global().exec_cgi<:this->sock:>.pid)
     {
 
+        // std::cerr << stored_exec_file << " <= => " << Global().tmp_file[-this->sock] << std::endl;
+
         int fd = open(stored_exec_file.c_str(), O_CREAT | O_RDWR, 0755);
         if (fd == -1)
             EXTMSG("open failed : ");
@@ -84,14 +86,14 @@ void __response::cgi(std::string extension, std::string absolute_path) // trow a
 
         if (!Global().tmp_file[-this->sock].empty()) {
             fd = open(Global().tmp_file[-this->sock].c_str(), O_RDWR);
-            std::cerr   << IYellow << this->sock << " : Enter cgi for this path ➔ { " << Global().tmp_file[-this->sock] << " }" << Color_Off << std::endl;
+            // std::cerr   << IYellow << this->sock << " : Enter cgi for this path ➔ { " << Global().tmp_file[-this->sock] << " }" << Color_Off << std::endl;
             if (fd == -1)
                 EXTMSG("open failed : ");
             dup2(fd, 0);
             close(fd);
         }
         
-        std::cerr << Global().tmp_file[-this->sock] << " == " << this->path << std::endl;
+        // std::cerr << Global().tmp_file[-this->sock] << " == " << this->path << std::endl;
 
         char** env = setEnv(this->path);
         char *arr[3] = {strdup(absolute_path.c_str()), strdup(this->path.c_str()), NULL};
@@ -183,7 +185,7 @@ std::string __response::generate_header(std::string status, bool redirected) {
         std::cout   << IBlue << this->sock << " : Header ==> [ \""
                     << status << "\",  \""
                     << this->path << "\",  \""
-                    << _time << " GMT" << "\" ]" << Color_Off << std::endl;
+                    << _time << " GMT" << "\" ]" << " " << Color_Off << std::endl;
 
     return header;
 }
