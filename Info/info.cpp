@@ -46,11 +46,11 @@ void __info::add_ResponseHeader(int fd, std::string key, std::string value) {
 
 void __info::add_server(std::string host, std::string port, std::string server_name, __server * serv) {
     if (this->servers[host + ":" + port + ":" + server_name] == NULL)
-        this->servers[host + ":" + port + ":" + server_name] = serv;
+        this->servers[host + ":" + port + ":" + server_name] = new __server(*serv);
     else
         EXTMSG("Detected duplicate servers : host;port;server_name")
     if (this->servers[host + ":" + port] == NULL)
-        this->servers[host + ":" + port] = serv;
+        this->servers[host + ":" + port] = new __server(*serv);
 }
 
 void __info::set_MimeTypes() {
@@ -61,7 +61,9 @@ void __info::set_MimeTypes() {
     if (mime_file.fail())
         EXTMSG("Error opening file: mime.types.txt")
 
-    while (std::getline(mime_file, line))
+    while (std::getline(mime_file, line)) {
+        std::stringstream test_inp(line);
+        std::string test_;
         if NOT_EMPTY()
         {
             std::stringstream inp(line);
@@ -72,6 +74,7 @@ void __info::set_MimeTypes() {
             while (inp >> m2)
                 this->ClientMimeTypes[m2] = m1;
         }
+    }
 }
 
 void __info::set_all_icons() {

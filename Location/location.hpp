@@ -10,7 +10,7 @@ class __location {
         std::string                                         root;
         std::vector<std::string>                            index;
         std::map<std::string, bool>                         allow_methods;
-        std::pair<int, std::string>                         _return;
+        std::pair<std::string, std::string>                         _return;
         bool                                                autoindex;
         std::string                                         upload;
         std::map<std::string, std::string>                  cgi_extension;
@@ -22,7 +22,7 @@ class __location {
         std::string                         get_root();
         std::vector<std::string>            get_index();
         std::map<std::string, bool>         get_allow_methods();
-        std::pair<int, std::string>         get_return();
+        std::pair<std::string, std::string> get_return();
         bool                                get_autoindex();
         std::map<std::string, std::string>  get_cgi_extension();
         std::string                         get_upload();

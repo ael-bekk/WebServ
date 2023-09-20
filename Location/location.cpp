@@ -4,7 +4,9 @@
 __location::__location(int &line_count, std::ifstream &configfile) {
     std::string line, key;
 
-    while (std::getline(configfile, line) && ++line_count)
+    while (std::getline(configfile, line) && ++line_count) {
+        std::stringstream test_inp(line);
+        std::string test_;
         if NOT_EMPTY()
         {
             std::stringstream inp(line);
@@ -14,6 +16,7 @@ __location::__location(int &line_count, std::ifstream &configfile) {
             if (!Insert(key, inp))
                 ConfigError(line_count, key);
         }
+    }
 }
 
 __location::~__location() {}
@@ -39,7 +42,7 @@ void    __location::ConfigError(int line, std::string detail) {
 std::string __location::get_root()                                      { return this->root; }
 std::vector<std::string> __location::get_index()                        { return this->index; }
 std::map<std::string, bool> __location::get_allow_methods()             { return this->allow_methods; }
-std::pair<int, std::string> __location::get_return()                    { return this->_return; }
+std::pair<std::string, std::string> __location::get_return()             { return this->_return; }
 bool __location::get_autoindex()                                        { return this->autoindex; }
 std::map<std::string, std::string> __location::get_cgi_extension()      { return this->cgi_extension; }
 std::string __location::get_upload()                                    { return this->upload; }
@@ -69,10 +72,12 @@ bool    __location::set_allow_methods(std::stringstream &inp) {
 }
 
 bool    __location::set_return(std::stringstream &inp) {
-    int err, end;
-    std::string r;
+    std::string r, err, end;
+
     if (!(inp >> err) || !(inp >> r) || inp >> end)
         return FAILURE;
+    if (!this->_return.first.empty())
+        EXTMSG("duplicate redirect")
     this->_return.first = err;
     this->_return.second = r;
     return SUCCESS;

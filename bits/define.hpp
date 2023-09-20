@@ -135,7 +135,7 @@
                                                 inp >> std::hex >> NUM;        \
                                             }
 
-#define NOT_EMPTY()                      (!line.empty())
+#define NOT_EMPTY()                      (test_inp >> test_)
 
 #define MIMETYPESFILE               "bits/mime.types.txt"
 

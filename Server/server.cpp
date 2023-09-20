@@ -4,7 +4,9 @@
 __server::__server(int &line_count, std::ifstream &configfile) {
     std::string line, key;
 
-    while (std::getline(configfile, line) && ++line_count)
+    while (std::getline(configfile, line) && ++line_count) {
+        std::stringstream test_inp(line);
+        std::string test_;
         if NOT_EMPTY()
         {
             std::stringstream inp(line);
@@ -14,8 +16,9 @@ __server::__server(int &line_count, std::ifstream &configfile) {
             if (!Insert(key, line_count, configfile, inp) || inp >> line)
                 ConfigError(line_count, key);
         }
+    }
     
-    Global().add_server(this->host, this->port, this->server_name, new __server(*this));
+    Global().add_server(this->host, this->port, this->server_name, this);
 }
 
 __server::~__server() {std::cout << this->server_name << std::endl;}
@@ -102,6 +105,9 @@ int __server::set_locations(int &line, std::ifstream &configfile, std::stringstr
         return FAILURE;
     
     CLEAR_LOCATION_PATH()
+
+    if (this->location.find(path) != this->location.end())
+        throw std::string("Location duplicated hah");
 
     this->location.insert(std::pair<std::string, __location>(path, __location(line, configfile)));
     return SUCCESS;

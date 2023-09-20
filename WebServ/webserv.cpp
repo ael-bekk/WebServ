@@ -20,7 +20,9 @@ void    __webserv::ConfigFile(std::string filename) {
     if (configfile.fail())
         EXTMSG("Error opening file: " + filename)
 
-    while (std::getline(configfile, line) && ++line_count)
+    while (std::getline(configfile, line) && ++line_count) {
+        std::stringstream test_inp(line);
+        std::string test_;
         if NOT_EMPTY()
         {
             std::stringstream inp(line);
@@ -34,6 +36,7 @@ void    __webserv::ConfigFile(std::string filename) {
             else
                 ConfigError(line_count, prev_token + token);
         }
+    }
 }
 
 void    __webserv::InitNetworks()

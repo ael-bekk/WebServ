@@ -2,9 +2,15 @@ server {
     port 8072
     host 127.0.0.1
     server_name ahmed
-    error_page 404 file.php
+    error_page 404 ./www/pages_error/404.html
     error_page 504 gbjgj/vgjv.php
     client_max_body_size 200000000
+
+    location /aa {
+        root ./www
+        allow_methods POST DELETE GET
+        return 301 /
+    }
     location / {
         root ./www
         cgi .py /usr/bin/python3
@@ -28,10 +34,13 @@ server {
 server {
     port 8072
     host 127.0.0.1
-    server_name ahmed
-    error_page 404 file.php
+    server_name abde
     error_page 504 gbjgj/vgjv.php
+
+
     client_max_body_size 200000000
+
+
     location / {
         root ./www
         cgi .py /usr/bin/python3
@@ -40,6 +49,8 @@ server {
         allow_methods POST DELETE GET
         return 200 file.html
     }
+    
+
 
     location /kapouet {
         root ./www

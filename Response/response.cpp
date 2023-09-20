@@ -68,8 +68,7 @@ void __response::cgi(std::string extension, std::string absolute_path) // trow a
 
     
     if (!this->cgi_log_printed)
-        cgi_log_printed = true,
-        std::cout   << IYellow << this->sock << " : Enter cgi for this path ➔ { " << this->path << " }" << Color_Off << std::endl;
+        cgi_log_printed = true;
     
     if ((Global().exec_cgi<:this->sock:>.pid = fork()) < 0)
         EXTMSG("fork failed : ");
@@ -104,16 +103,11 @@ void __response::cgi_exec(std::string &status) {
     std::string     type;
     time_t          curr_time;
 
-    // std::cout << ";;;;;;;;;;;;;;;;;;;;;;" << std::endl;
 
-    // std::cout << Global().tmp_file[-this->sock] << " == " << this->path << std::endl;
     if (POST() && Global().tmp_file[-this->sock].empty())    return;
-    // if (POST() && !cgi_enter) std::cout << path << std::endl, path = Global().tmp_file[-this->sock], std::cout << path << std::endl;
-
 
     if (this->path.rfind('.') != std::string::npos)
         type = this->path.substr(this->path.rfind('.') + 1);
-    // std::cout << type << std::endl;
 
     if (status == HTTP_200_OK || status == HTTP_201_CREATED || status == HTTP_204_NO_CONTENT) {
         if (!this->location->get_cgi_extension()["." + type].empty()) {
@@ -150,10 +144,14 @@ std::string __response::generate_header(std::string status, bool redirected) {
     std::string     delimeter("\r\n");
 
     this->cgi_exec(status);    
-
-    if (status != HTTP_200_OK && (status != HTTP_201_CREATED || !this->cgi_enter) && status != HTTP_301_MULTIPLE_CHOICE)
-        this->path = this->def_errors[status];
-
+    
+    if (status != HTTP_200_OK && (status != HTTP_201_CREATED || !this->cgi_enter) && status != HTTP_301_MULTIPLE_CHOICE) {
+        if (Global().client(this->sock).get_server()->get_error_pages()[status].empty())
+            this->path = this->def_errors[status];
+        else
+            this->path = Global().client(this->sock).get_server()->get_error_pages()[status];
+    }
+    
     if (this->path.rfind('.') != std::string::npos)
             type = this->path.substr(this->path.rfind('.') + 1);
 
@@ -170,6 +168,7 @@ std::string __response::generate_header(std::string status, bool redirected) {
         header += "Content-Type: " + Global().get_ClientMimeTypes(type) + delimeter;
     }
     header += "Connection: close" + delimeter;
+
     if (redirected) header += "Location: " + this->path + delimeter;
     
     if (!cgi_enter) header += delimeter;

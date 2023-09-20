@@ -4,9 +4,7 @@ __post::__post(int sock) : sock(sock), count_content_lent(0), content_length(0),
 
 short    __post::open_file_if_not(std::string tp, std::string path, __location  *location) {
     std::map<std::string, std::string> extention = location->get_cgi_extension();
-    
-    // if (!OPEN_FOR_UPLOAD() && !OPEN_FOR_CGI())
-    //     return SOCK_END_REQUEST;
+
     std::string type = tp;
     if FILE_NOT_OPEN_YET() {
 
@@ -18,21 +16,16 @@ short    __post::open_file_if_not(std::string tp, std::string path, __location  
         if (path.rfind('.') != std::string::npos) {
             type = path.substr(path.rfind('.') + 1);
             if OPEN_FOR_CGI() this->filename += '.' + type;
-            // else type = tp;
         }
-        // std::cout << "==========>" << type << " - " << path << std::endl;
-        // std::cout << type << " " << path << std::endl;
+
         if (OPEN_FOR_UPLOAD() || OPEN_FOR_CGI())
-            // std::cout << "hhhhhhhhhhhhhhhhhhhhhhh " << this->filename << std::endl,
             this->outfile.open(this->filename.c_str(), std::ios::out);
         else
             return SOCK_END_REQUEST;
 
-        // std::cout << type << " " << path << " " << OPEN_FOR_CGI() << std::endl;
         if (!this->outfile.is_open())
             return SOCK_END_REQUEST;
 
-        // std::cout << type << " " << path << " " << OPEN_FOR_CGI() << std::endl;
         
         if OPEN_FOR_CGI()
             Global().tmp_file[-this->sock] = this->filename;

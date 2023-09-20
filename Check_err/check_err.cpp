@@ -148,6 +148,12 @@ void __check_err::check_errors() {
 
     if (this->header_err())
         return;
+
+    std::string redirect = this->response->get_location()->get_return().first;
+    std::cout << redirect << std::endl;
+    if (!redirect.empty() && redirect == HTTP_301_MULTIPLE_CHOICE || redirect == "300")
+        Global().add_ResponseHeader(this->sock, "status", redirect),
+        this->response->set_path("/");
     else if (allowed[GET_REQ_METHOD()]) {
         if POST()       this->check_post();
         if GET()        this->check_get();
