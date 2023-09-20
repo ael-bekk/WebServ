@@ -95,6 +95,9 @@ int __server::set_error_pages(std::string error, std::string page) {
 }
 
 int __server::set_client_max_body_size(std::string client_max_body_size) {
+    if (client_max_body_size.length() > 14)
+        return FAILURE;
+
     this->client_max_body_size = std::atoll(client_max_body_size.c_str());
     return SUCCESS;
 }

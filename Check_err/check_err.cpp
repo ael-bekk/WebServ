@@ -149,13 +149,12 @@ void __check_err::check_errors() {
     if (this->response && this->response->get_location()){
         realpath(this->response->get_path().c_str(), cur),
         realpath(this->response->get_location()->get_root().c_str(), rot);
-        // this->response->set_path(str);
+
         std::string t_rot(rot), t_cur(cur);
         if (t_rot != t_cur.substr(0, t_rot.length())) {
             Global().add_ResponseHeader(this->sock, "status", HTTP_403_FORBIDDEN);
             return;
         }
-        std::cout << "======" << this->sock << " " << t_rot << " " << t_cur.substr(0, t_rot.length()) << " " << (t_rot != t_cur.substr(0, t_rot.length())) <<std::endl;
     }
 
     std::map<std::string, bool> allowed;
