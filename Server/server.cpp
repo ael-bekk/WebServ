@@ -80,6 +80,8 @@ int __server::set_host(std::string host) {
 }
 
 int __server::set_port(std::string port) {
+    if (!this->port.empty())
+        return FAILURE;
     this->port = port;
     return SUCCESS;
 }
