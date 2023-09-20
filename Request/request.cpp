@@ -28,18 +28,24 @@ void    __request::InsertFirst(std::stringstream &inp) {
     Global().add_RequestHeader(this->sock, "Http", http);
 }
 
-void    __request::InsertRest(std::string &line) {
+int    __request::InsertRest(std::string &line) {
     int p = line.find(": ");
 
     std::string key = line.substr(0, p);
     std::string value = line.substr(p + 2);
+    if (!Global().get_RequestHeader(this->sock, key).empty()) {
+        Global().add_RequestHeader(this->sock, "status", HTTP_400_BAD_REQUEST);
+        return FAILURE;
+    }
     Global().add_RequestHeader(this->sock, key, value);
+    return SUCCESS;
 }
 
 void    __request::InsertData(std::string & buff_rest) {
     int p;
 
     while (!buff_rest.empty()) {
+        int ent = buff_rest.length();
         if END_HEADER(this->buff_rest.substr(0, 4))
             return;
 
@@ -52,10 +58,18 @@ void    __request::InsertData(std::string & buff_rest) {
 
             if (GET_REQ_METHOD().empty())
                 { std::stringstream S(line); this->InsertFirst(S); }
-            else
-                this->InsertRest(line);
-        } else
+            else if (this->InsertRest(line) == FAILURE) {
+                this->header = false;
+                break;
+            }
+                
+        }
+
+        if (ent == buff_rest.length()) {
+            this->header = false;
+            Global().add_RequestHeader(this->sock, "status", HTTP_400_BAD_REQUEST);
             break;
+        }
     }
 }
 
@@ -80,7 +94,9 @@ short    __request::HeaderPars() {
         this->header = false;
         this->body = IS_POST(GET_REQ_METHOD());
         this->MatchServer();
-    }
+    } else
+        this->header = false,
+        Global().add_RequestHeader(this->sock, "status", HTTP_400_BAD_REQUEST);
     return SOCK_INIT_STATUS;
 }
 

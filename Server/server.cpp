@@ -21,7 +21,7 @@ __server::__server(int &line_count, std::ifstream &configfile) {
     Global().add_server(this->host, this->port, this->server_name, this);
 }
 
-__server::~__server() {std::cout << this->server_name << std::endl;}
+__server::~__server() {}
 
 bool __server::Insert(std::string key, int &line_count, std::ifstream &configfile, std::stringstream &inp) {
 

@@ -146,9 +146,9 @@ std::string __response::generate_header(std::string status, bool redirected) {
     this->cgi_exec(status);    
     
     if (status != HTTP_200_OK && (status != HTTP_201_CREATED || !this->cgi_enter) && status != HTTP_301_MULTIPLE_CHOICE) {
-        if (Global().client(this->sock).get_server()->get_error_pages()[status].empty())
+        if (Global().client(this->sock).get_server() && Global().client(this->sock).get_server()->get_error_pages()[status].empty())
             this->path = this->def_errors[status];
-        else
+        else if (Global().client(this->sock).get_server())
             this->path = Global().client(this->sock).get_server()->get_error_pages()[status];
     }
     

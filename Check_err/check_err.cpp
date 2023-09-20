@@ -140,7 +140,24 @@ bool __check_err::header_err() {
 
 void __check_err::check_errors() {
     if ERROR_OCCURRED() return;
+
+    char cur[1025] = "";
+    char rot[1025] = "";
+
     this->sock = this->response->get_sock();
+
+    if (this->response && this->response->get_location()){
+        realpath(this->response->get_path().c_str(), cur),
+        realpath(this->response->get_location()->get_root().c_str(), rot);
+        // this->response->set_path(str);
+        std::string t_rot(rot), t_cur(cur);
+        if (t_rot != t_cur.substr(0, t_rot.length())) {
+            Global().add_ResponseHeader(this->sock, "status", HTTP_403_FORBIDDEN);
+            return;
+        }
+        std::cout << "======" << this->sock << " " << t_rot << " " << t_cur.substr(0, t_rot.length()) << " " << (t_rot != t_cur.substr(0, t_rot.length())) <<std::endl;
+    }
+
     std::map<std::string, bool> allowed;
 
     if (this->response && this->response->get_location())
@@ -149,8 +166,9 @@ void __check_err::check_errors() {
     if (this->header_err())
         return;
 
-    std::string redirect = this->response->get_location()->get_return().first;
-    std::cout << redirect << std::endl;
+    std::string redirect;
+    if (this->response->get_location())
+        redirect = this->response->get_location()->get_return().first;
     if (!redirect.empty() && redirect == HTTP_301_MULTIPLE_CHOICE || redirect == "300")
         Global().add_ResponseHeader(this->sock, "status", redirect),
         this->response->set_path("/");
