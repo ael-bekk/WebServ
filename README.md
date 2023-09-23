@@ -109,6 +109,22 @@ WebServ is designed with a modular and efficient architecture, aimed at deliveri
 - **Design Patterns:**
   The project follows SOLID principles, emphasizing the importance of robust, maintainable, and scalable code. Additionally, the Singleton design pattern is employed where appropriate to ensure single instances of critical components, enhancing efficiency and resource utilization.
 
+  - ***SOLID Principles:***
+
+    `SOLID` is an acronym representing five design principles crucial for creating robust and maintainable software:
+
+    - `S` => Single Responsibility Principle: Each class should have a single responsibility and reason to change.<br><br>
+    - `O` => Open/Closed Principle: Software entities should be open for extension but closed for modification.<br><br>
+    - `L` => Liskov Substitution Principle: Subtypes should be substitutable for their base types without altering the correctness of the program.<br><br>
+    - `I` => Interface Segregation Principle: Clients should not be forced to depend on interfaces they do not use.<br><br>
+    - `D` => Dependency Inversion Principle: High-level modules should not depend on low-level modules, but both should depend on abstractions.<br><br>
+
+  - ***Singleton Design Pattern:***
+
+    - `Singleton` ensures a class has only one instance and provides a global point of access to that instance. This is useful when exactly one object is needed to coordinate actions across the system, such as a shared resource.
+
+  In WebServ, adhering to SOLID principles ensures clean, maintainable code, while implementing Singleton guarantees a single, globally accessible instance of critical components, enhancing efficiency and resource usage.
+
 The interaction between these components allows WebServ to efficiently process incoming HTTP requests, handle WebSocket communications, and provide a flexible and customizable server experience.
 
 ## License
